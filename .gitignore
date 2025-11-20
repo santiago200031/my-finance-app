@@ -17,6 +17,6 @@ local.properties
 # Default ignored files
 /shelf/
 /workspace.xml
-.idea
 .kotlin
 app/build
+/.idea/
