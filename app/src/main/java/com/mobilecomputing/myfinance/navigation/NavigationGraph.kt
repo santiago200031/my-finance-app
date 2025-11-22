@@ -4,12 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.mobilecomputing.myfinance.navigation.Screen
 import com.mobilecomputing.myfinance.screens.AnalysisScreen
+import com.mobilecomputing.myfinance.screens.BudgetPlanningScreen
 import com.mobilecomputing.myfinance.screens.ContractsScreen
 import com.mobilecomputing.myfinance.screens.DashboardScreen
 import com.mobilecomputing.myfinance.screens.EntriesScreen
+import com.mobilecomputing.myfinance.screens.ExportDataScreen
+import com.mobilecomputing.myfinance.screens.RemindersScreen
 import com.mobilecomputing.myfinance.screens.SettingsScreen
+import com.mobilecomputing.myfinance.screens.SharingSettingsScreen
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {
@@ -28,6 +31,18 @@ fun NavigationGraph(navController: NavHostController) {
         }
         composable(Screen.Settings.route) {
             SettingsScreen()
+        }
+        composable(Screen.Reminders.route) {
+            RemindersScreen()
+        }
+        composable(Screen.BudgetPlanning.route) {
+            BudgetPlanningScreen()
+        }
+        composable(Screen.ExportData.route) {
+            ExportDataScreen()
+        }
+        composable(Screen.SharingSettings.route) {
+            SharingSettingsScreen()
         }
     }
 }
