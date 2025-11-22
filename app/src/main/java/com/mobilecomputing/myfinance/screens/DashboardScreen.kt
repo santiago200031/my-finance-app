@@ -19,8 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mobilecomputing.myfinance.screens.dashboard.components.BalanceSummaryCard
-import com.mobilecomputing.myfinance.screens.dashboard.components.TransactionItem
+import com.mobilecomputing.myfinance.ui.components.BalanceSummaryCard
+import com.mobilecomputing.myfinance.ui.components.TransactionItem
 import com.mobilecomputing.myfinance.screens.dashboard.data.getMockTransactions
 
 @Composable
