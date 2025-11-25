@@ -1,7 +1,6 @@
 package com.mobilecomputing.myfinance.screens
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,25 +10,43 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mobilecomputing.myfinance.data.models.transaction.TransactionType
+import com.mobilecomputing.myfinance.screens.dashboard.data.getMockTransactions
 import com.mobilecomputing.myfinance.ui.components.BalanceSummaryCard
 import com.mobilecomputing.myfinance.ui.components.TransactionItem
-import com.mobilecomputing.myfinance.screens.dashboard.data.getMockTransactions
+
 
 @Composable
+@Preview(showBackground = true)
 fun DashboardScreen() {
-    DashboardOverviewMockup()
-}
+    fun remindersOnClick() {
+    }
 
-@Composable
-fun DashboardOverviewMockup() {
+    fun addEntryOnClick() {
+    }
+
+    val transactions = getMockTransactions()
+
+    val totalIncome =
+        transactions.filter { it.type == TransactionType.INCOME }.sumOf { it.amount }
+    val totalExpenses =
+        transactions.filter { it.type == TransactionType.EXPENSE }.sumOf { it.amount }
+
+    val netGrowth = totalIncome - totalExpenses
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -41,17 +58,17 @@ fun DashboardOverviewMockup() {
         ) {
             BalanceSummaryCard(
                 title = "Income",
-                amount = "$4,500.00",
+                amount = "$${String.format("%.2f", totalIncome)}",
                 modifier = Modifier.weight(1f)
             )
             BalanceSummaryCard(
                 title = "Expenses",
-                amount = "$1,250.50",
+                amount = "$${String.format("%.2f", totalExpenses)}",
                 modifier = Modifier.weight(1f)
             )
             BalanceSummaryCard(
                 title = "Net Growth",
-                amount = "$3,249.50",
+                amount = "$${String.format("%.2f", netGrowth)}",
                 modifier = Modifier.weight(1f)
             )
         }
@@ -61,33 +78,68 @@ fun DashboardOverviewMockup() {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(200.dp)
+
         ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                Text("Pie Chart Placeholder", style = MaterialTheme.typography.titleMedium)
+            Column(modifier = Modifier.padding(16.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        "Quick Actions",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    Button(
+                        onClick = { addEntryOnClick() },
+                        modifier = Modifier
+                            .weight(1f)
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = "Add new entry",
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Text("Add Entry")
+                    }
+                    OutlinedButton(
+                        onClick = { remindersOnClick() },
+                        modifier = Modifier
+                            .weight(1f),
+                    ) {
+                        Icon(
+                            Icons.Default.Notifications,
+                            contentDescription = "Check reminders"
+                        )
+                        Text(
+                            "Reminders"
+                        )
+                    }
+                }
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text("Recent Transactions", style = MaterialTheme.typography.titleLarge)
+        Text(
+            "Recent Activity",
+            style = MaterialTheme.typography.titleLarge
+        )
+
         Spacer(modifier = Modifier.height(8.dp))
+
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            items(getMockTransactions()) { transaction ->
+            items(transactions) { transaction ->
                 TransactionItem(transaction)
             }
         }
     }
-}
 
-@Preview(showBackground = true)
-@Composable
-fun DashboardOverviewMockupPreview() {
-    DashboardOverviewMockup()
 }
