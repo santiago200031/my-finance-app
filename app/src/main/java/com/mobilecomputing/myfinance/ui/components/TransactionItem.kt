@@ -23,14 +23,9 @@ import java.util.Locale
 fun TransactionItem(
     transaction: Transaction,
     modifier: Modifier = Modifier,
-    showPadding: Boolean = true
 ) {
     Card(
-        modifier = if (showPadding) {
-            modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp)
-        } else {
-            modifier.fillMaxWidth()
-        }
+        modifier.fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
@@ -46,7 +41,10 @@ fun TransactionItem(
                     style = MaterialTheme.typography.bodySmall
                 )
                 Text(
-                    text = SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(transaction.date),
+                    text = SimpleDateFormat(
+                        "MMM d, yyyy",
+                        Locale.getDefault()
+                    ).format(transaction.date),
                     style = MaterialTheme.typography.bodySmall
                 )
             }

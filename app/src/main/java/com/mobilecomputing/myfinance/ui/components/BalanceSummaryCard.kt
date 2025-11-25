@@ -20,7 +20,10 @@ fun BalanceSummaryCard(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            Text(text = title, style = MaterialTheme.typography.labelMedium)
+            Text(
+                text = title,
+                style = MaterialTheme.typography.labelMedium
+            )
             Text(
                 text = amount,
                 style = MaterialTheme.typography.titleLarge,

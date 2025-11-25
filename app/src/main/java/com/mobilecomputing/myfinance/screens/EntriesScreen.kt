@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mobilecomputing.myfinance.data.models.transaction.TransactionType
 import com.mobilecomputing.myfinance.screens.dashboard.data.getMockTransactions
@@ -31,6 +32,7 @@ import java.util.Date
 import java.util.Locale
 
 @Composable
+@Preview(showBackground = true)
 fun EntriesScreen() {
     var searchQuery by remember { mutableStateOf("") }
     var selectedFilter by remember { mutableStateOf(TransactionFilter.ALL) }
@@ -84,7 +86,6 @@ fun EntriesScreen() {
                 items(transactions) { transaction ->
                     TransactionItem(
                         transaction = transaction,
-                        showPadding = false,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
