@@ -1,19 +1,21 @@
 package com.mobilecomputing.myfinance.data.models.contract
 
 import com.google.firebase.firestore.DocumentId
+import com.mobilecomputing.myfinance.data.models.transaction.TransactionType
 import java.util.Date
 
 data class Contract(
-        @DocumentId val id: String = "",
-        val title: String = "",
-        val amount: Double = 0.0,
-        val provider: String = "",
-        val startDate: Date = Date(),
-        val endDate: Date? = null,
-        val paymentCycle: PaymentCycle = PaymentCycle.MONTHLY,
-        val reminderDaysBefore: Int = 30,
-        val isReminderActive: Boolean = true,
-        val status: ContractStatus = ContractStatus.ACTIVE,
-        val autoRenewEnabled: Boolean = true,
-        val nextPaymentDate: Date = Date()
+    @DocumentId val id: String = "",
+    val title: String = "",
+    val amount: Double = 0.0,
+    val type: TransactionType = TransactionType.EXPENSE,
+    val provider: String = "",
+    val startDate: Date = Date(),
+    val endDate: Date? = null,
+    val paymentCycle: PaymentCycle = PaymentCycle.MONTHLY,
+    val reminderDaysBefore: Int = 30,
+    val isReminderActive: Boolean = true,
+    val status: ContractStatus = ContractStatus.ACTIVE,
+    val autoRenewEnabled: Boolean = true,
+    val nextPaymentDate: Date = Date()
 )

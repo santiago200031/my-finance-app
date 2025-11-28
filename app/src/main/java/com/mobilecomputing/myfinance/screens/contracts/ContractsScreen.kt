@@ -17,8 +17,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mobilecomputing.myfinance.data.models.contract.Contract
 import com.mobilecomputing.myfinance.data.models.contract.ContractStatus
+import com.mobilecomputing.myfinance.data.models.transaction.TransactionType
+import com.mobilecomputing.myfinance.data.services.FinanceService
 import com.mobilecomputing.myfinance.screens.contracts.data.getMockContracts
+import com.mobilecomputing.myfinance.ui.theme.DarkGreenContent
+import com.mobilecomputing.myfinance.ui.theme.DarkOrangeContent
+import com.mobilecomputing.myfinance.ui.theme.DisabledContainer
+import com.mobilecomputing.myfinance.ui.theme.DisabledContent
+import com.mobilecomputing.myfinance.ui.theme.GreenIncome
+import com.mobilecomputing.myfinance.ui.theme.LightGreenContainer
+import com.mobilecomputing.myfinance.ui.theme.LightOrangeContainer
 import com.mobilecomputing.myfinance.ui.theme.Orange
+import com.mobilecomputing.myfinance.ui.theme.PrimaryPurple
+import com.mobilecomputing.myfinance.ui.theme.RedExpense
+import com.mobilecomputing.myfinance.ui.theme.SecondaryPurple
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -26,33 +38,40 @@ import java.util.Locale
 @Preview(showBackground = true)
 fun ContractsScreen() {
     val contracts = getMockContracts()
-    val activeCount = contracts.count { it.status == ContractStatus.ACTIVE }
-    val expiringCount = contracts.count { it.status == ContractStatus.EXPIRING }
+    val financeService = FinanceService()
 
-    val monthlyTotal = contracts.sumOf { it.amount }
+    val activeCount = financeService.getActiveContractsCount(contracts)
+    val expiringCount = financeService.getExpiringContractsCount(contracts)
+    val monthlyTotal = financeService.calculateNetMonthly(contracts)
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             SummaryCard(
-                    count = activeCount.toString(),
-                    label = "Active",
-                    color = Color.Green,
-                    modifier = Modifier.weight(1f)
+                count = activeCount.toString(),
+                label = "Active",
+                countColor = GreenIncome,
+                modifier = Modifier.weight(1f)
             )
             SummaryCard(
-                    count = expiringCount.toString(),
-                    label = "Expiring",
-                    color = Orange,
-                    modifier = Modifier.weight(1f)
+                count = expiringCount.toString(),
+                label = "Expiring",
+                countColor = Orange,
+                modifier = Modifier.weight(1f)
             )
             SummaryCard(
-                    count = "$${String.format("%.2f", monthlyTotal)}",
-                    label = "Monthly",
-                    color = Color.Black,
-                    modifier = Modifier.weight(1f)
+                count = "$${String.format("%.2f", monthlyTotal)}",
+                label = "Net Monthly",
+                countColor = Color.White,
+                containerColor = PrimaryPurple,
+                contentColor = Color.White,
+                modifier = Modifier.weight(1f)
             )
         }
 
@@ -65,23 +84,40 @@ fun ContractsScreen() {
 }
 
 @Composable
-fun SummaryCard(count: String, label: String, color: Color, modifier: Modifier = Modifier) {
+fun SummaryCard(
+    count: String,
+    label: String,
+    countColor: Color,
+    modifier: Modifier = Modifier,
+    containerColor: Color = MaterialTheme.colorScheme.surface,
+    contentColor: Color = MaterialTheme.colorScheme.onSurface
+) {
     Card(
-            modifier = modifier,
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        modifier = modifier,
+        colors =
+            CardDefaults.cardColors(
+                containerColor = containerColor,
+                contentColor = contentColor
+            ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
-                modifier = Modifier.padding(16.dp).fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                    text = count,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = color,
-                    fontWeight = FontWeight.Bold
+                text = count,
+                style = MaterialTheme.typography.titleLarge,
+                color = countColor,
+                fontWeight = FontWeight.Bold
             )
-            Text(text = label, style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyMedium,
+                color = contentColor.copy(alpha = 0.7f)
+            )
         }
     }
 }
@@ -91,76 +127,67 @@ fun ContractItem(contract: Contract) {
     val dateFormat = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
 
     Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = Color.White),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            // Header: Title and Status Badge
-            Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-            ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
                 Text(
-                        text = contract.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                    text = contract.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
-                StatusBadge(status = contract.status)
-            }
 
-            Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
-            // Frequency and Amount
-            Text(
+                Text(
                     text =
-                            "${contract.paymentCycle.name.lowercase().capitalize()} • $${contract.amount}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Next Payment
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                        imageVector = Icons.Default.CheckCircle, // Placeholder icon
-                        contentDescription = null,
-                        modifier = Modifier.size(16.dp),
-                        tint = Color.Gray
+                        "${
+                            contract.paymentCycle.name.lowercase().capitalize()
+                        } • Next: ${dateFormat.format(contract.nextPaymentDate)}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                        text = "Next payment: ${dateFormat.format(contract.nextPaymentDate)}",
+
+                if (contract.autoRenewEnabled) {
+                    Text(
+                        text = "Auto-renew enabled",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.Gray
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Auto-renew or Expiration
-            if (contract.autoRenewEnabled) {
-                Surface(
-                        color = Color(0xFFE1BEE7), // Light Purple
-                        shape = RoundedCornerShape(16.dp)
-                ) {
-                    Text(
-                            text = "Auto-renew enabled",
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = Color(0xFF4A148C) // Dark Purple
+                        color = SecondaryPurple
                     )
-                }
-            } else {
-                contract.endDate?.let { endDate ->
-                    Text(
+                } else {
+                    contract.endDate?.let { endDate ->
+                        Text(
                             text = "Expires: ${dateFormat.format(endDate)}",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color.Gray
-                    )
+                            color = Orange
+                        )
+                    }
                 }
+            }
+
+            Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.Center) {
+                val amountText =
+                    if (contract.type == TransactionType.INCOME) "+$${contract.amount}"
+                    else "-$${contract.amount}"
+                val amountColor =
+                    if (contract.type == TransactionType.INCOME) GreenIncome else RedExpense
+
+                Text(
+                    text = amountText,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = amountColor
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                StatusBadge(status = contract.status)
             }
         }
     }
@@ -169,41 +196,49 @@ fun ContractItem(contract: Contract) {
 @Composable
 fun StatusBadge(status: ContractStatus) {
     val (backgroundColor, contentColor, text, icon) =
-            when (status) {
-                ContractStatus.ACTIVE ->
-                        Quadruple(
-                                Color(0xFFE8F5E9), // Light Green
-                                Color(0xFF2E7D32), // Dark Green
-                                "Active",
-                                Icons.Default.CheckCircle
-                        )
-                ContractStatus.EXPIRING ->
-                        Quadruple(
-                                Color(0xFFFFF3E0), // Light Orange
-                                Color(0xFFEF6C00), // Dark Orange
-                                "Expiring",
-                                Icons.Default.Warning
-                        )
-                else -> Quadruple(Color.LightGray, Color.Black, status.name, Icons.Default.Warning)
-            }
+        when (status) {
+            ContractStatus.ACTIVE ->
+                Quadruple(
+                    LightGreenContainer,
+                    DarkGreenContent,
+                    "Active",
+                    Icons.Default.CheckCircle
+                )
+
+            ContractStatus.EXPIRING ->
+                Quadruple(
+                    LightOrangeContainer,
+                    DarkOrangeContent,
+                    "Expiring",
+                    Icons.Default.Warning
+                )
+
+            else ->
+                Quadruple(
+                    DisabledContainer,
+                    DisabledContent,
+                    status.name,
+                    Icons.Default.Warning
+                )
+        }
 
     Surface(color = backgroundColor, shape = RoundedCornerShape(16.dp)) {
         Row(
-                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    modifier = Modifier.size(16.dp),
-                    tint = contentColor
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                tint = contentColor
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
-                    text = text,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = contentColor,
-                    fontWeight = FontWeight.Bold
+                text = text,
+                style = MaterialTheme.typography.labelSmall,
+                color = contentColor,
+                fontWeight = FontWeight.Bold
             )
         }
     }

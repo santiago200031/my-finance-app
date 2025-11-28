@@ -21,34 +21,30 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mobilecomputing.myfinance.data.models.transaction.TransactionType
-import com.mobilecomputing.myfinance.screens.dashboard.data.getMockTransactions
+import com.mobilecomputing.myfinance.data.services.FinanceService
 import com.mobilecomputing.myfinance.screens.dashboard.components.BalanceSummaryCard
+import com.mobilecomputing.myfinance.screens.dashboard.data.getMockTransactions
 import com.mobilecomputing.myfinance.ui.components.TransactionItem
-
+import com.mobilecomputing.myfinance.ui.theme.GreenIncome
+import com.mobilecomputing.myfinance.ui.theme.PrimaryPurple
+import com.mobilecomputing.myfinance.ui.theme.RedExpense
 
 @Composable
 @Preview(showBackground = true)
-fun DashboardScreen(
-    onRemindersClick: () -> Unit = {},
-    onAddEntryClick: () -> Unit = {}
-) {
+fun DashboardScreen(onRemindersClick: () -> Unit = {}, onAddEntryClick: () -> Unit = {}) {
     val transactions = getMockTransactions()
+    val financeService = FinanceService()
 
-    val totalIncome =
-        transactions.filter { it.type == TransactionType.INCOME }.sumOf { it.amount }
-    val totalExpenses =
-        transactions.filter { it.type == TransactionType.EXPENSE }.sumOf { it.amount }
+    val totalIncome = financeService.calculateTotalIncome(transactions)
+    val totalExpenses = financeService.calculateTotalExpenses(transactions)
+    val netGrowth = financeService.calculateNetGrowth(transactions)
 
-    val netGrowth = totalIncome - totalExpenses
-
-    Column(
-        modifier = Modifier
+    Column(modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
-    ) {
+            .padding(16.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -56,27 +52,27 @@ fun DashboardScreen(
             BalanceSummaryCard(
                 title = "Income",
                 amount = "$${String.format("%.2f", totalIncome)}",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                amountColor = GreenIncome
             )
             BalanceSummaryCard(
                 title = "Expenses",
                 amount = "$${String.format("%.2f", totalExpenses)}",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                amountColor = RedExpense
             )
             BalanceSummaryCard(
                 title = "Net Growth",
                 amount = "$${String.format("%.2f", netGrowth)}",
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f),
+                containerColor = PrimaryPurple,
+                contentColor = Color.White
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-
-        ) {
+        Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -93,8 +89,7 @@ fun DashboardScreen(
                 ) {
                     Button(
                         onClick = onAddEntryClick,
-                        modifier = Modifier
-                            .weight(1f)
+                        modifier = Modifier.weight(1f)
                     ) {
                         Icon(
                             Icons.Default.Add,
@@ -105,16 +100,13 @@ fun DashboardScreen(
                     }
                     OutlinedButton(
                         onClick = onRemindersClick,
-                        modifier = Modifier
-                            .weight(1f),
+                        modifier = Modifier.weight(1f),
                     ) {
                         Icon(
                             Icons.Default.Notifications,
                             contentDescription = "Check reminders"
                         )
-                        Text(
-                            "Reminders"
-                        )
+                        Text("Reminders")
                     }
                 }
             }
@@ -122,21 +114,13 @@ fun DashboardScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            "Recent Activity",
-            style = MaterialTheme.typography.titleLarge
-        )
+        Text("Recent Activity", style = MaterialTheme.typography.titleLarge)
 
         Spacer(modifier = Modifier.height(8.dp))
 
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            items(transactions) { transaction ->
-                TransactionItem(transaction)
-            }
-        }
+        ) { items(transactions) { transaction -> TransactionItem(transaction) } }
     }
-
 }
