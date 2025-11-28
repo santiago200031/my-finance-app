@@ -1,4 +1,4 @@
-package com.mobilecomputing.myfinance.screens
+package com.mobilecomputing.myfinance.screens.entries
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,10 +21,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mobilecomputing.myfinance.data.models.transaction.TransactionType
-import com.mobilecomputing.myfinance.screens.dashboard.data.getMockTransactions
 import com.mobilecomputing.myfinance.screens.entries.components.FilterButtons
+import com.mobilecomputing.myfinance.screens.entries.components.SearchBar
 import com.mobilecomputing.myfinance.screens.entries.components.TransactionFilter
-import com.mobilecomputing.myfinance.ui.components.SearchBar
+import com.mobilecomputing.myfinance.screens.entries.data.getMockTransactions
 import com.mobilecomputing.myfinance.ui.components.TransactionItem
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -39,54 +39,52 @@ fun EntriesScreen() {
 
     val allTransactions = getMockTransactions()
 
-    val filteredTransactions = allTransactions.filter { transaction ->
-        when (selectedFilter) {
-            TransactionFilter.ALL -> true
-            TransactionFilter.INCOME -> transaction.type == TransactionType.INCOME
-            TransactionFilter.EXPENSE -> transaction.type == TransactionType.EXPENSE
-        }
-    }.filter { transaction ->
-        searchQuery.isEmpty() ||
-                transaction.description.contains(searchQuery, ignoreCase = true) ||
-                transaction.categoryName.contains(searchQuery, ignoreCase = true)
-    }.sortedByDescending { it.date }
+    val filteredTransactions =
+            allTransactions
+                    .filter { transaction ->
+                        when (selectedFilter) {
+                            TransactionFilter.ALL -> true
+                            TransactionFilter.INCOME -> transaction.type == TransactionType.INCOME
+                            TransactionFilter.EXPENSE -> transaction.type == TransactionType.EXPENSE
+                        }
+                    }
+                    .filter { transaction ->
+                        searchQuery.isEmpty() ||
+                                transaction.description.contains(searchQuery, ignoreCase = true) ||
+                                transaction.categoryName.contains(searchQuery, ignoreCase = true)
+                    }
+                    .sortedByDescending { it.date }
 
-    val groupedTransactions = filteredTransactions.groupBy { transaction ->
-        formatDateHeader(transaction.date)
-    }
+    val groupedTransactions =
+            filteredTransactions.groupBy { transaction -> formatDateHeader(transaction.date) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
-        SearchBar(
-            onSearch = { query -> searchQuery = query }
-        )
+    Column(modifier = Modifier.fillMaxSize()) {
+        SearchBar(onSearch = { query -> searchQuery = query })
 
         FilterButtons(
-            selectedFilter = selectedFilter,
-            onFilterSelected = { filter -> selectedFilter = filter }
+                selectedFilter = selectedFilter,
+                onFilterSelected = { filter -> selectedFilter = filter }
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
         LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             groupedTransactions.forEach { (dateHeader, transactions) ->
                 item {
                     Text(
-                        text = dateHeader,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                            text = dateHeader,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                     )
                 }
                 items(transactions) { transaction ->
                     TransactionItem(
-                        transaction = transaction,
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                            transaction = transaction,
+                            modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
             }

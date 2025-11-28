@@ -1,4 +1,4 @@
-package com.mobilecomputing.myfinance.screens
+package com.mobilecomputing.myfinance.screens.dashboard
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,19 +25,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mobilecomputing.myfinance.data.models.transaction.TransactionType
 import com.mobilecomputing.myfinance.screens.dashboard.data.getMockTransactions
-import com.mobilecomputing.myfinance.ui.components.BalanceSummaryCard
+import com.mobilecomputing.myfinance.screens.dashboard.components.BalanceSummaryCard
 import com.mobilecomputing.myfinance.ui.components.TransactionItem
 
 
 @Composable
 @Preview(showBackground = true)
-fun DashboardScreen() {
-    fun remindersOnClick() {
-    }
-
-    fun addEntryOnClick() {
-    }
-
+fun DashboardScreen(
+    onRemindersClick: () -> Unit = {},
+    onAddEntryClick: () -> Unit = {}
+) {
     val transactions = getMockTransactions()
 
     val totalIncome =
@@ -95,7 +92,7 @@ fun DashboardScreen() {
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     Button(
-                        onClick = { addEntryOnClick() },
+                        onClick = onAddEntryClick,
                         modifier = Modifier
                             .weight(1f)
                     ) {
@@ -107,7 +104,7 @@ fun DashboardScreen() {
                         Text("Add Entry")
                     }
                     OutlinedButton(
-                        onClick = { remindersOnClick() },
+                        onClick = onRemindersClick,
                         modifier = Modifier
                             .weight(1f),
                     ) {

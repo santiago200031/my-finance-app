@@ -1,4 +1,4 @@
-package com.mobilecomputing.myfinance.ui.components
+package com.mobilecomputing.myfinance.screens.entries.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,21 +17,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SearchBar(
-    onSearch: (String) -> Unit
-) {
+fun SearchBar(onSearch: (String) -> Unit) {
     var text by remember { mutableStateOf("") }
     OutlinedTextField(
-        value = text,
-        onValueChange = {
-            text = it
-            onSearch(it)
-        },
-        label = { Text("Search entries...") },
-        leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search") },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        shape = RoundedCornerShape(24.dp)
+            value = text,
+            onValueChange = {
+                text = it
+                onSearch(it)
+            },
+            label = { Text("Search entries...") },
+            leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search") },
+            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            shape = RoundedCornerShape(24.dp)
     )
 }

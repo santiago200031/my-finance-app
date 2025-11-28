@@ -1,4 +1,4 @@
-package com.mobilecomputing.myfinance.screens
+package com.mobilecomputing.myfinance.screens.budget_planning
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -6,6 +6,6 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 @Preview(showBackground = true)
-fun SettingsScreen() {
-    Text("Settings Screen")
+fun BudgetPlanningScreen() {
+    Text("Budget Planning")
 }
