@@ -50,7 +50,7 @@ fun EntriesScreen() {
                     }
                     .filter { transaction ->
                         searchQuery.isEmpty() ||
-                                transaction.description.contains(searchQuery, ignoreCase = true) ||
+                                transaction.description!!.contains(searchQuery, ignoreCase = true) ||
                                 transaction.categoryName.contains(searchQuery, ignoreCase = true)
                     }
                     .sortedByDescending { it.date }

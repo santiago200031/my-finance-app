@@ -2,8 +2,8 @@ package com.mobilecomputing.myfinance.screens.contracts.data
 
 import com.mobilecomputing.myfinance.data.models.contract.Contract
 import com.mobilecomputing.myfinance.data.models.contract.ContractStatus
+import com.mobilecomputing.myfinance.data.models.contract.ContractType
 import com.mobilecomputing.myfinance.data.models.contract.PaymentCycle
-import com.mobilecomputing.myfinance.data.models.transaction.TransactionType
 import java.util.Calendar
 
 fun getMockContracts(): List<Contract> {
@@ -14,7 +14,7 @@ fun getMockContracts(): List<Contract> {
             id = "0",
             title = "Salary",
             amount = 3500.0,
-            type = TransactionType.INCOME,
+            type = ContractType.INCOME,
             provider = "Tech Corp",
             paymentCycle = PaymentCycle.MONTHLY,
             isReminderActive = false,
@@ -26,7 +26,7 @@ fun getMockContracts(): List<Contract> {
             id = "1",
             title = "Netflix Subscription",
             amount = 15.99,
-            type = TransactionType.EXPENSE,
+            type = ContractType.EXPENSE,
             provider = "Netflix",
             paymentCycle = PaymentCycle.MONTHLY,
             isReminderActive = true,
@@ -38,7 +38,7 @@ fun getMockContracts(): List<Contract> {
             id = "2",
             title = "Gym Membership",
             amount = 49.99,
-            type = TransactionType.EXPENSE,
+            type = ContractType.EXPENSE,
             provider = "FitGym",
             paymentCycle = PaymentCycle.MONTHLY,
             isReminderActive = true,
@@ -50,7 +50,7 @@ fun getMockContracts(): List<Contract> {
             id = "3",
             title = "Car Insurance",
             amount = 120.0,
-            type = TransactionType.EXPENSE,
+            type = ContractType.EXPENSE,
             provider = "SafeDrive",
             paymentCycle = PaymentCycle.MONTHLY,
             isReminderActive = true,
@@ -63,7 +63,7 @@ fun getMockContracts(): List<Contract> {
             id = "4",
             title = "Mobile Plan",
             amount = 35.0,
-            type = TransactionType.EXPENSE,
+            type = ContractType.EXPENSE,
             provider = "SpeedyNet",
             paymentCycle = PaymentCycle.MONTHLY,
             isReminderActive = true,

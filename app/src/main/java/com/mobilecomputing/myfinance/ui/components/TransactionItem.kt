@@ -34,7 +34,7 @@ fun TransactionItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text(transaction.description, fontWeight = FontWeight.Bold)
+                transaction.description?.let { Text(it, fontWeight = FontWeight.Bold) }
                 Text(transaction.categoryName, style = MaterialTheme.typography.bodySmall)
                 Text(
                     text =

@@ -1,6 +1,7 @@
 package com.mobilecomputing.myfinance.data.models.transaction
 
 import com.google.firebase.firestore.DocumentId
+import com.mobilecomputing.myfinance.data.models.category.Category
 import java.util.Date
 
 data class Transaction(

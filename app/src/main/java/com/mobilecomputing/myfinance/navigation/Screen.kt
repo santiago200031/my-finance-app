@@ -2,6 +2,7 @@ package com.mobilecomputing.myfinance.navigation
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Article
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Dashboard
@@ -18,6 +19,9 @@ sealed class Screen(val route: String, val label: String, val icon: ImageVector)
 
     object Entries :
         Screen("entries", "Entries", Icons.AutoMirrored.Filled.Article)
+    
+    object AddEntry :
+        Screen("add_entry", "Add Entry", Icons.Filled.Add)
 
     object Contracts :
         Screen("contracts", "Contracts", Icons.Filled.Description)

@@ -2,6 +2,7 @@ package com.mobilecomputing.myfinance.data.services
 
 import com.mobilecomputing.myfinance.data.models.contract.Contract
 import com.mobilecomputing.myfinance.data.models.contract.ContractStatus
+import com.mobilecomputing.myfinance.data.models.contract.ContractType
 import com.mobilecomputing.myfinance.data.models.transaction.Transaction
 import com.mobilecomputing.myfinance.data.models.transaction.TransactionType
 
@@ -36,7 +37,7 @@ class FinanceService {
     fun calculateMonthlyIncome(contracts: List<Contract>): Double {
         var total = 0.0
         for (contract in contracts) {
-            if (contract.type == TransactionType.INCOME) {
+            if (contract.type == ContractType.INCOME) {
                 total += contract.amount
             }
         }
@@ -46,7 +47,7 @@ class FinanceService {
     fun calculateMonthlyExpenses(contracts: List<Contract>): Double {
         var total = 0.0
         for (contract in contracts) {
-            if (contract.type == TransactionType.EXPENSE) {
+            if (contract.type == ContractType.EXPENSE) {
                 total += contract.amount
             }
         }

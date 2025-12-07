@@ -11,7 +11,7 @@ fun getMockTransactions(): List<Transaction> {
     return listOf(
         Transaction(
             id = "1",
-            userId = "mock_user",
+            userId = "s-svilla",
             amount = 75.50,
             description = "Groceries",
             date = calendar.apply { add(Calendar.DAY_OF_MONTH, -2) }.time,
@@ -21,7 +21,7 @@ fun getMockTransactions(): List<Transaction> {
         ),
         Transaction(
             id = "2",
-            userId = "mock_user",
+            userId = "s-svilla",
             amount = 2500.00,
             description = "Salary",
             date = calendar.apply { add(Calendar.DAY_OF_MONTH, -5) }.time,
@@ -31,7 +31,7 @@ fun getMockTransactions(): List<Transaction> {
         ),
         Transaction(
             id = "3",
-            userId = "mock_user",
+            userId = "s-svilla",
             amount = 1200.00,
             description = "Rent",
             date = calendar.apply { add(Calendar.DAY_OF_MONTH, -1) }.time,
@@ -41,7 +41,7 @@ fun getMockTransactions(): List<Transaction> {
         ),
         Transaction(
             id = "4",
-            userId = "mock_user",
+            userId = "s-svilla",
             amount = 4.25,
             description = "Coffee",
             date = Date(),
@@ -51,7 +51,7 @@ fun getMockTransactions(): List<Transaction> {
         ),
         Transaction(
             id = "5",
-            userId = "mock_user",
+            userId = "s-svilla",
             amount = 300.00,
             description = "Freelance Work",
             date = calendar.apply { add(Calendar.DAY_OF_MONTH, -3) }.time,

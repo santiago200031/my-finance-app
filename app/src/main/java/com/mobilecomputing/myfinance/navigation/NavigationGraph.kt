@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.mobilecomputing.myfinance.screens.add_entry.AddEntryScreen
 import com.mobilecomputing.myfinance.screens.analysis.AnalysisScreen
 import com.mobilecomputing.myfinance.screens.budget_planning.BudgetPlanningScreen
 import com.mobilecomputing.myfinance.screens.contracts.ContractsScreen
@@ -20,8 +21,11 @@ fun NavigationGraph(navController: NavHostController) {
         composable(Screen.Dashboard.route) {
             DashboardScreen(
                 onRemindersClick = { navController.navigate(Screen.Reminders.route) },
-                onAddEntryClick = { /* TODO: Navigate to Add Entry */ }
+                onAddEntryClick = { navController.navigate(Screen.AddEntry.route) }
             )
+        }
+        composable(Screen.AddEntry.route) {
+            AddEntryScreen()
         }
         composable(Screen.Entries.route) {
             EntriesScreen()

@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.mobilecomputing.myfinance.data.models.contract.Contract
 import com.mobilecomputing.myfinance.data.models.contract.ContractStatus
-import com.mobilecomputing.myfinance.data.models.transaction.TransactionType
+import com.mobilecomputing.myfinance.data.models.contract.ContractType
 import com.mobilecomputing.myfinance.data.services.FinanceService
 import com.mobilecomputing.myfinance.screens.contracts.data.getMockContracts
 import com.mobilecomputing.myfinance.ui.theme.DarkGreenContent
@@ -175,10 +175,10 @@ fun ContractItem(contract: Contract) {
 
             Column(horizontalAlignment = Alignment.End, verticalArrangement = Arrangement.Center) {
                 val amountText =
-                    if (contract.type == TransactionType.INCOME) "+$${contract.amount}"
+                    if (contract.type == ContractType.INCOME) "+$${contract.amount}"
                     else "-$${contract.amount}"
                 val amountColor =
-                    if (contract.type == TransactionType.INCOME) GreenIncome else RedExpense
+                    if (contract.type == ContractType.INCOME) GreenIncome else RedExpense
 
                 Text(
                     text = amountText,
