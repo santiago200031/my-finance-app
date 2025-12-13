@@ -7,14 +7,14 @@ import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.entry.Entry
 import com.mobilecomputing.myfinance.data.repository.CategoryRepository
 import com.mobilecomputing.myfinance.data.repository.EntryRepository
-import java.time.LocalDateTime
-import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.util.UUID
 
 data class AddEntryUiState(
         val amount: String = "",

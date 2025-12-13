@@ -5,13 +5,13 @@ import com.mobilecomputing.myfinance.data.contract.ContractStatus
 import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.contract.PaymentCycle
 import com.mobilecomputing.myfinance.data.repository.ContractRepository
-import java.time.LocalDate
-import java.time.ZoneId
-import java.util.Date
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import java.time.LocalDate
+import java.time.ZoneId
+import java.util.Date
 
 class FakeContractRepository : ContractRepository {
         private fun localDateToDate(localDate: LocalDate): Date {

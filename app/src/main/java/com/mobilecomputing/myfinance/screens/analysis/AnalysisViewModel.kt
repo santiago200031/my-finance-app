@@ -6,11 +6,11 @@ import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.repository.ContractRepository
 import com.mobilecomputing.myfinance.data.repository.EntryRepository
 import com.mobilecomputing.myfinance.domain.ContractService
-import java.time.LocalDate
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import java.time.LocalDate
 
 data class AnalysisUiState(
         val currentMonthSpending: Double = 0.0,

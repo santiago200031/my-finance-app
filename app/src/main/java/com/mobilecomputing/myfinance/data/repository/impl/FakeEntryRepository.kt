@@ -3,11 +3,11 @@ package com.mobilecomputing.myfinance.data.repository.impl
 import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.entry.Entry
 import com.mobilecomputing.myfinance.data.repository.EntryRepository
-import java.time.LocalDateTime
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import java.time.LocalDateTime
 
 class FakeEntryRepository : EntryRepository {
     // Seed data

@@ -10,16 +10,16 @@ import com.mobilecomputing.myfinance.data.repository.ContractRepository
 import com.mobilecomputing.myfinance.data.repository.ReminderRepository
 import com.mobilecomputing.myfinance.domain.ContractService
 import com.mobilecomputing.myfinance.utils.DateUtils
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.format.DateTimeParseException
-import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeParseException
+import java.util.Date
 
 data class AddContractUiState(
         val title: String = "",

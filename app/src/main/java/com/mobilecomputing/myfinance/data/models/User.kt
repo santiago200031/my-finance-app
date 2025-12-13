@@ -13,9 +13,9 @@ data class User(
 )
 
 data class UserSettings(
-        val currency: String = "USD",
+        val currency: String = "EUR",
         val language: String = "en",
         val dateFormat: String = "MM/DD/YYYY",
-        val theme: String = "LIGHT",
+        val theme: String = "DARK",
         val notificationsEnabled: Boolean = true
 )

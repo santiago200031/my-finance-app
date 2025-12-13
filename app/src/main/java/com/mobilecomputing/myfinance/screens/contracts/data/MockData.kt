@@ -4,7 +4,6 @@ import com.mobilecomputing.myfinance.data.contract.Contract
 import com.mobilecomputing.myfinance.data.contract.ContractStatus
 import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.contract.PaymentCycle
-import java.util.Calendar
 
 fun getMockContracts(): List<Contract> {
         val calendar = java.util.Calendar.getInstance()

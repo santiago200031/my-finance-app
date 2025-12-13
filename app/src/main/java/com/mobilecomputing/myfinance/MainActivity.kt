@@ -27,8 +27,8 @@ import com.mobilecomputing.myfinance.navigation.NavigationBurgerMenu
 import com.mobilecomputing.myfinance.navigation.NavigationGraph
 import com.mobilecomputing.myfinance.navigation.Screen
 import com.mobilecomputing.myfinance.ui.theme.MyFinanceTheme
-import kotlinx.coroutines.launch
 import com.mobilecomputing.myfinance.utils.NotificationHandler
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
