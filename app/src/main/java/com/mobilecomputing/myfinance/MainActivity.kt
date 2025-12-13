@@ -28,10 +28,12 @@ import com.mobilecomputing.myfinance.navigation.NavigationGraph
 import com.mobilecomputing.myfinance.navigation.Screen
 import com.mobilecomputing.myfinance.ui.theme.MyFinanceTheme
 import kotlinx.coroutines.launch
+import com.mobilecomputing.myfinance.utils.NotificationHandler
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NotificationHandler.createNotificationChannel(this)
         setContent {
             MyFinanceTheme {
                 MainScreen()

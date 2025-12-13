@@ -20,53 +20,51 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mobilecomputing.myfinance.data.services.FinanceService
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobilecomputing.myfinance.screens.dashboard.components.BalanceSummaryCard
-import com.mobilecomputing.myfinance.screens.dashboard.data.getMockTransactions
-import com.mobilecomputing.myfinance.ui.components.TransactionItem
+import com.mobilecomputing.myfinance.screens.entries.components.TransactionItem
+import com.mobilecomputing.myfinance.ui.AppViewModelProvider
 import com.mobilecomputing.myfinance.ui.theme.GreenIncome
 import com.mobilecomputing.myfinance.ui.theme.PrimaryPurple
 import com.mobilecomputing.myfinance.ui.theme.RedExpense
+import com.mobilecomputing.myfinance.utils.FormatUtils
 
 @Composable
-@Preview(showBackground = true)
-fun DashboardScreen(onRemindersClick: () -> Unit = {}, onAddEntryClick: () -> Unit = {}) {
-    val transactions = getMockTransactions()
-    val financeService = FinanceService()
+fun DashboardScreen(
+        onRemindersClick: () -> Unit = {},
+        onAddEntryClick: () -> Unit = {},
+        viewModel: DashboardViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
+    val uiState by viewModel.uiState.collectAsState()
 
-    val totalIncome = financeService.calculateTotalIncome(transactions)
-    val totalExpenses = financeService.calculateTotalExpenses(transactions)
-    val netGrowth = financeService.calculateNetGrowth(transactions)
-
-    Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)) {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             BalanceSummaryCard(
-                title = "Income",
-                amount = "$${String.format("%.2f", totalIncome)}",
-                modifier = Modifier.weight(1f),
-                amountColor = GreenIncome
+                    title = "Income",
+                    amount = "$${FormatUtils.formatAmount(uiState.totalIncome)}",
+                    modifier = Modifier.weight(1f),
+                    amountColor = GreenIncome
             )
             BalanceSummaryCard(
-                title = "Expenses",
-                amount = "$${String.format("%.2f", totalExpenses)}",
-                modifier = Modifier.weight(1f),
-                amountColor = RedExpense
+                    title = "Expenses",
+                    amount = "$${FormatUtils.formatAmount(uiState.totalExpenses)}",
+                    modifier = Modifier.weight(1f),
+                    amountColor = RedExpense
             )
             BalanceSummaryCard(
-                title = "Net Growth",
-                amount = "$${String.format("%.2f", netGrowth)}",
-                modifier = Modifier.weight(1f),
-                containerColor = PrimaryPurple,
-                contentColor = Color.White
+                    title = "Net Growth",
+                    amount = "$${FormatUtils.formatAmount(uiState.netGrowth)}",
+                    modifier = Modifier.weight(1f),
+                    containerColor = PrimaryPurple,
+                    contentColor = Color.White
             )
         }
 
@@ -75,37 +73,26 @@ fun DashboardScreen(onRemindersClick: () -> Unit = {}, onAddEntryClick: () -> Un
         Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(
-                        "Quick Actions",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
+                        modifier = Modifier.fillMaxWidth(),
+                ) { Text("Quick Actions", style = MaterialTheme.typography.titleMedium) }
                 Spacer(modifier = Modifier.height(16.dp))
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    Button(
-                        onClick = onAddEntryClick,
-                        modifier = Modifier.weight(1f)
-                    ) {
+                    Button(onClick = onAddEntryClick, modifier = Modifier.weight(1f)) {
                         Icon(
-                            Icons.Default.Add,
-                            contentDescription = "Add new entry",
-                            modifier = Modifier.padding(end = 8.dp)
+                                Icons.Default.Add,
+                                contentDescription = "Add new entry",
+                                modifier = Modifier.padding(end = 8.dp)
                         )
                         Text("Add Entry")
                     }
                     OutlinedButton(
-                        onClick = onRemindersClick,
-                        modifier = Modifier.weight(1f),
+                            onClick = onRemindersClick,
+                            modifier = Modifier.weight(1f),
                     ) {
-                        Icon(
-                            Icons.Default.Notifications,
-                            contentDescription = "Check reminders"
-                        )
+                        Icon(Icons.Default.Notifications, contentDescription = "Check reminders")
                         Text("Reminders")
                     }
                 }
@@ -119,8 +106,8 @@ fun DashboardScreen(onRemindersClick: () -> Unit = {}, onAddEntryClick: () -> Un
         Spacer(modifier = Modifier.height(8.dp))
 
         LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) { items(transactions) { transaction -> TransactionItem(transaction) } }
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) { items(uiState.transactions) { transaction -> TransactionItem(transaction) } }
     }
 }

@@ -1,11 +1,91 @@
 package com.mobilecomputing.myfinance.screens.analysis
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mobilecomputing.myfinance.ui.AppViewModelProvider
+import com.mobilecomputing.myfinance.ui.theme.GreenIncome
+import com.mobilecomputing.myfinance.ui.theme.RedExpense
+import com.mobilecomputing.myfinance.utils.FormatUtils
+import com.mobilecomputing.myfinance.ui.components.AnalysisCard
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-@Preview(showBackground = true)
-fun AnalysisScreen() {
-    Text("Analysis Screen")
+
+fun AnalysisScreen(
+    viewModel: AnalysisViewModel = viewModel(factory = AppViewModelProvider.Factory)
+) {
+    val uiState by viewModel.uiState.collectAsState()
+    
+    AnalysisScreenContent(uiState = uiState)
 }
+
+@Composable
+fun AnalysisScreenContent(uiState: AnalysisUiState) {
+    Scaffold { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text(
+                text = "Financial Overview",
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+
+            AnalysisCard(
+                title = "Spending (Current Month)",
+                amount = uiState.currentMonthSpending,
+                color = RedExpense,
+                description = "Total expenses from entries this month"
+            )
+
+            AnalysisCard(
+                title = "Fixed Contracts (Monthly)",
+                amount = uiState.fixedContractExpenses,
+                color = RedExpense,
+                description = "Recurring expenses contribution"
+            )
+
+            AnalysisCard(
+                title = "Total Earnings (Monthly)",
+                amount = uiState.totalMonthlyEarnings,
+                color = GreenIncome,
+                description = "Contracts + Income entries"
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AnalysisScreenPreview() {
+    AnalysisScreenContent(
+        uiState = AnalysisUiState(
+            currentMonthSpending = 450.0,
+            fixedContractExpenses = 1200.0,
+            totalMonthlyEarnings = 2500.0
+        )
+    )
+}
+

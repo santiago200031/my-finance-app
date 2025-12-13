@@ -1,0 +1,34 @@
+package com.mobilecomputing.myfinance.utils
+
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
+object DateUtils {
+    private const val DISPLAY_PATTERN = AppConstants.DATE_FORMAT_DISPLAY
+    private val displayFormatter = DateTimeFormatter.ofPattern(DISPLAY_PATTERN)
+
+    private const val INPUT_PATTERN = AppConstants.DATE_FORMAT_INPUT
+    private val inputFormatter = DateTimeFormatter.ofPattern(INPUT_PATTERN)
+
+    fun formatDate(date: LocalDateTime): String {
+        return date.format(displayFormatter)
+    }
+
+    fun formatDate(date: LocalDate): String {
+        return date.format(displayFormatter)
+    }
+
+    fun formatInputDate(date: LocalDate): String {
+        return date.format(inputFormatter)
+    }
+
+    fun parseInputDate(dateString: String): LocalDate {
+        return LocalDate.parse(dateString, inputFormatter)
+    }
+
+    fun formatDate(date: java.util.Date): String {
+        val localDate = date.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate()
+        return formatDate(localDate)
+    }
+}

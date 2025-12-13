@@ -1,5 +1,6 @@
 package com.mobilecomputing.myfinance.screens.entries
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,104 +10,55 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.mobilecomputing.myfinance.data.models.transaction.TransactionType
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobilecomputing.myfinance.screens.entries.components.FilterButtons
-import com.mobilecomputing.myfinance.screens.entries.components.SearchBar
-import com.mobilecomputing.myfinance.screens.entries.components.TransactionFilter
-import com.mobilecomputing.myfinance.screens.entries.data.getMockTransactions
-import com.mobilecomputing.myfinance.ui.components.TransactionItem
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Date
-import java.util.Locale
+import com.mobilecomputing.myfinance.screens.entries.components.TransactionItem
+import com.mobilecomputing.myfinance.ui.AppViewModelProvider
 
 @Composable
-@Preview(showBackground = true)
-fun EntriesScreen() {
-    var searchQuery by remember { mutableStateOf("") }
-    var selectedFilter by remember { mutableStateOf(TransactionFilter.ALL) }
+fun EntriesScreen(
+        viewModel: EntriesViewModel = viewModel(factory = AppViewModelProvider.Factory),
+        onAddEntryClick: () -> Unit = {},
+        onEntryClick: (String) -> Unit = {}
+) {
+    val uiState by viewModel.uiState.collectAsState()
 
-    val allTransactions = getMockTransactions()
-
-    val filteredTransactions =
-            allTransactions
-                    .filter { transaction ->
-                        when (selectedFilter) {
-                            TransactionFilter.ALL -> true
-                            TransactionFilter.INCOME -> transaction.type == TransactionType.INCOME
-                            TransactionFilter.EXPENSE -> transaction.type == TransactionType.EXPENSE
-                        }
-                    }
-                    .filter { transaction ->
-                        searchQuery.isEmpty() ||
-                                transaction.description!!.contains(searchQuery, ignoreCase = true) ||
-                                transaction.categoryName.contains(searchQuery, ignoreCase = true)
-                    }
-                    .sortedByDescending { it.date }
-
-    val groupedTransactions =
-            filteredTransactions.groupBy { transaction -> formatDateHeader(transaction.date) }
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        SearchBar(onSearch = { query -> searchQuery = query })
-
-        FilterButtons(
-                selectedFilter = selectedFilter,
-                onFilterSelected = { filter -> selectedFilter = filter }
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            groupedTransactions.forEach { (dateHeader, transactions) ->
-                item {
-                    Text(
-                            text = dateHeader,
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-                    )
+    Scaffold(
+            floatingActionButton = {
+                FloatingActionButton(onClick = onAddEntryClick) {
+                    Icon(Icons.Default.Add, contentDescription = "Add Entry")
                 }
-                items(transactions) { transaction ->
+            }
+    ) { padding ->
+        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+            FilterButtons(
+                    selectedFilter = uiState.filter,
+                    onFilterSelected = viewModel::onFilterChanged
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                items(uiState.transactions) { transaction ->
                     TransactionItem(
                             transaction = transaction,
-                            modifier = Modifier.padding(horizontal = 16.dp)
+                            modifier = Modifier.clickable { onEntryClick(transaction.id) }
                     )
                 }
             }
         }
-    }
-}
-
-private fun formatDateHeader(date: Date): String {
-    val calendar = Calendar.getInstance()
-    val today = calendar.time
-
-    calendar.add(Calendar.DAY_OF_YEAR, -1)
-    val yesterday = calendar.time
-
-    val dateFormat = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
-    val dateString = dateFormat.format(date)
-    val todayString = dateFormat.format(today)
-    val yesterdayString = dateFormat.format(yesterday)
-
-    return when (dateString) {
-        todayString -> "Today"
-        yesterdayString -> "Yesterday"
-        else -> dateString
     }
 }

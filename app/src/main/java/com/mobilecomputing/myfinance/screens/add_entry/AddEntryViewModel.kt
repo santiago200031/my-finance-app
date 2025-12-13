@@ -1,107 +1,132 @@
 package com.mobilecomputing.myfinance.screens.add_entry
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.mobilecomputing.myfinance.data.models.category.Category
-import com.mobilecomputing.myfinance.data.models.contract.Contract
-import com.mobilecomputing.myfinance.data.models.debt.Debt
-import com.mobilecomputing.myfinance.data.models.transaction.Transaction
-import com.mobilecomputing.myfinance.data.models.transaction.TransactionType
-import com.mobilecomputing.myfinance.data.services.AccountService
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import androidx.lifecycle.viewModelScope
+import com.mobilecomputing.myfinance.data.category.Category
+import com.mobilecomputing.myfinance.data.contract.ContractType
+import com.mobilecomputing.myfinance.data.entry.Entry
+import com.mobilecomputing.myfinance.data.repository.CategoryRepository
+import com.mobilecomputing.myfinance.data.repository.EntryRepository
+import java.time.LocalDateTime
+import java.util.UUID
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class AddEntryViewModel(private val accountService: AccountService = AccountService()) :
-    ViewModel() {
+data class AddEntryUiState(
+        val amount: String = "",
+        val description: String = "",
+        val selectedCategory: Category? = null,
+        val selectedType: ContractType = ContractType.EXPENSE,
+        val categories: List<Category> = emptyList(),
+        val isSaved: Boolean = false,
+        val entryId: String? = null
+)
 
-    var uiState by mutableStateOf(AddEntryUiState())
-        private set
+class AddEntryViewModel(
+        private val entryRepository: EntryRepository,
+        private val categoryRepository: CategoryRepository
+) : ViewModel() {
 
-    fun onTitleChanged(title: String) {
-        uiState = uiState.copy(title = title)
+    private val _uiState = MutableStateFlow(AddEntryUiState())
+    val uiState: StateFlow<AddEntryUiState> = _uiState.asStateFlow()
+
+    init {
+        loadCategories()
     }
 
-    fun onAmountChanged(amount: String) {
-        uiState = uiState.copy(amount = amount)
-    }
+    private fun loadCategories() {
+        viewModelScope.launch {
+            categoryRepository.getAllCategories().collect { categories ->
+                _uiState.update { it.copy(categories = categories) }
 
-    fun onTypeChanged(type: EntryType) {
-        uiState = uiState.copy(type = type)
-    }
-
-    fun onCategoryChanged(categoryName: String) {
-        uiState = uiState.copy(
-            category = (uiState.category ?: Category())
-                .copy(name = categoryName)
-        )
-    }
-
-    fun onDateChanged(date: String) {
-        uiState = uiState.copy(date = date)
-    }
-
-    fun onDescriptionChanged(description: String) {
-        uiState = uiState.copy(description = description)
-    }
-
-    fun onProviderChanged(provider: String) {
-        uiState = uiState.copy(provider = provider)
-    }
-
-    fun onSave() {
-        val date = try {
-            SimpleDateFormat("dd.MM.yyyy", Locale.getDefault()).parse(uiState.date)
-        } catch (e: Exception) {
-            Date()
-        }
-
-        when (uiState.type) {
-            EntryType.INCOME -> {
-                val transaction = Transaction(
-                    amount = uiState.amount.toDouble(),
-                    description = uiState.description,
-                    date = date,
-                    categoryId = uiState.category?.id ?: "",
-                    categoryName = uiState.category?.name ?: "",
-                    type = TransactionType.INCOME
-                )
-                accountService.addTransaction(transaction)
-            }
-
-            EntryType.EXPENSE -> {
-                val transaction = Transaction(
-                    amount = uiState.amount.toDouble(),
-                    description = uiState.description,
-                    date = date,
-                    categoryId = uiState.category?.id ?: "",
-                    categoryName = uiState.category?.name ?: "",
-                    type = TransactionType.EXPENSE
-                )
-                accountService.addTransaction(transaction)
-            }
-
-            EntryType.DEBT -> {
-                val debt = Debt(
-                    totalAmount = uiState.amount.toDouble(),
-                    creditor = uiState.title
-                )
-                accountService.addDebt(debt)
-            }
-
-            EntryType.CONTRACT -> {
-                val contract = Contract(
-                    title = uiState.title,
-                    amount = uiState.amount.toDouble(),
-                    provider = uiState.provider,
-                    startDate = date,
-                    paymentCycle = uiState.paymentCycle,
-                    nextPaymentDate = date
-                )
-                accountService.addContract(contract)
+                if (_uiState.value.selectedCategory == null && categories.isNotEmpty()) {
+                    _uiState.update { it.copy(selectedCategory = categories.first()) }
+                }
             }
         }
+    }
+
+    fun onAmountChange(newAmount: String) {
+        _uiState.update { it.copy(amount = newAmount) }
+    }
+
+    fun onDescriptionChange(newDescription: String) {
+        _uiState.update { it.copy(description = newDescription) }
+    }
+
+    fun onCategorySelect(category: Category) {
+        _uiState.update { it.copy(selectedCategory = category) }
+    }
+
+    fun onTypeSelect(type: ContractType) {
+        _uiState.update { it.copy(selectedType = type) }
+    }
+
+    fun loadEntry(entryId: String) {
+        viewModelScope.launch {
+            val entry = entryRepository.getEntryById(entryId).first()
+            if (entry != null) {
+                // Ensure imports are correct and Entry has id
+                _uiState.update {
+                    it.copy(
+                            amount = entry.amount.toString(),
+                            description = entry.description ?: "",
+                            selectedCategory =
+                                    _uiState.value.categories.find { cat ->
+                                        cat.id == entry.categoryId
+                                    },
+                            selectedType = entry.type,
+                            entryId = entry.id
+                    )
+                }
+            }
+        }
+    }
+
+    fun saveEntry() {
+        val currentState = _uiState.value
+        val amountValue = currentState.amount.toDoubleOrNull()
+
+        if (amountValue != null && currentState.selectedCategory != null) {
+            viewModelScope.launch {
+                val transactionId = currentState.entryId ?: UUID.randomUUID().toString()
+
+                // Using named arguments, assuming Entry constructor matches
+                val newEntry =
+                        Entry(
+                                id = transactionId,
+                                amount = amountValue,
+                                description = currentState.description,
+                                categoryId = currentState.selectedCategory.id,
+                                type = currentState.selectedType,
+                                date = LocalDateTime.now() // Overwriting date on edit as discussed
+                        )
+
+                if (currentState.entryId != null) {
+                    entryRepository.updateEntry(newEntry)
+                } else {
+                    entryRepository.addEntry(newEntry)
+                }
+                _uiState.update { it.copy(isSaved = true) }
+            }
+        }
+    }
+
+    fun deleteEntry() {
+        val entryId = _uiState.value.entryId
+        if (entryId != null) {
+            viewModelScope.launch {
+                entryRepository.deleteEntry(entryId)
+                _uiState.update { it.copy(isSaved = true) }
+            }
+        }
+    }
+
+    fun resetSaveState() {
+        _uiState.update { it.copy(isSaved = false) }
     }
 }
