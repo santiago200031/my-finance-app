@@ -25,7 +25,6 @@ class SettingsViewModel(private val userRepository: UserRepository) : ViewModel(
                     )
 
     fun updateTheme(isDark: Boolean) {
-        // Implement theme update logic here, typically updating repository
         viewModelScope.launch {
             val currentUser = uiState.value.user
             if (currentUser != null) {
@@ -34,6 +33,4 @@ class SettingsViewModel(private val userRepository: UserRepository) : ViewModel(
             }
         }
     }
-
-    // Placeholder for other updates
 }

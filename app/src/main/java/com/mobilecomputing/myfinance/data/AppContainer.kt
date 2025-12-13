@@ -3,14 +3,14 @@ package com.mobilecomputing.myfinance.data
 import com.mobilecomputing.myfinance.data.repository.CategoryRepository
 import com.mobilecomputing.myfinance.data.repository.ContractRepository
 import com.mobilecomputing.myfinance.data.repository.EntryRepository
+import com.mobilecomputing.myfinance.data.repository.ReminderRepository
 import com.mobilecomputing.myfinance.data.repository.UserRepository
 import com.mobilecomputing.myfinance.data.repository.impl.FakeCategoryRepository
 import com.mobilecomputing.myfinance.data.repository.impl.FakeContractRepository
 import com.mobilecomputing.myfinance.data.repository.impl.FakeEntryRepository
+import com.mobilecomputing.myfinance.data.repository.impl.FakeReminderRepository
 import com.mobilecomputing.myfinance.data.repository.impl.FakeUserRepository
 import com.mobilecomputing.myfinance.domain.ContractService
-import com.mobilecomputing.myfinance.data.repository.ReminderRepository
-import com.mobilecomputing.myfinance.data.repository.impl.FakeReminderRepository
 
 interface AppContainer {
     val entryRepository: EntryRepository
@@ -22,24 +22,10 @@ interface AppContainer {
 }
 
 class DefaultAppContainer : AppContainer {
-    override val entryRepository: EntryRepository by lazy {
-        FakeEntryRepository()
-    }
-    override val categoryRepository: CategoryRepository by lazy {
-        FakeCategoryRepository()
-    }
-    override val contractRepository: ContractRepository by lazy {
-        FakeContractRepository()
-    }
-    override val userRepository: UserRepository by lazy {
-        FakeUserRepository()
-    }
-    
-    override val contractService: ContractService by lazy {
-        ContractService()
-    }
-
-    override val reminderRepository: ReminderRepository by lazy {
-        FakeReminderRepository()
-    }
+    override val entryRepository: EntryRepository by lazy { FakeEntryRepository() }
+    override val categoryRepository: CategoryRepository by lazy { FakeCategoryRepository() }
+    override val contractRepository: ContractRepository by lazy { FakeContractRepository() }
+    override val userRepository: UserRepository by lazy { FakeUserRepository() }
+    override val contractService: ContractService by lazy { ContractService() }
+    override val reminderRepository: ReminderRepository by lazy { FakeReminderRepository() }
 }

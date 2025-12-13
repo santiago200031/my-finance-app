@@ -20,7 +20,8 @@ fun getMockContracts(): List<Contract> {
                         isReminderActive = false,
                         status = ContractStatus.ACTIVE,
                         autoRenewEnabled = true,
-                        nextPaymentDate = calendar.apply { set(2025, 10, 30) }.time // Nov 30, 2025
+                        nextPaymentDate = calendar.apply { set(2025, 10, 30) }.time, // Nov 30, 2025
+                        totalAmount = null
                 ),
                 Contract(
                         id = "1",
@@ -32,7 +33,8 @@ fun getMockContracts(): List<Contract> {
                         isReminderActive = true,
                         status = ContractStatus.ACTIVE,
                         autoRenewEnabled = true,
-                        nextPaymentDate = calendar.apply { set(2025, 11, 1) }.time // Dec 1, 2025
+                        nextPaymentDate = calendar.apply { set(2025, 11, 1) }.time, // Dec 1, 2025
+                        totalAmount = null
                 ),
                 Contract(
                         id = "2",
@@ -44,7 +46,8 @@ fun getMockContracts(): List<Contract> {
                         isReminderActive = true,
                         status = ContractStatus.ACTIVE,
                         autoRenewEnabled = true,
-                        nextPaymentDate = calendar.apply { set(2025, 10, 15) }.time // Nov 15, 2025
+                        nextPaymentDate = calendar.apply { set(2025, 10, 15) }.time, // Nov 15, 2025
+                        totalAmount = null
                 ),
                 Contract(
                         id = "3",
@@ -57,7 +60,8 @@ fun getMockContracts(): List<Contract> {
                         status = ContractStatus.EXPIRING,
                         autoRenewEnabled = false,
                         nextPaymentDate = calendar.apply { set(2025, 10, 10) }.time, // Nov 10, 2025
-                        endDate = calendar.apply { set(2025, 11, 31) }.time // Dec 31, 2025
+                        endDate = calendar.apply { set(2025, 11, 31) }.time, // Dec 31, 2025
+                        totalAmount = null
                 ),
                 Contract(
                         id = "4",
@@ -69,7 +73,8 @@ fun getMockContracts(): List<Contract> {
                         isReminderActive = true,
                         status = ContractStatus.ACTIVE,
                         autoRenewEnabled = true,
-                        nextPaymentDate = calendar.apply { set(2025, 10, 5) }.time // Nov 5, 2025
+                        nextPaymentDate = calendar.apply { set(2025, 10, 5) }.time, // Nov 5, 2025
+                        totalAmount = null
                 )
         )
 }

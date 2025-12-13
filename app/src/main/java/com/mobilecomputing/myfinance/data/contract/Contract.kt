@@ -16,5 +16,6 @@ data class Contract(
         val isReminderActive: Boolean = true,
         val status: ContractStatus = ContractStatus.ACTIVE,
         val autoRenewEnabled: Boolean = true,
-        val nextPaymentDate: Date = Date()
+        val nextPaymentDate: Date = Date(),
+        val totalAmount: Double?,
 )

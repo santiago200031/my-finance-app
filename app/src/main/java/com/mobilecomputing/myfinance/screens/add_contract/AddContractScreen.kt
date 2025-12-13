@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -105,7 +107,7 @@ fun AddContractScreen(
                 // Total Debt Amount (Only for Debt)
                 if (uiState.selectedType == ContractType.DEBT) {
                         OutlinedTextField(
-                                value = uiState.totalAmount,
+                                value = uiState.totalAmount.orEmpty(),
                                 onValueChange = viewModel::onTotalAmountChange,
                                 label = { Text("Total Debt Amount") },
                                 keyboardOptions =
@@ -158,7 +160,7 @@ fun AddContractScreen(
                 Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically
                 ) {
                         Text("Auto-Renew", style = MaterialTheme.typography.titleMedium)
                         androidx.compose.material3.Switch(
@@ -212,13 +214,9 @@ fun AddContractScreen(
                                 onClick = viewModel::deleteContract,
                                 modifier = Modifier.fillMaxWidth(),
                                 colors =
-                                        androidx.compose.material3.ButtonDefaults
-                                                .outlinedButtonColors(
-                                                        contentColor =
-                                                                androidx.compose.material3
-                                                                        .MaterialTheme.colorScheme
-                                                                        .error
-                                                )
+                                        ButtonDefaults.outlinedButtonColors(
+                                                contentColor = MaterialTheme.colorScheme.error
+                                        )
                         ) { Text("Delete Contract") }
                 }
         }

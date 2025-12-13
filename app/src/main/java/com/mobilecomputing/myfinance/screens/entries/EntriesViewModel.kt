@@ -49,7 +49,6 @@ class EntriesViewModel(
                                                                 FinanceFilter.DEBT ->
                                                                         entry.type ==
                                                                                 ContractType.DEBT
-                                                                else -> true
                                                         }
 
                                                 matchesFilter

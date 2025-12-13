@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -186,13 +187,13 @@ fun LocalizationSection(language: String, currency: String, dateFormat: String) 
                                         label = "Language",
                                         value = if (language == "en") "English" else language
                                 )
-                                Divider()
+                                CustomDivider()
                                 SettingsItem(
                                         icon = Icons.Default.AttachMoney,
                                         label = "Currency",
                                         value = "$currency ($)"
                                 )
-                                Divider()
+                                CustomDivider()
                                 SettingsItem(
                                         icon = Icons.Default.CalendarToday,
                                         label = "Date Format",
@@ -223,7 +224,7 @@ fun DataManagementSection() {
                 ) {
                         Column {
                                 SettingsItem(icon = Icons.Default.Download, label = "Export Data")
-                                Divider()
+                                CustomDivider()
                                 SettingsItem(icon = Icons.Default.Share, label = "Sharing Settings")
                         }
                 }
@@ -267,8 +268,8 @@ fun SettingsItem(
 }
 
 @Composable
-fun Divider() {
-        androidx.compose.material3.Divider(
+fun CustomDivider() {
+        HorizontalDivider(
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
                 thickness = 1.dp
         )

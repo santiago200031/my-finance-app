@@ -170,7 +170,8 @@ fun ContractItemPreview() {
                         startDate = Date(),
                         nextPaymentDate = Date(),
                         autoRenewEnabled = true,
-                        status = ContractStatus.ACTIVE
+                        status = ContractStatus.ACTIVE,
+                        totalAmount = null
                 )
         ContractItem(contract = dummyContract)
 }

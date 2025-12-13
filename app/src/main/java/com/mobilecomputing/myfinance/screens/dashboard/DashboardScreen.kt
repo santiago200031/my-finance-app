@@ -40,74 +40,85 @@ fun DashboardScreen(
         onAddEntryClick: () -> Unit = {},
         viewModel: DashboardViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+        val uiState by viewModel.uiState.collectAsState()
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            BalanceSummaryCard(
-                    title = "Income",
-                    amount = "$${FormatUtils.formatAmount(uiState.totalIncome)}",
-                    modifier = Modifier.weight(1f),
-                    amountColor = GreenIncome
-            )
-            BalanceSummaryCard(
-                    title = "Expenses",
-                    amount = "$${FormatUtils.formatAmount(uiState.totalExpenses)}",
-                    modifier = Modifier.weight(1f),
-                    amountColor = RedExpense
-            )
-            BalanceSummaryCard(
-                    title = "Net Growth",
-                    amount = "$${FormatUtils.formatAmount(uiState.netGrowth)}",
-                    modifier = Modifier.weight(1f),
-                    containerColor = PrimaryPurple,
-                    contentColor = Color.White
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Card(modifier = Modifier.fillMaxWidth()) {
-            Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
                 Row(
                         modifier = Modifier.fillMaxWidth(),
-                ) { Text("Quick Actions", style = MaterialTheme.typography.titleMedium) }
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Button(onClick = onAddEntryClick, modifier = Modifier.weight(1f)) {
-                        Icon(
-                                Icons.Default.Add,
-                                contentDescription = "Add new entry",
-                                modifier = Modifier.padding(end = 8.dp)
+                        BalanceSummaryCard(
+                                title = "Income",
+                                amount = "$${FormatUtils.formatAmount(uiState.totalIncome)}",
+                                modifier = Modifier.weight(1f),
+                                amountColor = GreenIncome
                         )
-                        Text("Add Entry")
-                    }
-                    OutlinedButton(
-                            onClick = onRemindersClick,
-                            modifier = Modifier.weight(1f),
-                    ) {
-                        Icon(Icons.Default.Notifications, contentDescription = "Check reminders")
-                        Text("Reminders")
-                    }
+                        BalanceSummaryCard(
+                                title = "Expenses",
+                                amount = "$${FormatUtils.formatAmount(uiState.totalExpenses)}",
+                                modifier = Modifier.weight(1f),
+                                amountColor = RedExpense
+                        )
+                        BalanceSummaryCard(
+                                title = "Net Growth",
+                                amount = "$${FormatUtils.formatAmount(uiState.netGrowth)}",
+                                modifier = Modifier.weight(1f),
+                                containerColor = PrimaryPurple,
+                                contentColor = Color.White
+                        )
                 }
-            }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Card(modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                                Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                ) {
+                                        Text(
+                                                "Quick Actions",
+                                                style = MaterialTheme.typography.titleMedium
+                                        )
+                                }
+                                Spacer(modifier = Modifier.height(16.dp))
+                                Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                ) {
+                                        Button(
+                                                onClick = onAddEntryClick,
+                                                modifier = Modifier.weight(1f)
+                                        ) {
+                                                Icon(
+                                                        Icons.Default.Add,
+                                                        contentDescription = "Add new entry",
+                                                        modifier = Modifier.padding(end = 8.dp)
+                                                )
+                                                Text("Add Entry")
+                                        }
+                                        OutlinedButton(
+                                                onClick = onRemindersClick,
+                                                modifier = Modifier.weight(1f),
+                                        ) {
+                                                Icon(
+                                                        Icons.Default.Notifications,
+                                                        contentDescription = "Check reminders"
+                                                )
+                                                Text("Reminders")
+                                        }
+                                }
+                        }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text("Recent Activity", style = MaterialTheme.typography.titleLarge)
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                LazyColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) { items(uiState.transactions) { transaction -> TransactionItem(transaction) } }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text("Recent Activity", style = MaterialTheme.typography.titleLarge)
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        LazyColumn(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-        ) { items(uiState.transactions) { transaction -> TransactionItem(transaction) } }
-    }
 }

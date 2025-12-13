@@ -41,16 +41,16 @@ fun ContractsScreen(
         onAddContractClick: () -> Unit = {},
         onContractClick: (String) -> Unit = {}
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+        val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(Unit) { viewModel.refreshContractStatuses() }
+        LaunchedEffect(Unit) { viewModel.refreshContractStatuses() }
 
-    ContractsScreenContent(
-            uiState = uiState,
-            onAddContractClick = onAddContractClick,
-            onContractClick = onContractClick,
-            onFilterSelected = viewModel::onFilterChanged
-    )
+        ContractsScreenContent(
+                uiState = uiState,
+                onAddContractClick = onAddContractClick,
+                onContractClick = onContractClick,
+                onFilterSelected = viewModel::onFilterChanged
+        )
 }
 
 @Composable
@@ -60,62 +60,69 @@ fun ContractsScreenContent(
         onContractClick: (String) -> Unit = {},
         onFilterSelected: (FinanceFilter) -> Unit = {}
 ) {
-    Scaffold(
-            floatingActionButton = {
-                FloatingActionButton(onClick = onAddContractClick) {
-                    Icon(Icons.Default.Add, contentDescription = "Add Contract")
+        Scaffold(
+                floatingActionButton = {
+                        FloatingActionButton(onClick = onAddContractClick) {
+                                Icon(Icons.Default.Add, contentDescription = "Add Contract")
+                        }
                 }
-            }
-    ) { padding ->
-        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+        ) { padding ->
+                Column(modifier = Modifier.fillMaxSize().padding(padding)) {
 
-            // Summary Dashboard
-            SummaryCardsRow(
-                    activeCount = uiState.activeCount,
-                    expiringCount = uiState.expiringCount,
-                    monthlyNetValue = uiState.monthlyNetValue
-            )
+                        // Summary Dashboard
+                        SummaryCardsRow(
+                                activeCount = uiState.activeCount,
+                                expiringCount = uiState.expiringCount,
+                                monthlyNetValue = uiState.monthlyNetValue
+                        )
 
-            Spacer(modifier = Modifier.height(AppConstants.PADDING_MEDIUM))
+                        Spacer(modifier = Modifier.height(AppConstants.PADDING_MEDIUM))
 
-            FilterButtons(selectedFilter = uiState.filter, onFilterSelected = onFilterSelected)
+                        FilterButtons(
+                                selectedFilter = uiState.filter,
+                                onFilterSelected = onFilterSelected
+                        )
 
-            Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
-            LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(bottom = 80.dp)
-            ) {
-                items(uiState.contracts) { contract ->
-                    ContractItem(contract, onContractClick = { onContractClick(contract.id) })
+                        LazyColumn(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                contentPadding = PaddingValues(bottom = 80.dp)
+                        ) {
+                                items(uiState.contracts) { contract ->
+                                        ContractItem(
+                                                contract,
+                                                onContractClick = { onContractClick(contract.id) }
+                                        )
+                                }
+                        }
                 }
-            }
         }
-    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun ContractsScreenPreview() {
-    val dummyState =
-            ContractsUiState(
-                    contracts =
-                            listOf(
-                                    Contract(
-                                            id = "1",
-                                            title = "Netflix",
-                                            amount = 12.99,
-                                            paymentCycle = PaymentCycle.MONTHLY,
-                                            type = ContractType.EXPENSE,
-                                            startDate = Date(),
-                                            status = ContractStatus.ACTIVE,
-                                            nextPaymentDate = Date()
-                                    )
-                            ),
-                    activeCount = 1,
-                    expiringCount = 0,
-                    monthlyNetValue = -12.99
-            )
-    ContractsScreenContent(uiState = dummyState)
+        val dummyState =
+                ContractsUiState(
+                        contracts =
+                                listOf(
+                                        Contract(
+                                                id = "1",
+                                                title = "Netflix",
+                                                amount = 12.99,
+                                                paymentCycle = PaymentCycle.MONTHLY,
+                                                type = ContractType.EXPENSE,
+                                                startDate = Date(),
+                                                status = ContractStatus.ACTIVE,
+                                                nextPaymentDate = Date(),
+                                                totalAmount = null
+                                        )
+                                ),
+                        activeCount = 1,
+                        expiringCount = 0,
+                        monthlyNetValue = -12.99
+                )
+        ContractsScreenContent(uiState = dummyState)
 }

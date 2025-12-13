@@ -26,50 +26,55 @@ class RemindersViewModel(
         private val contractRepository: ContractRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(RemindersUiState())
+        private val _uiState = MutableStateFlow(RemindersUiState())
 
-    val uiState: StateFlow<RemindersUiState> =
-            combine(reminderRepository.getAllReminders(), contractRepository.getAllContracts()) {
-                            reminders,
-                            contracts ->
-                        val activeReminders =
-                                reminders
-                                        .mapNotNull { reminder ->
-                                            val contract =
-                                                    contracts.find { it.id == reminder.contractId }
-                                            if (contract != null) {
-                                                val daysUntil =
-                                                        ChronoUnit.DAYS.between(
-                                                                LocalDate.now(),
-                                                                reminder.reminderDate
-                                                        )
-                                                ReminderUiItem(
-                                                        reminder = reminder,
-                                                        contractTitle = contract.title,
-                                                        contractAmount = contract.amount,
-                                                        daysUntil = daysUntil
-                                                )
-                                            } else {
-                                                null
-                                            }
-                                        }
-                                        .sortedBy { it.daysUntil }
+        val uiState: StateFlow<RemindersUiState> =
+                combine(
+                                reminderRepository.getAllReminders(),
+                                contractRepository.getAllContracts()
+                        ) { reminders, contracts ->
+                                val activeReminders =
+                                        reminders
+                                                .mapNotNull { reminder ->
+                                                        val contract =
+                                                                contracts.find {
+                                                                        it.id == reminder.contractId
+                                                                }
+                                                        if (contract != null) {
+                                                                val daysUntil =
+                                                                        ChronoUnit.DAYS.between(
+                                                                                LocalDate.now(),
+                                                                                reminder.reminderDate
+                                                                        )
+                                                                ReminderUiItem(
+                                                                        reminder = reminder,
+                                                                        contractTitle =
+                                                                                contract.title,
+                                                                        contractAmount =
+                                                                                contract.amount,
+                                                                        daysUntil = daysUntil
+                                                                )
+                                                        } else {
+                                                                null
+                                                        }
+                                                }
+                                                .sortedBy { it.daysUntil }
 
-                        RemindersUiState(
-                                reminders = activeReminders,
-                                activeCount = activeReminders.size,
-                                nextAlertInDays = activeReminders.firstOrNull()?.daysUntil
+                                RemindersUiState(
+                                        reminders = activeReminders,
+                                        activeCount = activeReminders.size,
+                                        nextAlertInDays = activeReminders.firstOrNull()?.daysUntil
+                                )
+                        }
+                        .stateIn(
+                                scope = viewModelScope,
+                                started = SharingStarted.WhileSubscribed(5000),
+                                initialValue = RemindersUiState()
                         )
-                    }
-                    .stateIn(
-                            scope = viewModelScope,
-                            started = SharingStarted.WhileSubscribed(5000),
-                            initialValue = RemindersUiState()
-                    )
 
-    fun deleteReminder(id: String) {
-        viewModelScope.launch { reminderRepository.deleteReminder(id) }
-    }
+        fun deleteReminder(id: String) {
+                viewModelScope.launch { reminderRepository.deleteReminder(id) }
+        }
 }
 
 data class RemindersUiState(

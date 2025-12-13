@@ -1,9 +1,10 @@
 package com.mobilecomputing.myfinance.data.models
 
+import com.google.firebase.firestore.DocumentId
 import com.mobilecomputing.myfinance.data.models.user.UserSettings
 
 data class User(
-        val id: String = "",
+        @DocumentId val id: String = "",
         val email: String = "",
         val firstName: String = "",
         val lastName: String = "",

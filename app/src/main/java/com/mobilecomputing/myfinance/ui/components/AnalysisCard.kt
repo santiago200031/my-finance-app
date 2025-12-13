@@ -16,29 +16,30 @@ import com.mobilecomputing.myfinance.utils.FormatUtils
 
 @Composable
 fun AnalysisCard(title: String, amount: Double, color: Color, description: String) {
-    Card(
-            modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurface
-            )
-            Text(
-                    text = FormatUtils.formatCurrency(amount),
-                    style = MaterialTheme.typography.headlineMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = color,
-                    modifier = Modifier.padding(vertical = 8.dp)
-            )
-            Text(
-                    text = description,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+        Card(
+                modifier = Modifier.fillMaxWidth(),
+                colors =
+                        CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                                text = title,
+                                style = MaterialTheme.typography.titleMedium,
+                                color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                                text = FormatUtils.formatCurrency(amount),
+                                style = MaterialTheme.typography.headlineMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = color,
+                                modifier = Modifier.padding(vertical = 8.dp)
+                        )
+                        Text(
+                                text = description,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                }
         }
-    }
 }

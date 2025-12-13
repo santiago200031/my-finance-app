@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 data class AddContractUiState(
         val title: String = "",
         val amount: String = "",
-        val totalAmount: String = "",
+        val totalAmount: String? = "",
         val startDate: String = DateUtils.formatInputDate(LocalDate.now()),
         val expirationDate: String = "",
         val billingCycle: PaymentCycle = PaymentCycle.MONTHLY,
@@ -88,7 +88,7 @@ class AddContractViewModel(
                     it.copy(
                             title = contract.title,
                             amount = contract.amount.toString(),
-                            // totalAmount field missing in new Contract model
+                            totalAmount = contract.totalAmount?.toString(),
                             startDate =
                                     DateUtils.formatInputDate(
                                             contract.startDate
@@ -119,7 +119,7 @@ class AddContractViewModel(
     fun saveContract() {
         val currentState = _uiState.value
         val amountValue = currentState.amount.toDoubleOrNull()
-        // val totalAmountValue = currentState.totalAmount.toDoubleOrNull() // Not used in new model
+        val totalAmountValue = currentState.totalAmount?.toDoubleOrNull()
 
         if (amountValue != null && currentState.title.isNotBlank()) {
 
@@ -151,8 +151,7 @@ class AddContractViewModel(
                                                 ?: java.util.UUID.randomUUID().toString(),
                                 title = currentState.title,
                                 amount = amountValue,
-                                // totalAmount = if (currentState.selectedType == ContractType.DEBT)
-                                // totalAmountValue else null,
+                                totalAmount = totalAmountValue,
                                 paymentCycle = currentState.billingCycle,
                                 type = currentState.selectedType,
                                 startDate =
@@ -177,8 +176,6 @@ class AddContractViewModel(
                                 status = currentState.status
                         )
 
-                // Check status logic (e.g. if created expired or auto-renew logic immediately
-                // applies)
                 val checkedContract = contractService.checkContractStatus(newContract)
 
                 if (currentState.contractId != null) {
