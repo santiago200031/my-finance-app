@@ -8,18 +8,19 @@ import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.contract.PaymentCycle
 import com.mobilecomputing.myfinance.data.repository.ContractRepository
 import com.mobilecomputing.myfinance.data.repository.ReminderRepository
+import com.mobilecomputing.myfinance.data.repository.UserRepository
 import com.mobilecomputing.myfinance.domain.ContractService
 import com.mobilecomputing.myfinance.utils.DateUtils
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeParseException
+import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.format.DateTimeParseException
-import java.util.Date
 
 data class AddContractUiState(
         val title: String = "",
@@ -38,7 +39,8 @@ data class AddContractUiState(
 class AddContractViewModel(
         private val contractRepository: ContractRepository,
         private val contractService: ContractService,
-        private val reminderRepository: ReminderRepository
+        private val reminderRepository: ReminderRepository,
+        private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddContractUiState())
@@ -145,6 +147,9 @@ class AddContractViewModel(
                     )
 
             viewModelScope.launch {
+                val currentUser = userRepository.getCurrentUser().first()
+                val currentUserId = currentUser?.id ?: ""
+
                 val newContract =
                         Contract(
                                 id = currentState.contractId
@@ -154,6 +159,7 @@ class AddContractViewModel(
                                 totalAmount = totalAmountValue,
                                 paymentCycle = currentState.billingCycle,
                                 type = currentState.selectedType,
+                                userId = currentUserId,
                                 startDate =
                                         Date.from(
                                                 start.atStartOfDay(ZoneId.systemDefault())

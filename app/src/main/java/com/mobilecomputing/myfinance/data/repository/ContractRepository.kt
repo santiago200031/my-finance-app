@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ContractRepository {
     fun getAllContracts(): Flow<List<Contract>>
+    fun getContractsForUser(userId: String): Flow<List<Contract>>
     fun getContractById(id: String): Flow<Contract?>
 
     suspend fun addContract(contract: Contract)

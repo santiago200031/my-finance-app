@@ -10,6 +10,7 @@ import com.mobilecomputing.myfinance.screens.add_reminder.AddReminderScreen
 import com.mobilecomputing.myfinance.screens.analysis.AnalysisScreen
 import com.mobilecomputing.myfinance.screens.budget_planning.BudgetPlanningScreen
 import com.mobilecomputing.myfinance.screens.contracts.ContractsScreen
+import com.mobilecomputing.myfinance.screens.contracts.SharedContractsScreen
 import com.mobilecomputing.myfinance.screens.dashboard.DashboardScreen
 import com.mobilecomputing.myfinance.screens.entries.EntriesScreen
 import com.mobilecomputing.myfinance.screens.export_data.ExportDataScreen
@@ -58,7 +59,13 @@ fun NavigationGraph(navController: NavHostController) {
             )
         }
         composable(Screen.Analysis.route) { AnalysisScreen() }
-        composable(Screen.Settings.route) { SettingsScreen() }
+        composable(Screen.Settings.route) {
+            SettingsScreen(
+                    onSharingSettingsClick = {
+                        navController.navigate(Screen.SharingSettings.route)
+                    }
+            )
+        }
         composable(Screen.Reminders.route) {
             RemindersScreen(
                     onAddReminderClick = { navController.navigate(Screen.AddReminder.route) }
@@ -69,6 +76,16 @@ fun NavigationGraph(navController: NavHostController) {
         }
         composable(Screen.BudgetPlanning.route) { BudgetPlanningScreen() }
         composable(Screen.ExportData.route) { ExportDataScreen() }
-        composable(Screen.SharingSettings.route) { SharingSettingsScreen() }
+        composable(Screen.SharingSettings.route) {
+            SharingSettingsScreen(
+                    onNavigateToSharedContracts = { userId ->
+                        navController.navigate(Screen.SharedContracts.createRoute(userId))
+                    }
+            )
+        }
+        composable(Screen.SharedContracts.route) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId") ?: return@composable
+            SharedContractsScreen(userId = userId, navigateBack = { navController.popBackStack() })
+        }
     }
 }

@@ -9,6 +9,7 @@ data class User(
         val firstName: String = "",
         val lastName: String = "",
         val profileImageUrl: String? = null,
+        val trustedEmails: List<String> = emptyList(),
         val settings: UserSettings = UserSettings()
 )
 

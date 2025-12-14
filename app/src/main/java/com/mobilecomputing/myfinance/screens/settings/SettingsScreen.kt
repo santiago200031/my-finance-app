@@ -45,7 +45,8 @@ import com.mobilecomputing.myfinance.ui.AppViewModelProvider
 
 @Composable
 fun SettingsScreen(
-        viewModel: SettingsViewModel = viewModel(factory = AppViewModelProvider.Factory)
+        viewModel: SettingsViewModel = viewModel(factory = AppViewModelProvider.Factory),
+        onSharingSettingsClick: () -> Unit = {}
 ) {
         val uiState by viewModel.uiState.collectAsState()
         val scrollState = rememberScrollState()
@@ -72,7 +73,7 @@ fun SettingsScreen(
                                 dateFormat = uiState.user?.settings?.dateFormat ?: "MM/DD/YYYY"
                         )
 
-                        DataManagementSection()
+                        DataManagementSection(onSharingSettingsClick = onSharingSettingsClick)
                 }
         }
 }
@@ -205,7 +206,7 @@ fun LocalizationSection(language: String, currency: String, dateFormat: String) 
 }
 
 @Composable
-fun DataManagementSection() {
+fun DataManagementSection(onSharingSettingsClick: () -> Unit) {
         Column {
                 Text(
                         text = "Data Management",
@@ -225,7 +226,11 @@ fun DataManagementSection() {
                         Column {
                                 SettingsItem(icon = Icons.Default.Download, label = "Export Data")
                                 CustomDivider()
-                                SettingsItem(icon = Icons.Default.Share, label = "Sharing Settings")
+                                SettingsItem(
+                                        icon = Icons.Default.Share,
+                                        label = "Sharing Settings",
+                                        onClick = onSharingSettingsClick
+                                )
                         }
                 }
         }
@@ -236,10 +241,11 @@ fun SettingsItem(
         icon: ImageVector,
         label: String,
         value: String? = null,
-        trailingContent: @Composable (() -> Unit)? = null
+        trailingContent: @Composable (() -> Unit)? = null,
+        onClick: () -> Unit = {}
 ) {
         Row(
-                modifier = Modifier.fillMaxWidth().clickable { /* TODO */}.padding(16.dp),
+                modifier = Modifier.fillMaxWidth().clickable { onClick() }.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
         ) {
                 Icon(

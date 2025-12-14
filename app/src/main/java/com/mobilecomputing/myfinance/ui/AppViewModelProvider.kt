@@ -38,14 +38,16 @@ object AppViewModelProvider {
         initializer {
             ContractsViewModel(
                     myFinanceApplication().container.contractRepository,
-                    myFinanceApplication().container.contractService
+                    myFinanceApplication().container.contractService,
+                    myFinanceApplication().container.userRepository
             )
         }
         initializer {
             AddContractViewModel(
                     myFinanceApplication().container.contractRepository,
                     myFinanceApplication().container.contractService,
-                    myFinanceApplication().container.reminderRepository
+                    myFinanceApplication().container.reminderRepository,
+                    myFinanceApplication().container.userRepository
             )
         }
         initializer {

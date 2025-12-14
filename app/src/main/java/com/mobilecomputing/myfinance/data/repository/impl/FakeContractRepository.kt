@@ -5,13 +5,13 @@ import com.mobilecomputing.myfinance.data.contract.ContractStatus
 import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.contract.PaymentCycle
 import com.mobilecomputing.myfinance.data.repository.ContractRepository
+import java.time.LocalDate
+import java.time.ZoneId
+import java.util.Date
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
-import java.time.LocalDate
-import java.time.ZoneId
-import java.util.Date
 
 class FakeContractRepository : ContractRepository {
         private fun localDateToDate(localDate: LocalDate): Date {
@@ -39,7 +39,8 @@ class FakeContractRepository : ContractRepository {
                                         autoRenewEnabled = true,
                                         status = ContractStatus.ACTIVE,
                                         type = ContractType.EXPENSE,
-                                        totalAmount = null
+                                        totalAmount = null,
+                                        userId = "s-svilla"
                                 ),
                                 // 2. Expiring Soon Test: Expires tomorrow
                                 Contract(
@@ -55,7 +56,8 @@ class FakeContractRepository : ContractRepository {
                                         autoRenewEnabled = false,
                                         status = ContractStatus.ACTIVE,
                                         type = ContractType.EXPENSE,
-                                        totalAmount = null
+                                        totalAmount = null,
+                                        userId = "s-svilla"
                                 ),
                                 // 3. Expired Test: Expired yesterday, check status update to
                                 // EXPIRED
@@ -69,10 +71,10 @@ class FakeContractRepository : ContractRepository {
                                                 localDateToDate(LocalDate.now().minusDays(1)),
                                         endDate = localDateToDate(LocalDate.now().minusDays(1)),
                                         autoRenewEnabled = false,
-                                        status = ContractStatus.ACTIVE, // Logic should flip this to
                                         // EXPIRED
                                         type = ContractType.EXPENSE,
-                                        totalAmount = null
+                                        totalAmount = null,
+                                        userId = "s-svilla"
                                 ),
                                 // 4. Cancelled
                                 Contract(
@@ -85,12 +87,17 @@ class FakeContractRepository : ContractRepository {
                                         endDate = localDateToDate(LocalDate.now().minusMonths(1)),
                                         status = ContractStatus.CANCELLED,
                                         type = ContractType.DEBT,
-                                        totalAmount = 2400.0
+                                        totalAmount = 2400.0,
+                                        userId = "villavicencioandrs"
                                 )
                         )
                 )
 
         override fun getAllContracts(): Flow<List<Contract>> = _contracts
+
+        override fun getContractsForUser(userId: String): Flow<List<Contract>> {
+                return _contracts.map { list -> list.filter { it.userId == userId } }
+        }
 
         override fun getContractById(id: String): Flow<Contract?> =
                 _contracts.map { list -> list.find { it.id == id } }
