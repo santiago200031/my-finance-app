@@ -7,16 +7,35 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class FakeUserRepository : UserRepository {
-        // Simulate single user
         private val _user =
                 MutableStateFlow(
                         User(
-                                id = "1",
+                                id = "s-svilla",
                                 email = "s-svilla@haw-landshut.de",
                                 firstName = "Santiago",
                                 lastName = "Villavicencio"
                         )
                 )
+
+        override fun setCurrentUser(userId: String) {
+                if (userId == "villavicencioandrs") {
+                        _user.value =
+                                User(
+                                        id = "villavicencioandrs",
+                                        email = "villavicencioandrs@gmail.com",
+                                        firstName = "Santiago",
+                                        lastName = "Villavicencio"
+                                )
+                } else {
+                        _user.value =
+                                User(
+                                        id = "s-svilla",
+                                        email = "s-svilla@haw-landshut.de",
+                                        firstName = "Santiago",
+                                        lastName = "Villavicencio"
+                                )
+                }
+        }
 
         override fun getCurrentUser(): Flow<User?> = _user.asStateFlow()
 

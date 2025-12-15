@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.ImportExport
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Share
@@ -73,7 +74,10 @@ fun SettingsScreen(
                                 dateFormat = uiState.user?.settings?.dateFormat ?: "MM/DD/YYYY"
                         )
 
-                        DataManagementSection(onSharingSettingsClick = onSharingSettingsClick)
+                        DataManagementSection(
+                                onSharingSettingsClick = onSharingSettingsClick,
+                                onSwitchUserClick = viewModel::switchUser
+                        )
                 }
         }
 }
@@ -206,7 +210,7 @@ fun LocalizationSection(language: String, currency: String, dateFormat: String) 
 }
 
 @Composable
-fun DataManagementSection(onSharingSettingsClick: () -> Unit) {
+fun DataManagementSection(onSharingSettingsClick: () -> Unit, onSwitchUserClick: () -> Unit) {
         Column {
                 Text(
                         text = "Data Management",
@@ -230,6 +234,12 @@ fun DataManagementSection(onSharingSettingsClick: () -> Unit) {
                                         icon = Icons.Default.Share,
                                         label = "Sharing Settings",
                                         onClick = onSharingSettingsClick
+                                )
+                                CustomDivider()
+                                SettingsItem(
+                                        icon = Icons.Default.ImportExport,
+                                        label = "Switch User",
+                                        onClick = onSwitchUserClick
                                 )
                         }
                 }

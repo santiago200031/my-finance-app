@@ -33,4 +33,10 @@ class SettingsViewModel(private val userRepository: UserRepository) : ViewModel(
             }
         }
     }
+
+    fun switchUser() {
+        val currentId = uiState.value.user?.id
+        val nextId = if (currentId == "villavicencioandrs") "s-svilla" else "villavicencioandrs"
+        userRepository.setCurrentUser(nextId)
+    }
 }
