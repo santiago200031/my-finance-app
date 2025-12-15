@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mobilecomputing.myfinance.data.FinanceFilter
 import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.repository.CategoryRepository
-import com.mobilecomputing.myfinance.data.repository.EntryRepository
+import com.mobilecomputing.myfinance.data.service.EntryService
 import com.mobilecomputing.myfinance.ui.models.TransactionUiModel
 import com.mobilecomputing.myfinance.utils.DateUtils
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +21,7 @@ data class EntriesUiState(
 )
 
 class EntriesViewModel(
-        private val entryRepository: EntryRepository,
+        private val entryService: EntryService,
         private val categoryRepository: CategoryRepository
 ) : ViewModel() {
 
@@ -30,7 +30,7 @@ class EntriesViewModel(
 
         val uiState: StateFlow<EntriesUiState> =
                 combine(
-                                entryRepository.getAllEntries(),
+                                entryService.getAllEntries(),
                                 categoryRepository.getAllCategories(),
                                 _filter
                         ) { entries, categories, filter ->

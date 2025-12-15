@@ -19,19 +19,19 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             DashboardViewModel(
-                    myFinanceApplication().container.entryRepository,
+                    myFinanceApplication().container.entryService,
                     myFinanceApplication().container.categoryRepository
             )
         }
         initializer {
             EntriesViewModel(
-                    myFinanceApplication().container.entryRepository,
+                    myFinanceApplication().container.entryService,
                     myFinanceApplication().container.categoryRepository
             )
         }
         initializer {
             AddEntryViewModel(
-                    myFinanceApplication().container.entryRepository,
+                    myFinanceApplication().container.entryService,
                     myFinanceApplication().container.categoryRepository
             )
         }
@@ -64,7 +64,7 @@ object AppViewModelProvider {
         }
         initializer {
             AnalysisViewModel(
-                    myFinanceApplication().container.entryRepository,
+                    myFinanceApplication().container.entryService,
                     myFinanceApplication().container.contractRepository,
                     myFinanceApplication().container.contractService
             )

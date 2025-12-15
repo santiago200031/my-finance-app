@@ -10,9 +10,10 @@ import com.mobilecomputing.myfinance.data.repository.UserPreferencesRepository
 import com.mobilecomputing.myfinance.data.repository.UserRepository
 import com.mobilecomputing.myfinance.data.repository.impl.FakeCategoryRepository
 import com.mobilecomputing.myfinance.data.repository.impl.FakeContractRepository
-import com.mobilecomputing.myfinance.data.repository.impl.FakeEntryRepository
 import com.mobilecomputing.myfinance.data.repository.impl.FakeReminderRepository
+import com.mobilecomputing.myfinance.data.repository.impl.FirestoreEntryRepository
 import com.mobilecomputing.myfinance.data.repository.impl.FirestoreUserRepository
+import com.mobilecomputing.myfinance.data.service.EntryService
 import com.mobilecomputing.myfinance.domain.ContractService
 
 interface AppContainer {
@@ -22,10 +23,14 @@ interface AppContainer {
         val userRepository: UserRepository
         val contractService: ContractService
         val reminderRepository: ReminderRepository
+        val entryService: EntryService
 }
 
 class DefaultAppContainer(private val context: Context) : AppContainer {
-        override val entryRepository: EntryRepository by lazy { FakeEntryRepository() }
+        override val entryRepository: EntryRepository by lazy {
+                FirestoreEntryRepository(UserPreferencesRepository(context))
+        }
+        override val entryService: EntryService by lazy { EntryService(entryRepository) }
         override val categoryRepository: CategoryRepository by lazy { FakeCategoryRepository() }
         override val contractRepository: ContractRepository by lazy { FakeContractRepository() }
         override val userRepository: UserRepository by lazy {

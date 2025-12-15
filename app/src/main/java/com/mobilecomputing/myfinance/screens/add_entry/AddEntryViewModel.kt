@@ -6,15 +6,15 @@ import com.mobilecomputing.myfinance.data.category.Category
 import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.entry.Entry
 import com.mobilecomputing.myfinance.data.repository.CategoryRepository
-import com.mobilecomputing.myfinance.data.repository.EntryRepository
+import com.mobilecomputing.myfinance.data.service.EntryService
+import java.util.Date
+import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.util.UUID
 
 data class AddEntryUiState(
         val amount: String = "",
@@ -27,7 +27,7 @@ data class AddEntryUiState(
 )
 
 class AddEntryViewModel(
-        private val entryRepository: EntryRepository,
+        private val entryService: EntryService,
         private val categoryRepository: CategoryRepository
 ) : ViewModel() {
 
@@ -68,9 +68,8 @@ class AddEntryViewModel(
 
     fun loadEntry(entryId: String) {
         viewModelScope.launch {
-            val entry = entryRepository.getEntryById(entryId).first()
+            val entry = entryService.getEntryById(entryId).first()
             if (entry != null) {
-                // Ensure imports are correct and Entry has id
                 _uiState.update {
                     it.copy(
                             amount = entry.amount.toString(),
@@ -103,13 +102,13 @@ class AddEntryViewModel(
                                 description = currentState.description,
                                 categoryId = currentState.selectedCategory.id,
                                 type = currentState.selectedType,
-                                date = LocalDateTime.now() // Overwriting date on edit as discussed
+                                date = Date() // Overwriting date on edit as discussed
                         )
 
                 if (currentState.entryId != null) {
-                    entryRepository.updateEntry(newEntry)
+                    entryService.updateEntry(newEntry)
                 } else {
-                    entryRepository.addEntry(newEntry)
+                    entryService.addEntry(newEntry)
                 }
                 _uiState.update { it.copy(isSaved = true) }
             }
@@ -120,7 +119,7 @@ class AddEntryViewModel(
         val entryId = _uiState.value.entryId
         if (entryId != null) {
             viewModelScope.launch {
-                entryRepository.deleteEntry(entryId)
+                entryService.deleteEntry(entryId)
                 _uiState.update { it.copy(isSaved = true) }
             }
         }

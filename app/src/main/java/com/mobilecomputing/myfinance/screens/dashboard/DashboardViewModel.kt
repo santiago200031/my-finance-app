@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.repository.CategoryRepository
-import com.mobilecomputing.myfinance.data.repository.EntryRepository
+import com.mobilecomputing.myfinance.data.service.EntryService
 import com.mobilecomputing.myfinance.ui.models.TransactionUiModel
 import com.mobilecomputing.myfinance.utils.DateUtils
 import kotlinx.coroutines.flow.SharingStarted
@@ -20,12 +20,12 @@ data class DashboardUiState(
 )
 
 class DashboardViewModel(
-        private val entryRepository: EntryRepository,
+        private val entryService: EntryService,
         private val categoryRepository: CategoryRepository
 ) : ViewModel() {
 
         val uiState: StateFlow<DashboardUiState> =
-                combine(entryRepository.getAllEntries(), categoryRepository.getAllCategories()) {
+                combine(entryService.getAllEntries(), categoryRepository.getAllCategories()) {
                                 entries,
                                 categories ->
                                 val totalIncome =
