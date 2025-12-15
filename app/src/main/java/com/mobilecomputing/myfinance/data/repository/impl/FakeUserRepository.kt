@@ -1,12 +1,19 @@
 package com.mobilecomputing.myfinance.data.repository.impl
 
 import com.mobilecomputing.myfinance.data.models.User
+import com.mobilecomputing.myfinance.data.repository.UserPreferencesRepository
 import com.mobilecomputing.myfinance.data.repository.UserRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
-class FakeUserRepository : UserRepository {
+class FakeUserRepository(private val userPreferencesRepository: UserPreferencesRepository) :
+        UserRepository {
+        private val scope = CoroutineScope(Dispatchers.IO)
         private val _user =
                 MutableStateFlow(
                         User(
@@ -17,7 +24,17 @@ class FakeUserRepository : UserRepository {
                         )
                 )
 
-        override fun setCurrentUser(userId: String) {
+        init {
+                scope.launch {
+                        userPreferencesRepository.currentUserId.collect { userId ->
+                                if (userId != null) {
+                                        updateUserParams(userId)
+                                }
+                        }
+                }
+        }
+
+        private fun updateUserParams(userId: String) {
                 if (userId == "villavicencioandrs") {
                         _user.value =
                                 User(
@@ -35,6 +52,10 @@ class FakeUserRepository : UserRepository {
                                         lastName = "Villavicencio"
                                 )
                 }
+        }
+
+        override fun setCurrentUser(userId: String) {
+                scope.launch { userPreferencesRepository.saveCurrentUserId(userId) }
         }
 
         override fun getCurrentUser(): Flow<User?> = _user.asStateFlow()
