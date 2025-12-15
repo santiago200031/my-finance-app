@@ -3,16 +3,16 @@ package com.mobilecomputing.myfinance.screens.reminders
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mobilecomputing.myfinance.data.reminder.Reminder
-import com.mobilecomputing.myfinance.data.repository.ContractRepository
 import com.mobilecomputing.myfinance.data.repository.ReminderRepository
+import com.mobilecomputing.myfinance.data.service.ContractService
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 
 data class ReminderUiItem(
         val reminder: Reminder,
@@ -23,16 +23,15 @@ data class ReminderUiItem(
 
 class RemindersViewModel(
         private val reminderRepository: ReminderRepository,
-        private val contractRepository: ContractRepository
+        private val contractService: ContractService
 ) : ViewModel() {
 
         private val _uiState = MutableStateFlow(RemindersUiState())
 
         val uiState: StateFlow<RemindersUiState> =
-                combine(
-                                reminderRepository.getAllReminders(),
-                                contractRepository.getAllContracts()
-                        ) { reminders, contracts ->
+                combine(reminderRepository.getAllReminders(), contractService.getAllContracts()) {
+                                reminders,
+                                contracts ->
                                 val activeReminders =
                                         reminders
                                                 .mapNotNull { reminder ->

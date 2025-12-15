@@ -5,9 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.mobilecomputing.myfinance.data.FinanceFilter
 import com.mobilecomputing.myfinance.data.contract.Contract
 import com.mobilecomputing.myfinance.data.contract.ContractType
-import com.mobilecomputing.myfinance.data.repository.ContractRepository
 import com.mobilecomputing.myfinance.data.repository.UserRepository
-import com.mobilecomputing.myfinance.domain.ContractService
+import com.mobilecomputing.myfinance.data.service.ContractService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -28,7 +27,6 @@ data class ContractsUiState(
 )
 
 class ContractsViewModel(
-        private val contractRepository: ContractRepository,
         private val contractService: ContractService,
         private val userRepository: UserRepository
 ) : ViewModel() {
@@ -41,9 +39,9 @@ class ContractsViewModel(
                     .flatMapLatest { (userId, filter) ->
                         val contractsFlow =
                                 if (userId == null) {
-                                    contractRepository.getAllContracts()
+                                    contractService.getAllContracts()
                                 } else {
-                                    contractRepository.getContractsForUser(userId)
+                                    contractService.getContractsForUser(userId)
                                 }
 
                         contractsFlow.map { contracts ->
@@ -80,12 +78,12 @@ class ContractsViewModel(
 
     fun refreshContractStatuses() {
         viewModelScope.launch {
-            val currentContracts = contractRepository.getAllContracts().first()
+            val currentContracts = contractService.getAllContracts().first()
 
             currentContracts.forEach { contract ->
                 val updatedContract = contractService.checkContractStatus(contract)
                 if (updatedContract != contract) {
-                    contractRepository.updateContract(updatedContract)
+                    contractService.updateContract(updatedContract)
                 }
             }
         }

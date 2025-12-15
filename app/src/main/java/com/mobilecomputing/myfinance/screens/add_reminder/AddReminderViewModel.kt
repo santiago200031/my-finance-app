@@ -4,19 +4,19 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mobilecomputing.myfinance.data.contract.Contract
 import com.mobilecomputing.myfinance.data.reminder.Reminder
-import com.mobilecomputing.myfinance.data.repository.ContractRepository
 import com.mobilecomputing.myfinance.data.repository.ReminderRepository
+import com.mobilecomputing.myfinance.data.service.ContractService
+import java.time.LocalDate
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 
 class AddReminderViewModel(
         private val reminderRepository: ReminderRepository,
-        private val contractRepository: ContractRepository
+        private val contractService: ContractService
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddReminderUiState())
@@ -28,7 +28,7 @@ class AddReminderViewModel(
 
     private fun loadContracts() {
         viewModelScope.launch {
-            val contracts = contractRepository.getAllContracts().first()
+            val contracts = contractService.getAllContracts().first()
             _uiState.update { it.copy(availableContracts = contracts) }
         }
     }

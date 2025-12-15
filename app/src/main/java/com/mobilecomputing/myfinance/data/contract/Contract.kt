@@ -17,6 +17,6 @@ data class Contract(
         val status: ContractStatus = ContractStatus.ACTIVE,
         val autoRenewEnabled: Boolean = true,
         val nextPaymentDate: Date = Date(),
-        val totalAmount: Double?,
+        val totalAmount: Double? = null,
         val userId: String = ""
 )

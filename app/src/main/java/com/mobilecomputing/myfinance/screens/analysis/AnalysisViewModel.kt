@@ -3,9 +3,8 @@ package com.mobilecomputing.myfinance.screens.analysis
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mobilecomputing.myfinance.data.contract.ContractType
-import com.mobilecomputing.myfinance.data.repository.ContractRepository
+import com.mobilecomputing.myfinance.data.service.ContractService
 import com.mobilecomputing.myfinance.data.service.EntryService
-import com.mobilecomputing.myfinance.domain.ContractService
 import java.time.LocalDate
 import java.time.ZoneId
 import kotlinx.coroutines.flow.SharingStarted
@@ -21,12 +20,11 @@ data class AnalysisUiState(
 
 class AnalysisViewModel(
         private val entryService: EntryService,
-        private val contractRepository: ContractRepository,
         private val contractService: ContractService
 ) : ViewModel() {
 
         val uiState: StateFlow<AnalysisUiState> =
-                combine(entryService.getAllEntries(), contractRepository.getAllContracts()) {
+                combine(entryService.getAllEntries(), contractService.getAllContracts()) {
                                 entries,
                                 contracts ->
                                 val now = LocalDate.now()

@@ -37,14 +37,12 @@ object AppViewModelProvider {
         }
         initializer {
             ContractsViewModel(
-                    myFinanceApplication().container.contractRepository,
                     myFinanceApplication().container.contractService,
                     myFinanceApplication().container.userRepository
             )
         }
         initializer {
             AddContractViewModel(
-                    myFinanceApplication().container.contractRepository,
                     myFinanceApplication().container.contractService,
                     myFinanceApplication().container.reminderRepository,
                     myFinanceApplication().container.userRepository
@@ -53,19 +51,18 @@ object AppViewModelProvider {
         initializer {
             RemindersViewModel(
                     myFinanceApplication().container.reminderRepository,
-                    myFinanceApplication().container.contractRepository
+                    myFinanceApplication().container.contractService
             )
         }
         initializer {
             AddReminderViewModel(
                     myFinanceApplication().container.reminderRepository,
-                    myFinanceApplication().container.contractRepository
+                    myFinanceApplication().container.contractService
             )
         }
         initializer {
             AnalysisViewModel(
                     myFinanceApplication().container.entryService,
-                    myFinanceApplication().container.contractRepository,
                     myFinanceApplication().container.contractService
             )
         }
