@@ -39,4 +39,8 @@ class SettingsViewModel(private val userRepository: UserRepository) : ViewModel(
         val nextId = if (currentId == "villavicencioandrs") "s-svilla" else "villavicencioandrs"
         userRepository.setCurrentUser(nextId)
     }
+
+    fun addTrustedEmail(email: String) {
+        viewModelScope.launch { userRepository.addTrustedEmail(email) }
+    }
 }

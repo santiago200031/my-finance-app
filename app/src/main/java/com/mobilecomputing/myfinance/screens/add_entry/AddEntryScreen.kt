@@ -16,9 +16,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -31,10 +33,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mobilecomputing.myfinance.data.contract.ContractType
+import com.mobilecomputing.myfinance.data.entry.EntryType
 import com.mobilecomputing.myfinance.ui.AppViewModelProvider
+import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable
 fun AddEntryScreen(
@@ -59,20 +61,20 @@ fun AddEntryScreen(
     }
 
     Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.fillMaxSize().padding(AppConstants.PADDING_MEDIUM).verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_MEDIUM)
     ) {
         Text(
                 text = if (entryId != null) "Edit Entry" else "Add New Entry",
-                style = androidx.compose.material3.MaterialTheme.typography.headlineMedium
+                style = MaterialTheme.typography.headlineMedium
         )
 
         // Type Selection (Income / Expense)
         Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL)
         ) {
-            ContractType.entries.filter { it != ContractType.DEBT }.forEach { type ->
+            EntryType.entries.forEach { type ->
                 val isSelected = uiState.selectedType == type
                 if (isSelected) {
                     Button(
@@ -132,7 +134,7 @@ fun AddEntryScreen(
                 modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(AppConstants.PADDING_MEDIUM))
 
         // Save Button
         Button(
@@ -146,9 +148,9 @@ fun AddEntryScreen(
                     onClick = viewModel::deleteEntry,
                     modifier = Modifier.fillMaxWidth(),
                     colors =
-                            androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+                            ButtonDefaults.outlinedButtonColors(
                                     contentColor =
-                                            androidx.compose.material3.MaterialTheme.colorScheme
+                                            MaterialTheme.colorScheme
                                                     .error
                             )
             ) { Text("Delete Entry") }

@@ -8,7 +8,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class FakeUserRepository(private val userPreferencesRepository: UserPreferencesRepository) :
@@ -74,5 +73,33 @@ class FakeUserRepository(private val userPreferencesRepository: UserPreferencesR
                         )
                 }
                 return if (_user.value.email == email) _user.value else null
+        }
+
+        override suspend fun addTrustedEmail(email: String) {
+                val currentUser = _user.value
+                val newTrustedEmails = currentUser.trustedEmails + email
+                _user.value = currentUser.copy(trustedEmails = newTrustedEmails)
+        }
+
+        override suspend fun getUserById(userId: String): User? {
+                if (userId == "villavicencioandrs") {
+                        return User(
+                                id = "villavicencioandrs",
+                                email = "villavicencioandrs@gmail.com",
+                                firstName = "Santiago",
+                                lastName = "Villavicencio",
+                                trustedEmails =
+                                        listOf("s-svilla@haw-landshut.de") // Mock trust for testing
+                        )
+                } else if (userId == "s-svilla") {
+                        return User(
+                                id = "s-svilla",
+                                email = "s-svilla@haw-landshut.de",
+                                firstName = "Santiago",
+                                lastName = "Villavicencio",
+                                trustedEmails = listOf("villavicencioandrs@gmail.com")
+                        )
+                }
+                return if (_user.value.id == userId) _user.value else null
         }
 }

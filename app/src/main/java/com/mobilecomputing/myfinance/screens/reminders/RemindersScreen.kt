@@ -74,14 +74,14 @@ fun RemindersScreenContent(
                                 contentDescription = null,
                                 tint = Color.White
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(AppConstants.PADDING_SMALL))
                         Text(
                                 "Active Reminders",
                                 color = Color.White,
                                 style = MaterialTheme.typography.titleMedium
                         )
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
                     Text(
                             text = "${uiState.activeCount}",
                             style = MaterialTheme.typography.displayMedium,
@@ -103,7 +103,7 @@ fun RemindersScreenContent(
 
             LazyColumn(
                     modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_MEDIUM)
             ) {
                 items(uiState.reminders) { item ->
                     ReminderItem(
@@ -118,14 +118,14 @@ fun RemindersScreenContent(
             Button(
                     onClick = onAddReminderClick,
                     modifier = Modifier.fillMaxWidth().height(56.dp),
-                    shape = RoundedCornerShape(28.dp),
+                    shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_BUTTON),
                     colors =
                             androidx.compose.material3.ButtonDefaults.buttonColors(
                                     containerColor = PrimaryPurple
                             )
             ) {
                 Icon(Icons.Default.Notifications, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(AppConstants.PADDING_SMALL))
                 Text("Add New Reminder")
             }
         }

@@ -1,18 +1,18 @@
 package com.mobilecomputing.myfinance.data.repository.impl
 
-import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.entry.Entry
+import com.mobilecomputing.myfinance.data.entry.EntryType
 import com.mobilecomputing.myfinance.data.repository.EntryRepository
-import java.util.Date
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import java.util.Date
 
 class FakeEntryRepository : EntryRepository {
         // Seed data
         private val _entries =
-                MutableStateFlow<List<Entry>>(
+                MutableStateFlow(
                         listOf(
                                 Entry(
                                         id = "1",
@@ -20,7 +20,7 @@ class FakeEntryRepository : EntryRepository {
                                         amount = 2500.0,
                                         description = "Monthly Salary",
                                         date = Date(),
-                                        type = ContractType.INCOME
+                                        type = EntryType.INCOME
                                 ),
                                 Entry(
                                         id = "2",
@@ -28,7 +28,7 @@ class FakeEntryRepository : EntryRepository {
                                         amount = 15.50,
                                         description = "Lunch at Burger King",
                                         date = Date(),
-                                        type = ContractType.EXPENSE
+                                        type = EntryType.EXPENSE
                                 ),
                                 Entry(
                                         id = "3",
@@ -36,7 +36,7 @@ class FakeEntryRepository : EntryRepository {
                                         amount = 50.0,
                                         description = "Fuel",
                                         date = Date(),
-                                        type = ContractType.EXPENSE
+                                        type = EntryType.EXPENSE
                                 )
                         )
                 )

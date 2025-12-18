@@ -32,6 +32,7 @@ import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.contract.PaymentCycle
 import com.mobilecomputing.myfinance.ui.theme.GreenIncome
 import com.mobilecomputing.myfinance.ui.theme.Orange
+import com.mobilecomputing.myfinance.utils.AppConstants
 import com.mobilecomputing.myfinance.utils.DateUtils
 import com.mobilecomputing.myfinance.utils.FormatUtils
 import java.time.LocalDate
@@ -41,7 +42,6 @@ import java.util.Date
 
 @Composable
 fun ContractItem(contract: Contract, onContractClick: () -> Unit = {}) {
-        // Check expiring logic for UI badge (simulates service logic)
         val isExpiring =
                 contract.status == ContractStatus.ACTIVE &&
                         contract.endDate != null &&
@@ -55,13 +55,13 @@ fun ContractItem(contract: Contract, onContractClick: () -> Unit = {}) {
 
         Card(
                 modifier =
-                        Modifier.fillMaxWidth().padding(horizontal = 16.dp).clickable {
+                        Modifier.fillMaxWidth().padding(horizontal = AppConstants.PADDING_MEDIUM).clickable {
                                 onContractClick()
                         },
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
-                Column(modifier = Modifier.padding(16.dp).fillMaxWidth()) {
+                Column(modifier = Modifier.padding(AppConstants.PADDING_MEDIUM).fillMaxWidth()) {
                         // Header: Title and Status Badge
                         Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -90,9 +90,9 @@ fun ContractItem(contract: Contract, onContractClick: () -> Unit = {}) {
                                                                         badgeColor.copy(
                                                                                 alpha = 0.1f
                                                                         ),
-                                                                shape = RoundedCornerShape(16.dp)
+                                                                shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_MEDIUM)
                                                         )
-                                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                                        .padding(horizontal = AppConstants.PADDING_SMALL, vertical = 4.dp)
                                 ) {
                                         Row(verticalAlignment = Alignment.CenterVertically) {
                                                 Text(
@@ -109,19 +109,19 @@ fun ContractItem(contract: Contract, onContractClick: () -> Unit = {}) {
                         // Monthly . Cost
                         Text(
                                 text =
-                                        "${contract.paymentCycle.name} • ${FormatUtils.formatAmount(contract.amount)}",
+                                        "${contract.paymentCycle.name} • ${FormatUtils.formatUSAmount(contract.amount)}",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
 
                         // Next Payment
                         Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                         imageVector = Icons.Default.Schedule,
                                         contentDescription = null,
-                                        modifier = Modifier.padding(end = 4.dp).width(16.dp),
+                                        modifier = Modifier.padding(end = 4.dp).width(AppConstants.PADDING_MEDIUM),
                                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Text(
@@ -134,7 +134,7 @@ fun ContractItem(contract: Contract, onContractClick: () -> Unit = {}) {
 
                         // Auto-renew badge
                         if (contract.autoRenewEnabled && contract.status == ContractStatus.ACTIVE) {
-                                Spacer(modifier = Modifier.height(8.dp))
+                                Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
                                 Box(
                                         modifier =
                                                 Modifier.background(
@@ -142,9 +142,9 @@ fun ContractItem(contract: Contract, onContractClick: () -> Unit = {}) {
                                                                         MaterialTheme.colorScheme
                                                                                 .primaryContainer
                                                                                 .copy(alpha = 0.5f),
-                                                                shape = RoundedCornerShape(8.dp)
+                                                                shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_SMALL)
                                                         )
-                                                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                                                        .padding(horizontal = AppConstants.PADDING_SMALL, vertical = 4.dp)
                                 ) {
                                         Text(
                                                 "Auto-renew enabled",

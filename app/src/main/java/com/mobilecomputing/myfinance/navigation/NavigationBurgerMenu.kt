@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable
 fun NavigationBurgerMenu(
@@ -26,7 +27,7 @@ fun NavigationBurgerMenu(
         modifier: Modifier = Modifier
 ) {
     ModalDrawerSheet(modifier = modifier) {
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
 
         NavigationDrawerItem(
                 icon = { Icon(imageVector = Icons.Filled.Alarm, contentDescription = "Reminders") },

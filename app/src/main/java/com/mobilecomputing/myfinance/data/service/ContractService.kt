@@ -5,11 +5,11 @@ import com.mobilecomputing.myfinance.data.contract.ContractStatus
 import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.contract.PaymentCycle
 import com.mobilecomputing.myfinance.data.repository.ContractRepository
+import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import java.util.Date
-import kotlinx.coroutines.flow.Flow
 
 class ContractService(private val contractRepository: ContractRepository) {
 

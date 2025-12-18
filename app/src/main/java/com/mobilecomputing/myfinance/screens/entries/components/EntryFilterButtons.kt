@@ -9,20 +9,20 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.mobilecomputing.myfinance.data.FinanceFilter
+import com.mobilecomputing.myfinance.data.entry.EntryFilter
+import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable
-fun FilterButtons(
-        selectedFilter: FinanceFilter,
-        onFilterSelected: (FinanceFilter) -> Unit,
+fun EntryFilterButtons(
+        selectedFilter: EntryFilter,
+        onFilterSelected: (EntryFilter) -> Unit,
         modifier: Modifier = Modifier
 ) {
     Row(
-            modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = modifier.fillMaxWidth().padding(horizontal = AppConstants.PADDING_MEDIUM),
+            horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL)
     ) {
-        FinanceFilter.entries.forEach { filter ->
+        EntryFilter.entries.forEach { filter ->
             val isSelected = filter == selectedFilter
             if (isSelected) {
                 ElevatedButton(onClick = { onFilterSelected(filter) }) { Text(filter.name) }

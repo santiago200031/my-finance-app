@@ -10,16 +10,16 @@ import com.mobilecomputing.myfinance.data.repository.ReminderRepository
 import com.mobilecomputing.myfinance.data.repository.UserRepository
 import com.mobilecomputing.myfinance.data.service.ContractService
 import com.mobilecomputing.myfinance.utils.DateUtils
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.format.DateTimeParseException
-import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeParseException
+import java.util.Date
 
 data class AddContractUiState(
         val title: String = "",
@@ -126,7 +126,7 @@ class AddContractViewModel(
             var start = LocalDate.now()
             try {
                 start = DateUtils.parseInputDate(currentState.startDate)
-            } catch (e: DateTimeParseException) {
+            } catch (_: DateTimeParseException) {
                 // Fallback to today if parsing fails
             }
 
@@ -134,7 +134,7 @@ class AddContractViewModel(
             if (currentState.expirationDate.isNotBlank()) {
                 try {
                     end = DateUtils.parseInputDate(currentState.expirationDate)
-                } catch (e: DateTimeParseException) {
+                } catch (_: DateTimeParseException) {
                     // Ignore validity check for simplicity
                 }
             }

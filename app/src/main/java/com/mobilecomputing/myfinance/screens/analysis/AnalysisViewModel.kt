@@ -2,15 +2,15 @@ package com.mobilecomputing.myfinance.screens.analysis
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mobilecomputing.myfinance.data.contract.ContractType
+import com.mobilecomputing.myfinance.data.entry.EntryType
 import com.mobilecomputing.myfinance.data.service.ContractService
 import com.mobilecomputing.myfinance.data.service.EntryService
-import java.time.LocalDate
-import java.time.ZoneId
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import java.time.LocalDate
+import java.time.ZoneId
 
 data class AnalysisUiState(
         val currentMonthSpending: Double = 0.0,
@@ -18,10 +18,9 @@ data class AnalysisUiState(
         val totalMonthlyEarnings: Double = 0.0
 )
 
-class AnalysisViewModel(
-        private val entryService: EntryService,
-        private val contractService: ContractService
-) : ViewModel() {
+class AnalysisViewModel(entryService: EntryService,
+                        private val contractService: ContractService) :
+        ViewModel() {
 
         val uiState: StateFlow<AnalysisUiState> =
                 combine(entryService.getAllEntries(), contractService.getAllContracts()) {
@@ -39,10 +38,7 @@ class AnalysisViewModel(
                                         }
 
                                 val spendingEntries =
-                                        currentMonthEntries.filter {
-                                                it.type == ContractType.EXPENSE ||
-                                                        it.type == ContractType.DEBT
-                                        }
+                                        currentMonthEntries.filter { it.type == EntryType.EXPENSE }
                                 val currentMonthSpending = spendingEntries.sumOf { it.amount }
 
                                 // Fixed Contract Expenses (Contracts only, monthly normalized)
@@ -55,7 +51,7 @@ class AnalysisViewModel(
                                         contractService.getTotalMonthlyIncome(contracts)
                                 val entryIncome =
                                         currentMonthEntries
-                                                .filter { it.type == ContractType.INCOME }
+                                                .filter { it.type == EntryType.INCOME }
                                                 .sumOf { it.amount }
 
                                 val totalEarnings = contractIncome + entryIncome

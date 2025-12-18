@@ -1,6 +1,5 @@
 package com.mobilecomputing.myfinance.data.entry
 
-import com.mobilecomputing.myfinance.data.contract.ContractType
 import java.util.Date
 import java.util.UUID
 
@@ -11,5 +10,5 @@ data class Entry(
         val amount: Double = 0.0,
         val date: Date = Date(),
         val description: String? = null,
-        val type: ContractType = ContractType.EXPENSE
+        val type: EntryType = EntryType.EXPENSE
 )

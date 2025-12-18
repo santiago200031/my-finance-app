@@ -23,13 +23,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mobilecomputing.myfinance.data.FinanceFilter
 import com.mobilecomputing.myfinance.data.contract.Contract
+import com.mobilecomputing.myfinance.data.contract.ContractFilter
 import com.mobilecomputing.myfinance.data.contract.ContractStatus
 import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.contract.PaymentCycle
+import com.mobilecomputing.myfinance.screens.contracts.components.ContractFilterButtons
 import com.mobilecomputing.myfinance.screens.contracts.components.ContractItem
-import com.mobilecomputing.myfinance.screens.entries.components.FilterButtons
 import com.mobilecomputing.myfinance.ui.AppViewModelProvider
 import com.mobilecomputing.myfinance.ui.components.SummaryCardsRow
 import com.mobilecomputing.myfinance.utils.AppConstants
@@ -58,7 +58,7 @@ fun ContractsScreenContent(
         uiState: ContractsUiState,
         onAddContractClick: () -> Unit = {},
         onContractClick: (String) -> Unit = {},
-        onFilterSelected: (FinanceFilter) -> Unit = {}
+        onFilterSelected: (ContractFilter) -> Unit = {}
 ) {
         Scaffold(
                 floatingActionButton = {
@@ -78,16 +78,16 @@ fun ContractsScreenContent(
 
                         Spacer(modifier = Modifier.height(AppConstants.PADDING_MEDIUM))
 
-                        FilterButtons(
+                        ContractFilterButtons(
                                 selectedFilter = uiState.filter,
                                 onFilterSelected = onFilterSelected
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
 
                         LazyColumn(
                                 modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL),
                                 contentPadding = PaddingValues(bottom = 80.dp)
                         ) {
                                 items(uiState.contracts) { contract ->

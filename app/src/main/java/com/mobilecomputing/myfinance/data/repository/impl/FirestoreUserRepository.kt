@@ -1,6 +1,7 @@
 package com.mobilecomputing.myfinance.data.repository.impl
 
 import android.util.Log
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.mobilecomputing.myfinance.data.models.User
 import com.mobilecomputing.myfinance.data.repository.UserPreferencesRepository
@@ -103,6 +104,31 @@ class FirestoreUserRepository(
       snapshot.documents.firstOrNull()?.toObject(User::class.java)
     } catch (e: Exception) {
       Log.e("FirestoreUserRepository", "Error fetching user by email", e)
+      null
+    }
+  }
+
+  override suspend fun addTrustedEmail(email: String) {
+    try {
+      usersCollection
+              .document(currentUserIdFlow.value)
+              .update("trustedEmails", FieldValue.arrayUnion(email))
+              .await()
+    } catch (e: Exception) {
+      Log.e("FirestoreUserRepository", "Error adding trusted email", e)
+    }
+  }
+
+  override suspend fun getUserById(userId: String): User? {
+    return try {
+      val snapshot = usersCollection.document(userId).get().await()
+      if (snapshot.exists()) {
+        snapshot.toObject(User::class.java)
+      } else {
+        null
+      }
+    } catch (e: Exception) {
+      Log.e("FirestoreUserRepository", "Error fetching user by id", e)
       null
     }
   }

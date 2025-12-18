@@ -5,14 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.mobilecomputing.myfinance.data.reminder.Reminder
 import com.mobilecomputing.myfinance.data.repository.ReminderRepository
 import com.mobilecomputing.myfinance.data.service.ContractService
-import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 data class ReminderUiItem(
         val reminder: Reminder,

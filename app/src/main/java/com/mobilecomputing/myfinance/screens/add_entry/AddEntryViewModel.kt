@@ -3,24 +3,24 @@ package com.mobilecomputing.myfinance.screens.add_entry
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mobilecomputing.myfinance.data.category.Category
-import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.entry.Entry
+import com.mobilecomputing.myfinance.data.entry.EntryType
 import com.mobilecomputing.myfinance.data.repository.CategoryRepository
 import com.mobilecomputing.myfinance.data.service.EntryService
-import java.util.Date
-import java.util.UUID
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Date
+import java.util.UUID
 
 data class AddEntryUiState(
         val amount: String = "",
         val description: String = "",
         val selectedCategory: Category? = null,
-        val selectedType: ContractType = ContractType.EXPENSE,
+        val selectedType: EntryType = EntryType.EXPENSE,
         val categories: List<Category> = emptyList(),
         val isSaved: Boolean = false,
         val entryId: String? = null
@@ -62,7 +62,7 @@ class AddEntryViewModel(
         _uiState.update { it.copy(selectedCategory = category) }
     }
 
-    fun onTypeSelect(type: ContractType) {
+    fun onTypeSelect(type: EntryType) {
         _uiState.update { it.copy(selectedType = type) }
     }
 
@@ -94,7 +94,6 @@ class AddEntryViewModel(
             viewModelScope.launch {
                 val transactionId = currentState.entryId ?: UUID.randomUUID().toString()
 
-                // Using named arguments, assuming Entry constructor matches
                 val newEntry =
                         Entry(
                                 id = transactionId,
@@ -102,7 +101,7 @@ class AddEntryViewModel(
                                 description = currentState.description,
                                 categoryId = currentState.selectedCategory.id,
                                 type = currentState.selectedType,
-                                date = Date() // Overwriting date on edit as discussed
+                                date = Date()
                         )
 
                 if (currentState.entryId != null) {

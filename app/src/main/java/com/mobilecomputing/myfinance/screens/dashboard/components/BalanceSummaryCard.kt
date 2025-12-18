@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable
 fun BalanceSummaryCard(
@@ -29,7 +30,7 @@ fun BalanceSummaryCard(
                 contentColor = contentColor
             )
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(AppConstants.PADDING_MEDIUM)) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.labelMedium,

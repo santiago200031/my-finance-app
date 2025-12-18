@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable
 fun SummaryCard(title: String, value: String, color: Color, modifier: Modifier = Modifier) {
@@ -19,7 +20,7 @@ fun SummaryCard(title: String, value: String, color: Color, modifier: Modifier =
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(AppConstants.PADDING_MEDIUM)) {
             Text(
                     text = title,
                     style = MaterialTheme.typography.labelMedium,

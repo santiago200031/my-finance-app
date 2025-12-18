@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobilecomputing.myfinance.data.models.User
 import com.mobilecomputing.myfinance.ui.AppViewModelProvider
+import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable
 fun SettingsScreen(
@@ -57,9 +58,9 @@ fun SettingsScreen(
                         modifier =
                                 Modifier.fillMaxSize()
                                         .padding(padding)
-                                        .padding(16.dp)
+                                        .padding(AppConstants.PADDING_MEDIUM)
                                         .verticalScroll(scrollState),
-                        verticalArrangement = Arrangement.spacedBy(24.dp)
+                        verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_LARGE)
                 ) {
                         uiState.user?.let { user -> ProfileCard(user) }
 
@@ -90,7 +91,7 @@ fun ProfileCard(user: User) {
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
                 Row(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(AppConstants.PADDING_MEDIUM),
                         verticalAlignment = Alignment.CenterVertically
                 ) {
                         Box(
@@ -111,7 +112,7 @@ fun ProfileCard(user: User) {
                                 )
                         }
 
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(AppConstants.PADDING_MEDIUM))
 
                         Column {
                                 Text(
@@ -136,7 +137,7 @@ fun AppearanceSection(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
                         text = "Appearance",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier.padding(bottom = AppConstants.PADDING_SMALL)
                 )
 
                 Card(
@@ -155,7 +156,7 @@ fun AppearanceSection(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
                                                 Text(
                                                         text = if (isDarkTheme) "Dark" else "Light",
                                                         style = MaterialTheme.typography.bodyMedium,
-                                                        modifier = Modifier.padding(end = 8.dp)
+                                                        modifier = Modifier.padding(end = AppConstants.PADDING_SMALL)
                                                 )
                                                 Switch(
                                                         checked = isDarkTheme,
@@ -175,7 +176,7 @@ fun LocalizationSection(language: String, currency: String, dateFormat: String) 
                         text = "Localization",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier.padding(bottom = AppConstants.PADDING_SMALL)
                 )
 
                 Card(
@@ -216,7 +217,7 @@ fun DataManagementSection(onSharingSettingsClick: () -> Unit, onSwitchUserClick:
                         text = "Data Management",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier.padding(bottom = AppConstants.PADDING_SMALL)
                 )
 
                 Card(
@@ -255,7 +256,7 @@ fun SettingsItem(
         onClick: () -> Unit = {}
 ) {
         Row(
-                modifier = Modifier.fillMaxWidth().clickable { onClick() }.padding(16.dp),
+                modifier = Modifier.fillMaxWidth().clickable { onClick() }.padding(AppConstants.PADDING_MEDIUM),
                 verticalAlignment = Alignment.CenterVertically
         ) {
                 Icon(
@@ -264,7 +265,7 @@ fun SettingsItem(
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(24.dp)
                 )
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(AppConstants.PADDING_MEDIUM))
                 Text(
                         text = label,
                         style = MaterialTheme.typography.bodyLarge,
