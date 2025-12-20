@@ -9,9 +9,9 @@ import com.mobilecomputing.myfinance.data.repository.ReminderRepository
 import com.mobilecomputing.myfinance.data.repository.UserPreferencesRepository
 import com.mobilecomputing.myfinance.data.repository.UserRepository
 import com.mobilecomputing.myfinance.data.repository.impl.FakeCategoryRepository
-import com.mobilecomputing.myfinance.data.repository.impl.FakeReminderRepository
 import com.mobilecomputing.myfinance.data.repository.impl.FirestoreContractRepository
 import com.mobilecomputing.myfinance.data.repository.impl.FirestoreEntryRepository
+import com.mobilecomputing.myfinance.data.repository.impl.FirestoreReminderRepository
 import com.mobilecomputing.myfinance.data.repository.impl.FirestoreUserRepository
 import com.mobilecomputing.myfinance.data.service.ContractService
 import com.mobilecomputing.myfinance.data.service.EntryService
@@ -60,5 +60,7 @@ class DefaultAppContainer(private val context: Context) : AppContainer {
         override val contractService: ContractService by lazy {
                 ContractService(contractRepository)
         }
-        override val reminderRepository: ReminderRepository by lazy { FakeReminderRepository() }
+        override val reminderRepository: ReminderRepository by lazy { 
+                FirestoreReminderRepository(userPreferencesRepository = userPreferencesRepository) 
+        }
 }

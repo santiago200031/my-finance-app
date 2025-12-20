@@ -5,13 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.mobilecomputing.myfinance.data.reminder.Reminder
 import com.mobilecomputing.myfinance.data.repository.ReminderRepository
 import com.mobilecomputing.myfinance.data.service.ContractService
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
 data class ReminderUiItem(
@@ -23,13 +23,12 @@ data class ReminderUiItem(
 
 class RemindersViewModel(
         private val reminderRepository: ReminderRepository,
-        private val contractService: ContractService
+        contractService: ContractService
 ) : ViewModel() {
 
-        private val _uiState = MutableStateFlow(RemindersUiState())
-
-        val uiState: StateFlow<RemindersUiState> =
-                combine(reminderRepository.getAllReminders(), contractService.getAllContracts()) {
+    val uiState: StateFlow<RemindersUiState> =
+                combine(reminderRepository.getAllReminders(),
+                    contractService.getAllContracts()) {
                                 reminders,
                                 contracts ->
                                 val activeReminders =
@@ -43,7 +42,7 @@ class RemindersViewModel(
                                                                 val daysUntil =
                                                                         ChronoUnit.DAYS.between(
                                                                                 LocalDate.now(),
-                                                                                reminder.reminderDate
+                                                                                reminder.reminderDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
                                                                         )
                                                                 ReminderUiItem(
                                                                         reminder = reminder,

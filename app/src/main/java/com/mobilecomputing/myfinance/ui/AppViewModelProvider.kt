@@ -56,6 +56,7 @@ object AppViewModelProvider {
         }
         initializer {
             AddReminderViewModel(
+                    myFinanceApplication(),
                     myFinanceApplication().container.reminderRepository,
                     myFinanceApplication().container.contractService
             )
