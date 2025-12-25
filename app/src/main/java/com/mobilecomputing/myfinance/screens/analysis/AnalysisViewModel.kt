@@ -13,58 +13,59 @@ import java.time.LocalDate
 import java.time.ZoneId
 
 data class AnalysisUiState(
-        val currentMonthSpending: Double = 0.0,
-        val fixedContractExpenses: Double = 0.0,
-        val totalMonthlyEarnings: Double = 0.0
+    val currentMonthSpending: Double = 0.0,
+    val fixedContractExpenses: Double = 0.0,
+    val totalMonthlyEarnings: Double = 0.0
 )
 
-class AnalysisViewModel(entryService: EntryService,
-                        private val contractService: ContractService) :
-        ViewModel() {
+class AnalysisViewModel(
+    entryService: EntryService,
+    private val contractService: ContractService
+) :
+    ViewModel() {
 
-        val uiState: StateFlow<AnalysisUiState> =
-                combine(entryService.getAllEntries(), contractService.getAllContracts()) {
-                                entries,
-                                contracts ->
-                                val now = LocalDate.now()
+    val uiState: StateFlow<AnalysisUiState> =
+        combine(entryService.getAllEntries(), contractService.getAllContracts()) { entries,
+                                                                                   contracts ->
+            val now = LocalDate.now()
 
-                                val currentMonthEntries =
-                                        entries.filter { entry ->
-                                                val instant = entry.date.toInstant()
-                                                val zonedDateTime =
-                                                        instant.atZone(ZoneId.systemDefault())
-                                                val date = zonedDateTime.toLocalDate()
-                                                date.month == now.month && date.year == now.year
-                                        }
+            val currentMonthEntries =
+                entries.filter { entry ->
+                    val instant = entry.date.toInstant()
+                    val zonedDateTime =
+                        instant.atZone(ZoneId.systemDefault())
+                    val date = zonedDateTime.toLocalDate()
+                    date.month == now.month && date.year == now.year
+                }
 
-                                val spendingEntries =
-                                        currentMonthEntries.filter { it.type == EntryType.EXPENSE }
-                                val currentMonthSpending = spendingEntries.sumOf { it.amount }
+            val spendingEntries =
+                currentMonthEntries.filter { it.type == EntryType.EXPENSE }
+            val currentMonthSpending = spendingEntries.sumOf { it.amount }
 
-                                // Fixed Contract Expenses (Contracts only, monthly normalized)
-                                val fixedContractExpenses =
-                                        contractService.getTotalMonthlyCost(contracts)
+            // Fixed Contract Expenses (Contracts only, monthly normalized)
+            val fixedContractExpenses =
+                contractService.getTotalMonthlyCost(contracts)
 
-                                // Total Monthly Earnings
-                                // Contract Income (Monthly) + Entry Income (Current Month)
-                                val contractIncome =
-                                        contractService.getTotalMonthlyIncome(contracts)
-                                val entryIncome =
-                                        currentMonthEntries
-                                                .filter { it.type == EntryType.INCOME }
-                                                .sumOf { it.amount }
+            // Total Monthly Earnings
+            // Contract Income (Monthly) + Entry Income (Current Month)
+            val contractIncome =
+                contractService.getTotalMonthlyIncome(contracts)
+            val entryIncome =
+                currentMonthEntries
+                    .filter { it.type == EntryType.INCOME }
+                    .sumOf { it.amount }
 
-                                val totalEarnings = contractIncome + entryIncome
+            val totalEarnings = contractIncome + entryIncome
 
-                                AnalysisUiState(
-                                        currentMonthSpending = currentMonthSpending,
-                                        fixedContractExpenses = fixedContractExpenses,
-                                        totalMonthlyEarnings = totalEarnings
-                                )
-                        }
-                        .stateIn(
-                                scope = viewModelScope,
-                                started = SharingStarted.WhileSubscribed(5000),
-                                initialValue = AnalysisUiState()
-                        )
+            AnalysisUiState(
+                currentMonthSpending = currentMonthSpending,
+                fixedContractExpenses = fixedContractExpenses,
+                totalMonthlyEarnings = totalEarnings
+            )
+        }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = AnalysisUiState()
+            )
 }

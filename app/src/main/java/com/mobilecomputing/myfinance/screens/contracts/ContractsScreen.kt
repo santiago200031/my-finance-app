@@ -37,92 +37,94 @@ import java.util.Date
 
 @Composable
 fun ContractsScreen(
-        viewModel: ContractsViewModel = viewModel(factory = AppViewModelProvider.Factory),
-        onAddContractClick: () -> Unit = {},
-        onContractClick: (String) -> Unit = {}
+    viewModel: ContractsViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    onAddContractClick: () -> Unit = {},
+    onContractClick: (String) -> Unit = {}
 ) {
-        val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
-        LaunchedEffect(Unit) { viewModel.refreshContractStatuses() }
+    LaunchedEffect(Unit) { viewModel.refreshContractStatuses() }
 
-        ContractsScreenContent(
-                uiState = uiState,
-                onAddContractClick = onAddContractClick,
-                onContractClick = onContractClick,
-                onFilterSelected = viewModel::onFilterChanged
-        )
+    ContractsScreenContent(
+        uiState = uiState,
+        onAddContractClick = onAddContractClick,
+        onContractClick = onContractClick,
+        onFilterSelected = viewModel::onFilterChanged
+    )
 }
 
 @Composable
 fun ContractsScreenContent(
-        uiState: ContractsUiState,
-        onAddContractClick: () -> Unit = {},
-        onContractClick: (String) -> Unit = {},
-        onFilterSelected: (ContractFilter) -> Unit = {}
+    uiState: ContractsUiState,
+    onAddContractClick: () -> Unit = {},
+    onContractClick: (String) -> Unit = {},
+    onFilterSelected: (ContractFilter) -> Unit = {}
 ) {
-        Scaffold(
-                floatingActionButton = {
-                        FloatingActionButton(onClick = onAddContractClick) {
-                                Icon(Icons.Default.Add, contentDescription = "Add Contract")
-                        }
-                }
-        ) { padding ->
-                Column(modifier = Modifier.fillMaxSize().padding(padding)) {
-
-                        // Summary Dashboard
-                        SummaryCardsRow(
-                                activeCount = uiState.activeCount,
-                                expiringCount = uiState.expiringCount,
-                                monthlyNetValue = uiState.monthlyNetValue
-                        )
-
-                        Spacer(modifier = Modifier.height(AppConstants.PADDING_MEDIUM))
-
-                        ContractFilterButtons(
-                                selectedFilter = uiState.filter,
-                                onFilterSelected = onFilterSelected
-                        )
-
-                        Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
-
-                        LazyColumn(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL),
-                                contentPadding = PaddingValues(bottom = 80.dp)
-                        ) {
-                                items(uiState.contracts) { contract ->
-                                        ContractItem(
-                                                contract,
-                                                onContractClick = { onContractClick(contract.id) }
-                                        )
-                                }
-                        }
-                }
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(onClick = onAddContractClick) {
+                Icon(Icons.Default.Add, contentDescription = "Add Contract")
+            }
         }
+    ) { padding ->
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)) {
+
+            // Summary Dashboard
+            SummaryCardsRow(
+                activeCount = uiState.activeCount,
+                expiringCount = uiState.expiringCount,
+                monthlyNetValue = uiState.monthlyNetValue
+            )
+
+            Spacer(modifier = Modifier.height(AppConstants.PADDING_MEDIUM))
+
+            ContractFilterButtons(
+                selectedFilter = uiState.filter,
+                onFilterSelected = onFilterSelected
+            )
+
+            Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
+
+            LazyColumn(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL),
+                contentPadding = PaddingValues(bottom = 80.dp)
+            ) {
+                items(uiState.contracts) { contract ->
+                    ContractItem(
+                        contract,
+                        onContractClick = { onContractClick(contract.id) }
+                    )
+                }
+            }
+        }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun ContractsScreenPreview() {
-        val dummyState =
-                ContractsUiState(
-                        contracts =
-                                listOf(
-                                        Contract(
-                                                id = "1",
-                                                title = "Netflix",
-                                                amount = 12.99,
-                                                paymentCycle = PaymentCycle.MONTHLY,
-                                                type = ContractType.EXPENSE,
-                                                startDate = Date(),
-                                                status = ContractStatus.ACTIVE,
-                                                nextPaymentDate = Date(),
-                                                totalAmount = null
-                                        )
-                                ),
-                        activeCount = 1,
-                        expiringCount = 0,
-                        monthlyNetValue = -12.99
-                )
-        ContractsScreenContent(uiState = dummyState)
+    val dummyState =
+        ContractsUiState(
+            contracts =
+                listOf(
+                    Contract(
+                        id = "1",
+                        title = "Netflix",
+                        amount = 12.99,
+                        paymentCycle = PaymentCycle.MONTHLY,
+                        type = ContractType.EXPENSE,
+                        startDate = Date(),
+                        status = ContractStatus.ACTIVE,
+                        nextPaymentDate = Date(),
+                        totalAmount = null
+                    )
+                ),
+            activeCount = 1,
+            expiringCount = 0,
+            monthlyNetValue = -12.99
+        )
+    ContractsScreenContent(uiState = dummyState)
 }

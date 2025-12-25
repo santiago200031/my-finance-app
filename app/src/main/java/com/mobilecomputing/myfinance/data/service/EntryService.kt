@@ -6,19 +6,19 @@ import kotlinx.coroutines.flow.Flow
 
 class EntryService(private val entryRepository: EntryRepository) {
 
-  fun getAllEntries(): Flow<List<Entry>> = entryRepository.getAllEntries()
+    fun getAllEntries(): Flow<List<Entry>> = entryRepository.getAllEntries()
 
-  fun getEntryById(id: String): Flow<Entry?> = entryRepository.getEntryById(id)
+    fun getEntryById(id: String): Flow<Entry?> = entryRepository.getEntryById(id)
 
-  suspend fun addEntry(entry: Entry) {
-    entryRepository.addEntry(entry)
-  }
+    suspend fun addEntry(entry: Entry) {
+        entryRepository.addEntry(entry)
+    }
 
-  suspend fun updateEntry(entry: Entry) {
-    entryRepository.updateEntry(entry)
-  }
+    suspend fun updateEntry(entry: Entry) {
+        entryRepository.updateEntry(entry)
+    }
 
-  suspend fun deleteEntry(id: String) {
-    entryRepository.deleteEntry(id)
-  }
+    suspend fun deleteEntry(id: String) {
+        entryRepository.deleteEntry(id)
+    }
 }

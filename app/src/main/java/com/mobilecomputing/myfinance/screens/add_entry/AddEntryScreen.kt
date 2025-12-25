@@ -40,9 +40,9 @@ import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable
 fun AddEntryScreen(
-        viewModel: AddEntryViewModel = viewModel(factory = AppViewModelProvider.Factory),
-        navigateBack: () -> Unit = {},
-        entryId: String? = null
+    viewModel: AddEntryViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    navigateBack: () -> Unit = {},
+    entryId: String? = null
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var expanded by remember { mutableStateOf(false) }
@@ -61,30 +61,33 @@ fun AddEntryScreen(
     }
 
     Column(
-            modifier = Modifier.fillMaxSize().padding(AppConstants.PADDING_MEDIUM).verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_MEDIUM)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(AppConstants.PADDING_MEDIUM)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_MEDIUM)
     ) {
         Text(
-                text = if (entryId != null) "Edit Entry" else "Add New Entry",
-                style = MaterialTheme.typography.headlineMedium
+            text = if (entryId != null) "Edit Entry" else "Add New Entry",
+            style = MaterialTheme.typography.headlineMedium
         )
 
         // Type Selection (Income / Expense)
         Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL)
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL)
         ) {
             EntryType.entries.forEach { type ->
                 val isSelected = uiState.selectedType == type
                 if (isSelected) {
                     Button(
-                            onClick = { viewModel.onTypeSelect(type) },
-                            modifier = Modifier.weight(1f)
+                        onClick = { viewModel.onTypeSelect(type) },
+                        modifier = Modifier.weight(1f)
                     ) { Text(type.name) }
                 } else {
                     OutlinedButton(
-                            onClick = { viewModel.onTypeSelect(type) },
-                            modifier = Modifier.weight(1f)
+                        onClick = { viewModel.onTypeSelect(type) },
+                        modifier = Modifier.weight(1f)
                     ) { Text(type.name) }
                 }
             }
@@ -92,67 +95,71 @@ fun AddEntryScreen(
 
         // Amount Input
         OutlinedTextField(
-                value = uiState.amount,
-                onValueChange = viewModel::onAmountChange,
-                label = { Text("Amount") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
+            value = uiState.amount,
+            onValueChange = viewModel::onAmountChange,
+            label = { Text("Amount") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.fillMaxWidth()
         )
 
         // Category Selection
         Box(modifier = Modifier.fillMaxWidth()) {
             OutlinedTextField(
-                    value = uiState.selectedCategory?.title ?: "Select Category",
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("Category") },
-                    trailingIcon = {
-                        Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
-                    },
-                    modifier = Modifier.fillMaxWidth().clickable { expanded = true }
+                value = uiState.selectedCategory?.title ?: "Select Category",
+                onValueChange = {},
+                readOnly = true,
+                label = { Text("Category") },
+                trailingIcon = {
+                    Icon(Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { expanded = true }
             )
             DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                 uiState.categories.forEach { category ->
                     DropdownMenuItem(
-                            text = { Text(category.title) },
-                            onClick = {
-                                viewModel.onCategorySelect(category)
-                                expanded = false
-                            }
+                        text = { Text(category.title) },
+                        onClick = {
+                            viewModel.onCategorySelect(category)
+                            expanded = false
+                        }
                     )
                 }
             }
             // Transparent overlay to capture clicks for dropdown
-            Box(modifier = Modifier.matchParentSize().clickable { expanded = true })
+            Box(modifier = Modifier
+                .matchParentSize()
+                .clickable { expanded = true })
         }
 
         // Description Input
         OutlinedTextField(
-                value = uiState.description,
-                onValueChange = viewModel::onDescriptionChange,
-                label = { Text("Description (Optional)") },
-                modifier = Modifier.fillMaxWidth()
+            value = uiState.description,
+            onValueChange = viewModel::onDescriptionChange,
+            label = { Text("Description (Optional)") },
+            modifier = Modifier.fillMaxWidth()
         )
 
         Spacer(modifier = Modifier.height(AppConstants.PADDING_MEDIUM))
 
         // Save Button
         Button(
-                onClick = viewModel::saveEntry,
-                modifier = Modifier.fillMaxWidth(),
-                enabled = uiState.amount.isNotBlank() && uiState.selectedCategory != null
+            onClick = viewModel::saveEntry,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = uiState.amount.isNotBlank() && uiState.selectedCategory != null
         ) { Text("Save Entry") }
 
         if (uiState.entryId != null) {
             OutlinedButton(
-                    onClick = viewModel::deleteEntry,
-                    modifier = Modifier.fillMaxWidth(),
-                    colors =
-                            ButtonDefaults.outlinedButtonColors(
-                                    contentColor =
-                                            MaterialTheme.colorScheme
-                                                    .error
-                            )
+                onClick = viewModel::deleteEntry,
+                modifier = Modifier.fillMaxWidth(),
+                colors =
+                    ButtonDefaults.outlinedButtonColors(
+                        contentColor =
+                            MaterialTheme.colorScheme
+                                .error
+                    )
             ) { Text("Delete Entry") }
         }
     }

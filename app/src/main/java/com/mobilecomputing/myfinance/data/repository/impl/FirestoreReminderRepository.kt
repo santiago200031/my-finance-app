@@ -47,7 +47,11 @@ class FirestoreReminderRepository(
                             try {
                                 doc.toObject(Reminder::class.java)
                             } catch (e: Exception) {
-                                Log.e("FirestoreReminderRepo", "Error deserializing reminder ${doc.id}", e)
+                                Log.e(
+                                    "FirestoreReminderRepo",
+                                    "Error deserializing reminder ${doc.id}",
+                                    e
+                                )
                                 null
                             }
                         }
@@ -96,7 +100,7 @@ class FirestoreReminderRepository(
 
     override suspend fun addReminder(reminder: Reminder) {
         try {
-             userIdFlow.first()?.let { userId ->
+            userIdFlow.first()?.let { userId ->
                 firestore
                     .collection("users")
                     .document(userId)
@@ -104,7 +108,7 @@ class FirestoreReminderRepository(
                     .document(reminder.id)
                     .set(reminder)
                     .await()
-             }
+            }
         } catch (e: Exception) {
             Log.e("FirestoreReminderRepo", "Error adding reminder", e)
         }
@@ -126,21 +130,21 @@ class FirestoreReminderRepository(
                     .await()
             }
         } catch (e: Exception) {
-             Log.e("FirestoreReminderRepo", "Error deleting reminder", e)
+            Log.e("FirestoreReminderRepo", "Error deleting reminder", e)
         }
     }
 
     override suspend fun deleteRemindersForContract(contractId: String) {
         try {
             userIdFlow.first()?.let { userId ->
-                 val snapshot = firestore
+                val snapshot = firestore
                     .collection("users")
                     .document(userId)
                     .collection("reminders")
                     .whereEqualTo("contractId", contractId)
                     .get()
                     .await()
-                
+
                 val batch = firestore.batch()
                 for (doc in snapshot.documents) {
                     batch.delete(doc.reference)
@@ -148,7 +152,7 @@ class FirestoreReminderRepository(
                 batch.commit().await()
             }
         } catch (e: Exception) {
-             Log.e("FirestoreReminderRepo", "Error deleting reminders for contract", e)
+            Log.e("FirestoreReminderRepo", "Error deleting reminders for contract", e)
         }
     }
 }

@@ -17,28 +17,28 @@ object NotificationHandler {
 
     fun createNotificationChannel(context: Context) {
         val channel =
-                NotificationChannel(
-                                CHANNEL_ID,
-                                CHANNEL_NAME,
-                                NotificationManager.IMPORTANCE_DEFAULT
-                        )
-                        .apply { description = "Notifications for contract reminders" }
+            NotificationChannel(
+                CHANNEL_ID,
+                CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_DEFAULT
+            )
+                .apply { description = "Notifications for contract reminders" }
         val notificationManager: NotificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.createNotificationChannel(channel)
     }
 
     fun showNotification(context: Context, title: String, message: String) {
         val builder =
-                NotificationCompat.Builder(context, CHANNEL_ID)
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle(title)
-                        .setContentText(message)
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                        .setAutoCancel(true)
+            NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
 
         val notificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val notificationId = System.currentTimeMillis().toInt()
         notificationManager.notify(notificationId, builder.build())
@@ -58,17 +58,17 @@ object NotificationHandler {
             putExtra("message", message)
             putExtra("id", reminderId)
         }
-        
+
         val pendingIntent = PendingIntent.getBroadcast(
-            context, 
-            reminderId.hashCode(), 
-            intent, 
+            context,
+            reminderId.hashCode(),
+            intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
         try {
             if (alarmManager.canScheduleExactAlarms()) {
-                 alarmManager.setExactAndAllowWhileIdle(
+                alarmManager.setExactAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
                     timestamp,
                     pendingIntent

@@ -47,247 +47,252 @@ import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable
 fun SettingsScreen(
-        viewModel: SettingsViewModel = viewModel(factory = AppViewModelProvider.Factory),
-        onSharingSettingsClick: () -> Unit = {}
+    viewModel: SettingsViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    onSharingSettingsClick: () -> Unit = {}
 ) {
-        val uiState by viewModel.uiState.collectAsState()
-        val scrollState = rememberScrollState()
+    val uiState by viewModel.uiState.collectAsState()
+    val scrollState = rememberScrollState()
 
-        Scaffold { padding ->
-                Column(
-                        modifier =
-                                Modifier.fillMaxSize()
-                                        .padding(padding)
-                                        .padding(AppConstants.PADDING_MEDIUM)
-                                        .verticalScroll(scrollState),
-                        verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_LARGE)
-                ) {
-                        uiState.user?.let { user -> ProfileCard(user) }
+    Scaffold { padding ->
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(AppConstants.PADDING_MEDIUM)
+                    .verticalScroll(scrollState),
+            verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_LARGE)
+        ) {
+            uiState.user?.let { user -> ProfileCard(user) }
 
-                        AppearanceSection(
-                                isDarkTheme = uiState.user?.settings?.isDarkTheme == true,
-                                onThemeChange = viewModel::updateTheme
-                        )
+            AppearanceSection(
+                isDarkTheme = uiState.user?.settings?.isDarkTheme == true,
+                onThemeChange = viewModel::updateTheme
+            )
 
-                        LocalizationSection(
-                                language = uiState.user?.settings?.language ?: "en",
-                                currency = uiState.user?.settings?.currency ?: "USD",
-                                dateFormat = uiState.user?.settings?.dateFormat ?: "MM/DD/YYYY"
-                        )
+            LocalizationSection(
+                language = uiState.user?.settings?.language ?: "en",
+                currency = uiState.user?.settings?.currency ?: "USD",
+                dateFormat = uiState.user?.settings?.dateFormat ?: "MM/DD/YYYY"
+            )
 
-                        DataManagementSection(
-                                onSharingSettingsClick = onSharingSettingsClick,
-                                onSwitchUserClick = viewModel::switchUser
-                        )
-                }
+            DataManagementSection(
+                onSharingSettingsClick = onSharingSettingsClick,
+                onSwitchUserClick = viewModel::switchUser
+            )
         }
+    }
 }
 
 @Composable
 fun ProfileCard(user: User) {
-        Card(
-                modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Row(
+            modifier = Modifier.padding(AppConstants.PADDING_MEDIUM),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-                Row(
-                        modifier = Modifier.padding(AppConstants.PADDING_MEDIUM),
-                        verticalAlignment = Alignment.CenterVertically
-                ) {
-                        Box(
-                                modifier =
-                                        Modifier.size(60.dp)
-                                                .clip(CircleShape)
-                                                .background(MaterialTheme.colorScheme.primary),
-                                contentAlignment = Alignment.Center
-                        ) {
-                                // Show initials if no image
-                                val initials =
-                                        (user.firstName.take(1) + user.lastName.take(1)).uppercase()
-                                Text(
-                                        text = initials,
-                                        color = MaterialTheme.colorScheme.onPrimary,
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        fontWeight = FontWeight.Bold
-                                )
-                        }
+            Box(
+                modifier =
+                    Modifier
+                        .size(60.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary),
+                contentAlignment = Alignment.Center
+            ) {
+                // Show initials if no image
+                val initials =
+                    (user.firstName.take(1) + user.lastName.take(1)).uppercase()
+                Text(
+                    text = initials,
+                    color = MaterialTheme.colorScheme.onPrimary,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
-                        Spacer(modifier = Modifier.width(AppConstants.PADDING_MEDIUM))
+            Spacer(modifier = Modifier.width(AppConstants.PADDING_MEDIUM))
 
-                        Column {
-                                Text(
-                                        text = "${user.firstName} ${user.lastName}",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold
-                                )
-                                Text(
-                                        text = user.email,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                        }
-                }
+            Column {
+                Text(
+                    text = "${user.firstName} ${user.lastName}",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = user.email,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
+    }
 }
 
 @Composable
 fun AppearanceSection(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
-        Column {
-                Text(
-                        text = "Appearance",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = AppConstants.PADDING_SMALL)
-                )
+    Column {
+        Text(
+            text = "Appearance",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = AppConstants.PADDING_SMALL)
+        )
 
-                Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                        colors =
-                                CardDefaults.cardColors(
-                                        containerColor = MaterialTheme.colorScheme.surface
-                                )
-                ) {
-                        SettingsItem(
-                                icon = Icons.Default.LightMode,
-                                label = "Theme",
-                                trailingContent = {
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                                Text(
-                                                        text = if (isDarkTheme) "Dark" else "Light",
-                                                        style = MaterialTheme.typography.bodyMedium,
-                                                        modifier = Modifier.padding(end = AppConstants.PADDING_SMALL)
-                                                )
-                                                Switch(
-                                                        checked = isDarkTheme,
-                                                        onCheckedChange = { onThemeChange(it) }
-                                                )
-                                        }
-                                }
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+        ) {
+            SettingsItem(
+                icon = Icons.Default.LightMode,
+                label = "Theme",
+                trailingContent = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = if (isDarkTheme) "Dark" else "Light",
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(end = AppConstants.PADDING_SMALL)
                         )
+                        Switch(
+                            checked = isDarkTheme,
+                            onCheckedChange = { onThemeChange(it) }
+                        )
+                    }
                 }
+            )
         }
+    }
 }
 
 @Composable
 fun LocalizationSection(language: String, currency: String, dateFormat: String) {
-        Column {
-                Text(
-                        text = "Localization",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = AppConstants.PADDING_SMALL)
-                )
+    Column {
+        Text(
+            text = "Localization",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = AppConstants.PADDING_SMALL)
+        )
 
-                Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                        colors =
-                                CardDefaults.cardColors(
-                                        containerColor = MaterialTheme.colorScheme.surface
-                                )
-                ) {
-                        Column {
-                                SettingsItem(
-                                        icon = Icons.Default.Language,
-                                        label = "Language",
-                                        value = if (language == "en") "English" else language
-                                )
-                                CustomDivider()
-                                SettingsItem(
-                                        icon = Icons.Default.AttachMoney,
-                                        label = "Currency",
-                                        value = "$currency ($)"
-                                )
-                                CustomDivider()
-                                SettingsItem(
-                                        icon = Icons.Default.CalendarToday,
-                                        label = "Date Format",
-                                        value = dateFormat
-                                )
-                        }
-                }
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+        ) {
+            Column {
+                SettingsItem(
+                    icon = Icons.Default.Language,
+                    label = "Language",
+                    value = if (language == "en") "English" else language
+                )
+                CustomDivider()
+                SettingsItem(
+                    icon = Icons.Default.AttachMoney,
+                    label = "Currency",
+                    value = "$currency ($)"
+                )
+                CustomDivider()
+                SettingsItem(
+                    icon = Icons.Default.CalendarToday,
+                    label = "Date Format",
+                    value = dateFormat
+                )
+            }
         }
+    }
 }
 
 @Composable
 fun DataManagementSection(onSharingSettingsClick: () -> Unit, onSwitchUserClick: () -> Unit) {
-        Column {
-                Text(
-                        text = "Data Management",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(bottom = AppConstants.PADDING_SMALL)
-                )
+    Column {
+        Text(
+            text = "Data Management",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = AppConstants.PADDING_SMALL)
+        )
 
-                Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                        colors =
-                                CardDefaults.cardColors(
-                                        containerColor = MaterialTheme.colorScheme.surface
-                                )
-                ) {
-                        Column {
-                                SettingsItem(icon = Icons.Default.Download, label = "Export Data")
-                                CustomDivider()
-                                SettingsItem(
-                                        icon = Icons.Default.Share,
-                                        label = "Sharing Settings",
-                                        onClick = onSharingSettingsClick
-                                )
-                                CustomDivider()
-                                SettingsItem(
-                                        icon = Icons.Default.ImportExport,
-                                        label = "Switch User",
-                                        onClick = onSwitchUserClick
-                                )
-                        }
-                }
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                )
+        ) {
+            Column {
+                SettingsItem(icon = Icons.Default.Download, label = "Export Data")
+                CustomDivider()
+                SettingsItem(
+                    icon = Icons.Default.Share,
+                    label = "Sharing Settings",
+                    onClick = onSharingSettingsClick
+                )
+                CustomDivider()
+                SettingsItem(
+                    icon = Icons.Default.ImportExport,
+                    label = "Switch User",
+                    onClick = onSwitchUserClick
+                )
+            }
         }
+    }
 }
 
 @Composable
 fun SettingsItem(
-        icon: ImageVector,
-        label: String,
-        value: String? = null,
-        trailingContent: @Composable (() -> Unit)? = null,
-        onClick: () -> Unit = {}
+    icon: ImageVector,
+    label: String,
+    value: String? = null,
+    trailingContent: @Composable (() -> Unit)? = null,
+    onClick: () -> Unit = {}
 ) {
-        Row(
-                modifier = Modifier.fillMaxWidth().clickable { onClick() }.padding(AppConstants.PADDING_MEDIUM),
-                verticalAlignment = Alignment.CenterVertically
-        ) {
-                Icon(
-                        imageVector = icon,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp)
-                )
-                Spacer(modifier = Modifier.width(AppConstants.PADDING_MEDIUM))
-                Text(
-                        text = label,
-                        style = MaterialTheme.typography.bodyLarge,
-                        modifier = Modifier.weight(1f)
-                )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
+            .padding(AppConstants.PADDING_MEDIUM),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.size(24.dp)
+        )
+        Spacer(modifier = Modifier.width(AppConstants.PADDING_MEDIUM))
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.weight(1f)
+        )
 
-                if (trailingContent != null) {
-                        trailingContent()
-                } else if (value != null) {
-                        Text(
-                                text = value,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurface
-                        )
-                }
+        if (trailingContent != null) {
+            trailingContent()
+        } else if (value != null) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
+    }
 }
 
 @Composable
 fun CustomDivider() {
-        HorizontalDivider(
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-                thickness = 1.dp
-        )
+    HorizontalDivider(
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
+        thickness = 1.dp
+    )
 }

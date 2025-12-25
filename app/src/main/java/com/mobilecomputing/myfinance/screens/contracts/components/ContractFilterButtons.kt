@@ -19,8 +19,10 @@ fun ContractFilterButtons(
     modifier: Modifier = Modifier
 ) {
     Row(
-            modifier = modifier.fillMaxWidth().padding(horizontal = AppConstants.PADDING_MEDIUM),
-            horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL)
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = AppConstants.PADDING_MEDIUM),
+        horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL)
     ) {
         ContractFilter.entries.forEach { filter ->
             val isSelected = filter == selectedFilter

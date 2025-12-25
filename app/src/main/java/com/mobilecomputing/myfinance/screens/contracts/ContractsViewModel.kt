@@ -20,16 +20,16 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class ContractsUiState(
-        val contracts: List<Contract> = emptyList(),
-        val filter: ContractFilter = ContractFilter.ALL,
-        val activeCount: Int = 0,
-        val expiringCount: Int = 0,
-        val monthlyNetValue: Double = 0.0
+    val contracts: List<Contract> = emptyList(),
+    val filter: ContractFilter = ContractFilter.ALL,
+    val activeCount: Int = 0,
+    val expiringCount: Int = 0,
+    val monthlyNetValue: Double = 0.0
 )
 
 class ContractsViewModel(
-        private val contractService: ContractService,
-        private val userRepository: UserRepository
+    private val contractService: ContractService,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _filter = MutableStateFlow(ContractFilter.ALL)
@@ -37,58 +37,59 @@ class ContractsViewModel(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<ContractsUiState> =
-            combine(_currentUserId, _filter, userRepository.getCurrentUser()) {
-                            userId,
-                            filter,
-                            currentUser ->
-                        Triple(userId, filter, currentUser)
-                    }
-                    .flatMapLatest { (userId, filter, currentUser) ->
-                        val contractsFlow =
-                                if (userId == null) {
-                                    contractService.getAllContracts()
-                                } else {
-                                    // Verify trust
-                                    val targetUser = userRepository.getUserById(userId)
-                                    val isTrusted =
-                                            targetUser?.trustedEmails?.contains(
-                                                    currentUser?.email
-                                            ) == true
-                                    if (isTrusted) {
-                                        contractService.getContractsForUser(userId)
-                                    } else {
-                                        // Return empty flow if not trusted
-                                        kotlinx.coroutines.flow.flowOf(emptyList())
-                                    }
-                                }
-
-                        contractsFlow.map { contracts ->
-                            val filteredContracts =
-                                    contracts.filter { contract ->
-                                        when (filter) {
-                                            ContractFilter.ALL -> true
-                                            ContractFilter.INCOME ->
-                                                    contract.type == ContractType.INCOME
-                                            ContractFilter.EXPENSE ->
-                                                    contract.type == ContractType.EXPENSE
-                                            ContractFilter.DEBT -> contract.type == ContractType.DEBT
-                                        }
-                                    }
-
-                            ContractsUiState(
-                                    contracts = filteredContracts,
-                                    filter = filter,
-                                    activeCount = contractService.getActiveCount(contracts),
-                                    expiringCount = contractService.getExpiringCount(contracts),
-                                    monthlyNetValue = contractService.getNetMonthlyValue(contracts)
-                            )
+        combine(_currentUserId, _filter, userRepository.getCurrentUser()) { userId,
+                                                                            filter,
+                                                                            currentUser ->
+            Triple(userId, filter, currentUser)
+        }
+            .flatMapLatest { (userId, filter, currentUser) ->
+                val contractsFlow =
+                    if (userId == null) {
+                        contractService.getAllContracts()
+                    } else {
+                        // Verify trust
+                        val targetUser = userRepository.getUserById(userId)
+                        val isTrusted =
+                            targetUser?.trustedEmails?.contains(
+                                currentUser?.email
+                            ) == true
+                        if (isTrusted) {
+                            contractService.getContractsForUser(userId)
+                        } else {
+                            // Return empty flow if not trusted
+                            kotlinx.coroutines.flow.flowOf(emptyList())
                         }
                     }
-                    .stateIn(
-                            scope = viewModelScope,
-                            started = SharingStarted.WhileSubscribed(5000),
-                            initialValue = ContractsUiState()
+
+                contractsFlow.map { contracts ->
+                    val filteredContracts =
+                        contracts.filter { contract ->
+                            when (filter) {
+                                ContractFilter.ALL -> true
+                                ContractFilter.INCOME ->
+                                    contract.type == ContractType.INCOME
+
+                                ContractFilter.EXPENSE ->
+                                    contract.type == ContractType.EXPENSE
+
+                                ContractFilter.DEBT -> contract.type == ContractType.DEBT
+                            }
+                        }
+
+                    ContractsUiState(
+                        contracts = filteredContracts,
+                        filter = filter,
+                        activeCount = contractService.getActiveCount(contracts),
+                        expiringCount = contractService.getExpiringCount(contracts),
+                        monthlyNetValue = contractService.getNetMonthlyValue(contracts)
                     )
+                }
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = ContractsUiState()
+            )
 
     init {
         refreshContractStatuses()

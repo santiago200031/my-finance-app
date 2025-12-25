@@ -19,52 +19,52 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             DashboardViewModel(
-                    myFinanceApplication().container.entryService,
-                    myFinanceApplication().container.categoryRepository
+                myFinanceApplication().container.entryService,
+                myFinanceApplication().container.categoryRepository
             )
         }
         initializer {
             EntriesViewModel(
-                    myFinanceApplication().container.entryService,
-                    myFinanceApplication().container.categoryRepository
+                myFinanceApplication().container.entryService,
+                myFinanceApplication().container.categoryRepository
             )
         }
         initializer {
             AddEntryViewModel(
-                    myFinanceApplication().container.entryService,
-                    myFinanceApplication().container.categoryRepository
+                myFinanceApplication().container.entryService,
+                myFinanceApplication().container.categoryRepository
             )
         }
         initializer {
             ContractsViewModel(
-                    myFinanceApplication().container.contractService,
-                    myFinanceApplication().container.userRepository
+                myFinanceApplication().container.contractService,
+                myFinanceApplication().container.userRepository
             )
         }
         initializer {
             AddContractViewModel(
-                    myFinanceApplication().container.contractService,
-                    myFinanceApplication().container.reminderRepository,
-                    myFinanceApplication().container.userRepository
+                myFinanceApplication().container.contractService,
+                myFinanceApplication().container.reminderRepository,
+                myFinanceApplication().container.userRepository
             )
         }
         initializer {
             RemindersViewModel(
-                    myFinanceApplication().container.reminderRepository,
-                    myFinanceApplication().container.contractService
+                myFinanceApplication().container.reminderRepository,
+                myFinanceApplication().container.contractService
             )
         }
         initializer {
             AddReminderViewModel(
-                    myFinanceApplication(),
-                    myFinanceApplication().container.reminderRepository,
-                    myFinanceApplication().container.contractService
+                myFinanceApplication(),
+                myFinanceApplication().container.reminderRepository,
+                myFinanceApplication().container.contractService
             )
         }
         initializer {
             AnalysisViewModel(
-                    myFinanceApplication().container.entryService,
-                    myFinanceApplication().container.contractService
+                myFinanceApplication().container.entryService,
+                myFinanceApplication().container.contractService
             )
         }
         initializer { SettingsViewModel(myFinanceApplication().container.userRepository) }
@@ -72,4 +72,4 @@ object AppViewModelProvider {
 }
 
 fun CreationExtras.myFinanceApplication(): MyFinanceApplication =
-        (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as MyFinanceApplication)
+    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as MyFinanceApplication)

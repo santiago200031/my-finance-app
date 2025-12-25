@@ -18,7 +18,7 @@ class ContractService(private val contractRepository: ContractRepository) {
     fun getAllContracts(): Flow<List<Contract>> = contractRepository.getAllContracts()
 
     fun getContractsForUser(userId: String): Flow<List<Contract>> =
-            contractRepository.getContractsForUser(userId)
+        contractRepository.getContractsForUser(userId)
 
     fun getContractById(id: String): Flow<Contract?> = contractRepository.getContractById(id)
 
@@ -44,33 +44,33 @@ class ContractService(private val contractRepository: ContractRepository) {
 
     fun getNetMonthlyValue(contracts: List<Contract>): Double {
         val income =
-                contracts
-                        .filter {
-                            it.type == ContractType.INCOME && it.status == ContractStatus.ACTIVE
-                        }
-                        .sumOf { getMonthlyAmount(it) }
+            contracts
+                .filter {
+                    it.type == ContractType.INCOME && it.status == ContractStatus.ACTIVE
+                }
+                .sumOf { getMonthlyAmount(it) }
         val expenses =
-                contracts
-                        .filter {
-                            it.type != ContractType.INCOME && it.status == ContractStatus.ACTIVE
-                        }
-                        .sumOf { getMonthlyAmount(it) }
+            contracts
+                .filter {
+                    it.type != ContractType.INCOME && it.status == ContractStatus.ACTIVE
+                }
+                .sumOf { getMonthlyAmount(it) }
         return income - expenses
     }
 
     fun getTotalMonthlyIncome(contracts: List<Contract>): Double {
         return contracts
-                .filter { it.type == ContractType.INCOME && it.status == ContractStatus.ACTIVE }
-                .sumOf { getMonthlyAmount(it) }
+            .filter { it.type == ContractType.INCOME && it.status == ContractStatus.ACTIVE }
+            .sumOf { getMonthlyAmount(it) }
     }
 
     fun getTotalMonthlyCost(contracts: List<Contract>): Double {
         return contracts
-                .filter {
-                    (it.type == ContractType.EXPENSE || it.type == ContractType.DEBT) &&
-                            it.status == ContractStatus.ACTIVE
-                }
-                .sumOf { getMonthlyAmount(it) }
+            .filter {
+                (it.type == ContractType.EXPENSE || it.type == ContractType.DEBT) &&
+                        it.status == ContractStatus.ACTIVE
+            }
+            .sumOf { getMonthlyAmount(it) }
     }
 
     private fun getMonthlyAmount(contract: Contract): Double {
@@ -85,10 +85,10 @@ class ContractService(private val contractRepository: ContractRepository) {
     private fun isExpiring(contract: Contract): Boolean {
         val endDate = contract.endDate ?: return false
         val daysUntil =
-                ChronoUnit.DAYS.between(
-                        LocalDate.now(),
-                        endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-                )
+            ChronoUnit.DAYS.between(
+                LocalDate.now(),
+                endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+            )
         return daysUntil in 0..expiringThresholdDays
     }
 
@@ -98,48 +98,48 @@ class ContractService(private val contractRepository: ContractRepository) {
             if (endDate.isBefore(LocalDate.now())) {
                 return if (contract.autoRenewEnabled) {
                     val monthsToAdd =
-                            when (contract.paymentCycle) {
-                                PaymentCycle.MONTHLY -> 1L
-                                PaymentCycle.QUARTERLY -> 3L
-                                PaymentCycle.YEARLY -> 12L
-                                PaymentCycle.WEEKLY -> 0L
-                            }
+                        when (contract.paymentCycle) {
+                            PaymentCycle.MONTHLY -> 1L
+                            PaymentCycle.QUARTERLY -> 3L
+                            PaymentCycle.YEARLY -> 12L
+                            PaymentCycle.WEEKLY -> 0L
+                        }
 
                     val newEndDate =
-                            if (contract.paymentCycle == PaymentCycle.WEEKLY) {
-                                endDate.plusWeeks(1)
-                            } else {
-                                endDate.plusMonths(monthsToAdd)
-                            }
+                        if (contract.paymentCycle == PaymentCycle.WEEKLY) {
+                            endDate.plusWeeks(1)
+                        } else {
+                            endDate.plusMonths(monthsToAdd)
+                        }
 
                     val newNextPaymentDate =
-                            if (contract.paymentCycle == PaymentCycle.WEEKLY) {
-                                contract.nextPaymentDate
-                                        .toInstant()
-                                        .atZone(ZoneId.systemDefault())
-                                        .toLocalDate()
-                                        .plusWeeks(1)
-                            } else {
-                                contract.nextPaymentDate
-                                        .toInstant()
-                                        .atZone(ZoneId.systemDefault())
-                                        .toLocalDate()
-                                        .plusMonths(monthsToAdd)
-                            }
+                        if (contract.paymentCycle == PaymentCycle.WEEKLY) {
+                            contract.nextPaymentDate
+                                .toInstant()
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate()
+                                .plusWeeks(1)
+                        } else {
+                            contract.nextPaymentDate
+                                .toInstant()
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate()
+                                .plusMonths(monthsToAdd)
+                        }
 
                     contract.copy(
-                            endDate =
-                                    Date.from(
-                                            newEndDate
-                                                    .atStartOfDay(ZoneId.systemDefault())
-                                                    .toInstant()
-                                    ),
-                            nextPaymentDate =
-                                    Date.from(
-                                            newNextPaymentDate
-                                                    .atStartOfDay(ZoneId.systemDefault())
-                                                    .toInstant()
-                                    )
+                        endDate =
+                            Date.from(
+                                newEndDate
+                                    .atStartOfDay(ZoneId.systemDefault())
+                                    .toInstant()
+                            ),
+                        nextPaymentDate =
+                            Date.from(
+                                newNextPaymentDate
+                                    .atStartOfDay(ZoneId.systemDefault())
+                                    .toInstant()
+                            )
                     )
                 } else {
                     contract.copy(status = ContractStatus.CANCELLED)

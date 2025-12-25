@@ -28,35 +28,37 @@ import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable
 fun EntriesScreen(
-        viewModel: EntriesViewModel = viewModel(factory = AppViewModelProvider.Factory),
-        onAddEntryClick: () -> Unit = {},
-        onEntryClick: (String) -> Unit = {}
+    viewModel: EntriesViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    onAddEntryClick: () -> Unit = {},
+    onEntryClick: (String) -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
-            floatingActionButton = {
-                FloatingActionButton(onClick = onAddEntryClick) {
-                    Icon(Icons.Default.Add, contentDescription = "Add Entry")
-                }
+        floatingActionButton = {
+            FloatingActionButton(onClick = onAddEntryClick) {
+                Icon(Icons.Default.Add, contentDescription = "Add Entry")
             }
+        }
     ) { padding ->
-        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(padding)) {
             EntryFilterButtons(
-                    selectedFilter = uiState.filter,
-                    onFilterSelected = viewModel::onFilterChanged
+                selectedFilter = uiState.filter,
+                onFilterSelected = viewModel::onFilterChanged
             )
 
             Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
 
             LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 items(uiState.transactions) { transaction ->
                     EntryItem(
-                            transaction = transaction,
-                            modifier = Modifier.clickable { onEntryClick(transaction.id) }
+                        transaction = transaction,
+                        modifier = Modifier.clickable { onEntryClick(transaction.id) }
                     )
                 }
             }

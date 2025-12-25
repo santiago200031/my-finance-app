@@ -10,51 +10,51 @@ import kotlinx.coroutines.flow.update
 import java.util.Date
 
 class FakeEntryRepository : EntryRepository {
-        // Seed data
-        private val _entries =
-                MutableStateFlow(
-                        listOf(
-                                Entry(
-                                        id = "1",
-                                        categoryId = "1", // Salary
-                                        amount = 2500.0,
-                                        description = "Monthly Salary",
-                                        date = Date(),
-                                        type = EntryType.INCOME
-                                ),
-                                Entry(
-                                        id = "2",
-                                        categoryId = "3", // Food
-                                        amount = 15.50,
-                                        description = "Lunch at Burger King",
-                                        date = Date(),
-                                        type = EntryType.EXPENSE
-                                ),
-                                Entry(
-                                        id = "3",
-                                        categoryId = "4", // Transport
-                                        amount = 50.0,
-                                        description = "Fuel",
-                                        date = Date(),
-                                        type = EntryType.EXPENSE
-                                )
-                        )
+    // Seed data
+    private val _entries =
+        MutableStateFlow(
+            listOf(
+                Entry(
+                    id = "1",
+                    categoryId = "1", // Salary
+                    amount = 2500.0,
+                    description = "Monthly Salary",
+                    date = Date(),
+                    type = EntryType.INCOME
+                ),
+                Entry(
+                    id = "2",
+                    categoryId = "3", // Food
+                    amount = 15.50,
+                    description = "Lunch at Burger King",
+                    date = Date(),
+                    type = EntryType.EXPENSE
+                ),
+                Entry(
+                    id = "3",
+                    categoryId = "4", // Transport
+                    amount = 50.0,
+                    description = "Fuel",
+                    date = Date(),
+                    type = EntryType.EXPENSE
                 )
+            )
+        )
 
-        override fun getAllEntries(): Flow<List<Entry>> = _entries
+    override fun getAllEntries(): Flow<List<Entry>> = _entries
 
-        override fun getEntryById(id: String): Flow<Entry?> =
-                _entries.map { list -> list.find { it.id == id } }
+    override fun getEntryById(id: String): Flow<Entry?> =
+        _entries.map { list -> list.find { it.id == id } }
 
-        override suspend fun addEntry(entry: Entry) {
-                _entries.update { it + entry }
-        }
+    override suspend fun addEntry(entry: Entry) {
+        _entries.update { it + entry }
+    }
 
-        override suspend fun updateEntry(entry: Entry) {
-                _entries.update { list -> list.map { if (it.id == entry.id) entry else it } }
-        }
+    override suspend fun updateEntry(entry: Entry) {
+        _entries.update { list -> list.map { if (it.id == entry.id) entry else it } }
+    }
 
-        override suspend fun deleteEntry(id: String) {
-                _entries.update { list -> list.filter { it.id != id } }
-        }
+    override suspend fun deleteEntry(id: String) {
+        _entries.update { list -> list.filter { it.id != id } }
+    }
 }

@@ -14,13 +14,15 @@ import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable
 fun EntryFilterButtons(
-        selectedFilter: EntryFilter,
-        onFilterSelected: (EntryFilter) -> Unit,
-        modifier: Modifier = Modifier
+    selectedFilter: EntryFilter,
+    onFilterSelected: (EntryFilter) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-            modifier = modifier.fillMaxWidth().padding(horizontal = AppConstants.PADDING_MEDIUM),
-            horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL)
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = AppConstants.PADDING_MEDIUM),
+        horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL)
     ) {
         EntryFilter.entries.forEach { filter ->
             val isSelected = filter == selectedFilter

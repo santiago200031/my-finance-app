@@ -15,14 +15,14 @@ data class SettingsUiState(val user: User? = null, val isLoading: Boolean = true
 class SettingsViewModel(private val userRepository: UserRepository) : ViewModel() {
 
     val uiState: StateFlow<SettingsUiState> =
-            userRepository
-                    .getCurrentUser()
-                    .map { user -> SettingsUiState(user = user, isLoading = false) }
-                    .stateIn(
-                            scope = viewModelScope,
-                            started = SharingStarted.WhileSubscribed(5000),
-                            initialValue = SettingsUiState()
-                    )
+        userRepository
+            .getCurrentUser()
+            .map { user -> SettingsUiState(user = user, isLoading = false) }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = SettingsUiState()
+            )
 
     fun updateTheme(isDark: Boolean) {
         viewModelScope.launch {

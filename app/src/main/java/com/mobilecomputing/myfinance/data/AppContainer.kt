@@ -17,50 +17,50 @@ import com.mobilecomputing.myfinance.data.service.ContractService
 import com.mobilecomputing.myfinance.data.service.EntryService
 
 interface AppContainer {
-        val entryRepository: EntryRepository
-        val categoryRepository: CategoryRepository
-        val contractRepository: ContractRepository
-        val userRepository: UserRepository
-        val contractService: ContractService
-        val reminderRepository: ReminderRepository
-        val entryService: EntryService
+    val entryRepository: EntryRepository
+    val categoryRepository: CategoryRepository
+    val contractRepository: ContractRepository
+    val userRepository: UserRepository
+    val contractService: ContractService
+    val reminderRepository: ReminderRepository
+    val entryService: EntryService
 }
 
 class DefaultAppContainer(private val context: Context) : AppContainer {
-        private val userPreferencesRepository by lazy { UserPreferencesRepository(context) }
+    private val userPreferencesRepository by lazy { UserPreferencesRepository(context) }
 
-        override val entryRepository: EntryRepository by lazy {
-                FirestoreEntryRepository(userPreferencesRepository)
-        }
-        override val entryService: EntryService by lazy { EntryService(entryRepository) }
-        override val categoryRepository: CategoryRepository by lazy { FakeCategoryRepository() }
-        override val contractRepository: ContractRepository by lazy {
-                FirestoreContractRepository(userPreferencesRepository)
-        }
-        override val userRepository: UserRepository by lazy {
-                FirestoreUserRepository(
-                        initialUsers =
-                                listOf(
-                                        User(
-                                                id = "s-svilla",
-                                                email = "s-svilla@haw-landshut.de",
-                                                firstName = "Santiago",
-                                                lastName = "Villavicencio"
-                                        ),
-                                        User(
-                                                id = "villavicencioandrs",
-                                                email = "villavicencioandrs@gmail.com",
-                                                firstName = "Andrés",
-                                                lastName = "Villavicencio"
-                                        )
-                                ),
-                        userPreferencesRepository = userPreferencesRepository
-                )
-        }
-        override val contractService: ContractService by lazy {
-                ContractService(contractRepository)
-        }
-        override val reminderRepository: ReminderRepository by lazy { 
-                FirestoreReminderRepository(userPreferencesRepository = userPreferencesRepository) 
-        }
+    override val entryRepository: EntryRepository by lazy {
+        FirestoreEntryRepository(userPreferencesRepository)
+    }
+    override val entryService: EntryService by lazy { EntryService(entryRepository) }
+    override val categoryRepository: CategoryRepository by lazy { FakeCategoryRepository() }
+    override val contractRepository: ContractRepository by lazy {
+        FirestoreContractRepository(userPreferencesRepository)
+    }
+    override val userRepository: UserRepository by lazy {
+        FirestoreUserRepository(
+            initialUsers =
+                listOf(
+                    User(
+                        id = "s-svilla",
+                        email = "s-svilla@haw-landshut.de",
+                        firstName = "Santiago",
+                        lastName = "Villavicencio"
+                    ),
+                    User(
+                        id = "villavicencioandrs",
+                        email = "villavicencioandrs@gmail.com",
+                        firstName = "Andrés",
+                        lastName = "Villavicencio"
+                    )
+                ),
+            userPreferencesRepository = userPreferencesRepository
+        )
+    }
+    override val contractService: ContractService by lazy {
+        ContractService(contractRepository)
+    }
+    override val reminderRepository: ReminderRepository by lazy {
+        FirestoreReminderRepository(userPreferencesRepository = userPreferencesRepository)
+    }
 }

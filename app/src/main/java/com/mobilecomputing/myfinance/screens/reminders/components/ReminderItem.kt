@@ -33,99 +33,100 @@ import com.mobilecomputing.myfinance.ui.theme.PrimaryPurple
 import com.mobilecomputing.myfinance.ui.theme.SecondaryPurple
 import com.mobilecomputing.myfinance.utils.AppConstants
 import com.mobilecomputing.myfinance.utils.FormatUtils
-import java.time.LocalDate
 import java.util.Date
 
 @Composable
 fun ReminderItem(item: ReminderUiItem, onDeleteClick: () -> Unit, onTestClick: () -> Unit) {
-        Card(
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Column(modifier = Modifier.padding(AppConstants.PADDING_MEDIUM)) {
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-        ) {
-                Column(modifier = Modifier.padding(AppConstants.PADDING_MEDIUM)) {
-                        Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                        ) {
-                                Text(
-                                        text = item.contractTitle,
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold
-                                )
-                                Row {
-                                    IconButton(onClick = onTestClick) {
-                                        Icon(
-                                            Icons.Default.Notifications, // Use a bell or similar icon
-                                            contentDescription = "Test Notification",
-                                            tint = PrimaryPurple
-                                        )
-                                    }
-                                    IconButton(onClick = onDeleteClick) {
-                                        Icon(
-                                                Icons.Default.Delete,
-                                                contentDescription = "Delete Reminder",
-                                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    }
-                                }
-                        }
-
-                        Text(
-                                text =
-                                        "${FormatUtils.formatUSAmount(item.contractAmount)} due in ${item.daysUntil} days",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = item.contractTitle,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Row {
+                    IconButton(onClick = onTestClick) {
+                        Icon(
+                            Icons.Default.Notifications, // Use a bell or similar icon
+                            contentDescription = "Test Notification",
+                            tint = PrimaryPurple
                         )
-
-                        Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
-
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                        Icons.Default.Alarm,
-                                        contentDescription = null,
-                                        modifier = Modifier.width(AppConstants.PADDING_MEDIUM),
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                        text = java.text.SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault()).format(item.reminder.reminderDate),
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                        }
-
-                        Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
-
-                        Box(
-                                modifier =
-                                        Modifier.background(
-                                                        color = SecondaryPurple,
-                                                        shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_MEDIUM)
-                                                )
-                                                .padding(horizontal = 12.dp, vertical = 4.dp)
-                        ) {
-                                Text(
-                                        "Contract",
-                                        color = PrimaryPurple,
-                                        style = MaterialTheme.typography.labelSmall
-                                )
-                        }
+                    }
+                    IconButton(onClick = onDeleteClick) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = "Delete Reminder",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
+            }
+
+            Text(
+                text =
+                    "${FormatUtils.formatUSAmount(item.contractAmount)} due in ${item.daysUntil} days",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Default.Alarm,
+                    contentDescription = null,
+                    modifier = Modifier.width(AppConstants.PADDING_MEDIUM),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = java.text.SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault())
+                        .format(item.reminder.reminderDate),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
+
+            Box(
+                modifier =
+                    Modifier
+                        .background(
+                            color = SecondaryPurple,
+                            shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_MEDIUM)
+                        )
+                        .padding(horizontal = 12.dp, vertical = 4.dp)
+            ) {
+                Text(
+                    "Contract",
+                    color = PrimaryPurple,
+                    style = MaterialTheme.typography.labelSmall
+                )
+            }
         }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun ReminderItemPreview() {
-        val dummyReminder = Reminder(contractId = "123", reminderDate = Date())
-        val dummyItem =
-                ReminderUiItem(
-                        reminder = dummyReminder,
-                        contractTitle = "Gym Membership",
-                        contractAmount = 45.0,
-                        daysUntil = 3
-                )
-        ReminderItem(item = dummyItem, onDeleteClick = {}, onTestClick = {})
+    val dummyReminder = Reminder(contractId = "123", reminderDate = Date())
+    val dummyItem =
+        ReminderUiItem(
+            reminder = dummyReminder,
+            contractTitle = "Gym Membership",
+            contractAmount = 45.0,
+            daysUntil = 3
+        )
+    ReminderItem(item = dummyItem, onDeleteClick = {}, onTestClick = {})
 }

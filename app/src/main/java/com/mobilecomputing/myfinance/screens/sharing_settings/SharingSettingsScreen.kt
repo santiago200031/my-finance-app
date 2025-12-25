@@ -19,7 +19,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobilecomputing.myfinance.screens.contracts.ContractsViewModel
 import com.mobilecomputing.myfinance.screens.settings.SettingsViewModel
@@ -29,72 +28,77 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun SharingSettingsScreen(
-        viewModel: SettingsViewModel = viewModel(factory = AppViewModelProvider.Factory),
-        contractViewModel: ContractsViewModel = viewModel(factory = AppViewModelProvider.Factory),
-        onNavigateToSharedContracts: (String) -> Unit = {}
+    viewModel: SettingsViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    contractViewModel: ContractsViewModel = viewModel(factory = AppViewModelProvider.Factory),
+    onNavigateToSharedContracts: (String) -> Unit = {}
 ) {
-        var emailInput by remember { mutableStateOf("") }
-        val scope = rememberCoroutineScope()
-        val uiState by viewModel.uiState.collectAsState()
-        val currentUser = uiState.user
+    var emailInput by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope()
+    val uiState by viewModel.uiState.collectAsState()
+    val currentUser = uiState.user
 
-        val targetInfo =
-                when (currentUser?.id) {
-                        "s-svilla" ->
-                                Pair(
-                                        "villavicencioandrs@gmail.com",
-                                        "View villavicencioandrs's Contracts"
-                                )
-                        "villavicencioandrs" ->
-                                Pair("s-svilla@haw-landshut.de", "View s-svilla's Contracts")
-                        else -> null
-                }
-
-        Column(modifier = Modifier.fillMaxSize().padding(AppConstants.PADDING_MEDIUM)) {
-                Text(
-                        "Sharing Settings",
-                        style = androidx.compose.material3.MaterialTheme.typography.headlineMedium
+    val targetInfo =
+        when (currentUser?.id) {
+            "s-svilla" ->
+                Pair(
+                    "villavicencioandrs@gmail.com",
+                    "View villavicencioandrs's Contracts"
                 )
 
-                Spacer(modifier = Modifier.height(AppConstants.PADDING_MEDIUM))
+            "villavicencioandrs" ->
+                Pair("s-svilla@haw-landshut.de", "View s-svilla's Contracts")
 
-                // Add Trusted Email Section
-                OutlinedTextField(
-                        value = emailInput,
-                        onValueChange = { emailInput = it },
-                        label = { Text("Trusted Email") },
-                        modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
-                Button(
-                        onClick = {
-                                if (emailInput.isNotBlank()) {
-                                        viewModel.addTrustedEmail(emailInput)
-                                        emailInput = ""
-                                }
-                        },
-                        modifier = Modifier.align(Alignment.End)
-                ) { Text("Add Trusted User") }
-
-                Spacer(modifier = Modifier.height(AppConstants.PADDING_LARGE))
-                HorizontalDivider()
-                Spacer(modifier = Modifier.height(AppConstants.PADDING_LARGE))
-
-                if (targetInfo != null) {
-                        Button(
-                                onClick = {
-                                        scope.launch {
-                                                val userId =
-                                                        contractViewModel.resolveUserIdFromEmail(
-                                                                targetInfo.first
-                                                        )
-                                                if (userId != null) {
-                                                        onNavigateToSharedContracts(userId)
-                                                } else {}
-                                        }
-                                },
-                                modifier = Modifier.fillMaxWidth()
-                        ) { Text(targetInfo.second) }
-                }
+            else -> null
         }
+
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(AppConstants.PADDING_MEDIUM)) {
+        Text(
+            "Sharing Settings",
+            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium
+        )
+
+        Spacer(modifier = Modifier.height(AppConstants.PADDING_MEDIUM))
+
+        // Add Trusted Email Section
+        OutlinedTextField(
+            value = emailInput,
+            onValueChange = { emailInput = it },
+            label = { Text("Trusted Email") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
+        Button(
+            onClick = {
+                if (emailInput.isNotBlank()) {
+                    viewModel.addTrustedEmail(emailInput)
+                    emailInput = ""
+                }
+            },
+            modifier = Modifier.align(Alignment.End)
+        ) { Text("Add Trusted User") }
+
+        Spacer(modifier = Modifier.height(AppConstants.PADDING_LARGE))
+        HorizontalDivider()
+        Spacer(modifier = Modifier.height(AppConstants.PADDING_LARGE))
+
+        if (targetInfo != null) {
+            Button(
+                onClick = {
+                    scope.launch {
+                        val userId =
+                            contractViewModel.resolveUserIdFromEmail(
+                                targetInfo.first
+                            )
+                        if (userId != null) {
+                            onNavigateToSharedContracts(userId)
+                        } else {
+                        }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) { Text(targetInfo.second) }
+        }
+    }
 }

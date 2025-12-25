@@ -26,9 +26,11 @@ fun EntryItem(
 ) {
     Card(modifier.fillMaxWidth()) {
         Row(
-                modifier = Modifier.padding(AppConstants.PADDING_MEDIUM).fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .padding(AppConstants.PADDING_MEDIUM)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
                 Text(transaction.description, fontWeight = FontWeight.Bold)
@@ -36,21 +38,21 @@ fun EntryItem(
                 Text(text = transaction.formattedDate, style = MaterialTheme.typography.bodySmall)
             }
             Text(
-                    text =
-                            if (transaction.type == EntryType.EXPENSE
-                            ) {
-                                "-$${FormatUtils.formatUSAmount(transaction.amount)}"
-                            } else {
-                                "+$${FormatUtils.formatUSAmount(transaction.amount)}"
-                            },
-                    color =
-                            if (transaction.type == EntryType.EXPENSE
-                            ) {
-                                RedExpense
-                            } else {
-                                GreenIncome
-                            },
-                    fontWeight = FontWeight.Bold
+                text =
+                    if (transaction.type == EntryType.EXPENSE
+                    ) {
+                        "-$${FormatUtils.formatUSAmount(transaction.amount)}"
+                    } else {
+                        "+$${FormatUtils.formatUSAmount(transaction.amount)}"
+                    },
+                color =
+                    if (transaction.type == EntryType.EXPENSE
+                    ) {
+                        RedExpense
+                    } else {
+                        GreenIncome
+                    },
+                fontWeight = FontWeight.Bold
             )
         }
     }

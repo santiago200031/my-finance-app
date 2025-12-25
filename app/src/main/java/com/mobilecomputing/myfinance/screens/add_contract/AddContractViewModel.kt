@@ -22,23 +22,23 @@ import java.time.format.DateTimeParseException
 import java.util.Date
 
 data class AddContractUiState(
-        val title: String = "",
-        val amount: String = "",
-        val totalAmount: String? = "",
-        val startDate: String = DateUtils.formatInputDate(LocalDate.now()),
-        val expirationDate: String = "",
-        val billingCycle: PaymentCycle = PaymentCycle.MONTHLY,
-        val selectedType: ContractType = ContractType.EXPENSE,
-        val isSaved: Boolean = false,
-        val contractId: String? = null,
-        val isAutoRenew: Boolean = true,
-        val status: ContractStatus = ContractStatus.ACTIVE
+    val title: String = "",
+    val amount: String = "",
+    val totalAmount: String? = "",
+    val startDate: String = DateUtils.formatInputDate(LocalDate.now()),
+    val expirationDate: String = "",
+    val billingCycle: PaymentCycle = PaymentCycle.MONTHLY,
+    val selectedType: ContractType = ContractType.EXPENSE,
+    val isSaved: Boolean = false,
+    val contractId: String? = null,
+    val isAutoRenew: Boolean = true,
+    val status: ContractStatus = ContractStatus.ACTIVE
 )
 
 class AddContractViewModel(
-        private val contractService: ContractService,
-        private val reminderRepository: ReminderRepository,
-        private val userRepository: UserRepository
+    private val contractService: ContractService,
+    private val reminderRepository: ReminderRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddContractUiState())
@@ -86,30 +86,30 @@ class AddContractViewModel(
             if (contract != null) {
                 _uiState.update {
                     it.copy(
-                            title = contract.title,
-                            amount = contract.amount.toString(),
-                            totalAmount = contract.totalAmount?.toString(),
-                            startDate =
-                                    DateUtils.formatInputDate(
-                                            contract.startDate
-                                                    .toInstant()
-                                                    .atZone(ZoneId.systemDefault())
-                                                    .toLocalDate()
-                                    ),
-                            expirationDate =
-                                    contract.endDate?.let { date ->
-                                        DateUtils.formatInputDate(
-                                                date.toInstant()
-                                                        .atZone(ZoneId.systemDefault())
-                                                        .toLocalDate()
-                                        )
-                                    }
-                                            ?: "",
-                            billingCycle = contract.paymentCycle,
-                            selectedType = contract.type,
-                            contractId = contract.id,
-                            isAutoRenew = contract.autoRenewEnabled,
-                            status = contract.status
+                        title = contract.title,
+                        amount = contract.amount.toString(),
+                        totalAmount = contract.totalAmount?.toString(),
+                        startDate =
+                            DateUtils.formatInputDate(
+                                contract.startDate
+                                    .toInstant()
+                                    .atZone(ZoneId.systemDefault())
+                                    .toLocalDate()
+                            ),
+                        expirationDate =
+                            contract.endDate?.let { date ->
+                                DateUtils.formatInputDate(
+                                    date.toInstant()
+                                        .atZone(ZoneId.systemDefault())
+                                        .toLocalDate()
+                                )
+                            }
+                                ?: "",
+                        billingCycle = contract.paymentCycle,
+                        selectedType = contract.type,
+                        contractId = contract.id,
+                        isAutoRenew = contract.autoRenewEnabled,
+                        status = contract.status
                     )
                 }
             }
@@ -140,45 +140,45 @@ class AddContractViewModel(
             }
 
             val nextPayment =
-                    start.plusMonths(
-                            if (currentState.billingCycle == PaymentCycle.MONTHLY) 1 else 12
-                    )
+                start.plusMonths(
+                    if (currentState.billingCycle == PaymentCycle.MONTHLY) 1 else 12
+                )
 
             viewModelScope.launch {
                 val currentUser = userRepository.getCurrentUser().first()
                 val currentUserId = currentUser?.id ?: ""
 
                 val newContract =
-                        Contract(
-                                id = currentState.contractId
-                                                ?: java.util.UUID.randomUUID().toString(),
-                                title = currentState.title,
-                                amount = amountValue,
-                                totalAmount = totalAmountValue,
-                                paymentCycle = currentState.billingCycle,
-                                type = currentState.selectedType,
-                                userId = currentUserId,
-                                startDate =
-                                        Date.from(
-                                                start.atStartOfDay(ZoneId.systemDefault())
-                                                        .toInstant()
-                                        ),
-                                endDate =
-                                        end?.let {
-                                            Date.from(
-                                                    it.atStartOfDay(ZoneId.systemDefault())
-                                                            .toInstant()
-                                            )
-                                        },
-                                nextPaymentDate =
-                                        Date.from(
-                                                nextPayment
-                                                        .atStartOfDay(ZoneId.systemDefault())
-                                                        .toInstant()
-                                        ),
-                                autoRenewEnabled = currentState.isAutoRenew,
-                                status = currentState.status
-                        )
+                    Contract(
+                        id = currentState.contractId
+                            ?: java.util.UUID.randomUUID().toString(),
+                        title = currentState.title,
+                        amount = amountValue,
+                        totalAmount = totalAmountValue,
+                        paymentCycle = currentState.billingCycle,
+                        type = currentState.selectedType,
+                        userId = currentUserId,
+                        startDate =
+                            Date.from(
+                                start.atStartOfDay(ZoneId.systemDefault())
+                                    .toInstant()
+                            ),
+                        endDate =
+                            end?.let {
+                                Date.from(
+                                    it.atStartOfDay(ZoneId.systemDefault())
+                                        .toInstant()
+                                )
+                            },
+                        nextPaymentDate =
+                            Date.from(
+                                nextPayment
+                                    .atStartOfDay(ZoneId.systemDefault())
+                                    .toInstant()
+                            ),
+                        autoRenewEnabled = currentState.isAutoRenew,
+                        status = currentState.status
+                    )
 
                 val checkedContract = contractService.checkContractStatus(newContract)
 

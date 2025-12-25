@@ -42,136 +42,150 @@ import java.util.Date
 
 @Composable
 fun ContractItem(contract: Contract, onContractClick: () -> Unit = {}) {
-        val isExpiring =
-                contract.status == ContractStatus.ACTIVE &&
-                        contract.endDate != null &&
-                        ChronoUnit.DAYS.between(
-                                LocalDate.now(),
-                                contract.endDate
-                                        .toInstant()
-                                        .atZone(ZoneId.systemDefault())
-                                        .toLocalDate()
-                        ) in 0..30
+    val isExpiring =
+        contract.status == ContractStatus.ACTIVE &&
+                contract.endDate != null &&
+                ChronoUnit.DAYS.between(
+                    LocalDate.now(),
+                    contract.endDate
+                        .toInstant()
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate()
+                ) in 0..30
 
-        Card(
-                modifier =
-                        Modifier.fillMaxWidth().padding(horizontal = AppConstants.PADDING_MEDIUM).clickable {
-                                onContractClick()
-                        },
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
-        ) {
-                Column(modifier = Modifier.padding(AppConstants.PADDING_MEDIUM).fillMaxWidth()) {
-                        // Header: Title and Status Badge
-                        Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                        ) {
-                                Text(
-                                        text = contract.title,
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold
-                                )
+    Card(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = AppConstants.PADDING_MEDIUM)
+                .clickable {
+                    onContractClick()
+                },
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    ) {
+        Column(modifier = Modifier
+            .padding(AppConstants.PADDING_MEDIUM)
+            .fillMaxWidth()) {
+            // Header: Title and Status Badge
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = contract.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
 
-                                val (badgeText, badgeColor) =
-                                        if (isExpiring) {
-                                                "Expiring" to Orange
-                                        } else if (contract.status == ContractStatus.ACTIVE) {
-                                                "Active" to GreenIncome
-                                        } else {
-                                                "Cancelled" to Color.Gray
-                                        }
+                val (badgeText, badgeColor) =
+                    if (isExpiring) {
+                        "Expiring" to Orange
+                    } else if (contract.status == ContractStatus.ACTIVE) {
+                        "Active" to GreenIncome
+                    } else {
+                        "Cancelled" to Color.Gray
+                    }
 
-                                Box(
-                                        modifier =
-                                                Modifier.background(
-                                                                color =
-                                                                        badgeColor.copy(
-                                                                                alpha = 0.1f
-                                                                        ),
-                                                                shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_MEDIUM)
-                                                        )
-                                                        .padding(horizontal = AppConstants.PADDING_SMALL, vertical = 4.dp)
-                                ) {
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                                Text(
-                                                        text = badgeText,
-                                                        color = badgeColor,
-                                                        style = MaterialTheme.typography.labelSmall
-                                                )
-                                        }
-                                }
-                        }
-
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        // Monthly . Cost
+                Box(
+                    modifier =
+                        Modifier
+                            .background(
+                                color =
+                                    badgeColor.copy(
+                                        alpha = 0.1f
+                                    ),
+                                shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_MEDIUM)
+                            )
+                            .padding(horizontal = AppConstants.PADDING_SMALL, vertical = 4.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                                text =
-                                        "${contract.paymentCycle.name} • ${FormatUtils.formatUSAmount(contract.amount)}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            text = badgeText,
+                            color = badgeColor,
+                            style = MaterialTheme.typography.labelSmall
                         )
-
-                        Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
-
-                        // Next Payment
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                        imageVector = Icons.Default.Schedule,
-                                        contentDescription = null,
-                                        modifier = Modifier.padding(end = 4.dp).width(AppConstants.PADDING_MEDIUM),
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Text(
-                                        text =
-                                                "Next payment: ${DateUtils.formatDate(contract.nextPaymentDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate())}",
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                        }
-
-                        // Auto-renew badge
-                        if (contract.autoRenewEnabled && contract.status == ContractStatus.ACTIVE) {
-                                Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
-                                Box(
-                                        modifier =
-                                                Modifier.background(
-                                                                color =
-                                                                        MaterialTheme.colorScheme
-                                                                                .primaryContainer
-                                                                                .copy(alpha = 0.5f),
-                                                                shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_SMALL)
-                                                        )
-                                                        .padding(horizontal = AppConstants.PADDING_SMALL, vertical = 4.dp)
-                                ) {
-                                        Text(
-                                                "Auto-renew enabled",
-                                                style = MaterialTheme.typography.labelSmall,
-                                                color = MaterialTheme.colorScheme.onPrimaryContainer
-                                        )
-                                }
-                        }
+                    }
                 }
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // Monthly . Cost
+            Text(
+                text =
+                    "${contract.paymentCycle.name} • ${FormatUtils.formatUSAmount(contract.amount)}",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
+
+            // Next Payment
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.Schedule,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .padding(end = 4.dp)
+                        .width(AppConstants.PADDING_MEDIUM),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text =
+                        "Next payment: ${
+                            DateUtils.formatDate(
+                                contract.nextPaymentDate.toInstant().atZone(ZoneId.systemDefault())
+                                    .toLocalDate()
+                            )
+                        }",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            // Auto-renew badge
+            if (contract.autoRenewEnabled && contract.status == ContractStatus.ACTIVE) {
+                Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
+                Box(
+                    modifier =
+                        Modifier
+                            .background(
+                                color =
+                                    MaterialTheme.colorScheme
+                                        .primaryContainer
+                                        .copy(alpha = 0.5f),
+                                shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_SMALL)
+                            )
+                            .padding(horizontal = AppConstants.PADDING_SMALL, vertical = 4.dp)
+                ) {
+                    Text(
+                        "Auto-renew enabled",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            }
         }
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun ContractItemPreview() {
-        val dummyContract =
-                Contract(
-                        id = "1",
-                        title = "Netflix Subscription",
-                        amount = 12.99,
-                        paymentCycle = PaymentCycle.MONTHLY,
-                        type = ContractType.EXPENSE,
-                        startDate = Date(),
-                        nextPaymentDate = Date(),
-                        autoRenewEnabled = true,
-                        status = ContractStatus.ACTIVE,
-                        totalAmount = null
-                )
-        ContractItem(contract = dummyContract)
+    val dummyContract =
+        Contract(
+            id = "1",
+            title = "Netflix Subscription",
+            amount = 12.99,
+            paymentCycle = PaymentCycle.MONTHLY,
+            type = ContractType.EXPENSE,
+            startDate = Date(),
+            nextPaymentDate = Date(),
+            autoRenewEnabled = true,
+            status = ContractStatus.ACTIVE,
+            totalAmount = null
+        )
+    ContractItem(contract = dummyContract)
 }

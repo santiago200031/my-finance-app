@@ -18,117 +18,119 @@ import kotlinx.coroutines.tasks.await
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class FirestoreEntryRepository(private val userPreferencesRepository: UserPreferencesRepository) :
-        EntryRepository {
+    EntryRepository {
 
-  private val firestore = FirebaseFirestore.getInstance()
-  private val scope = CoroutineScope(Dispatchers.IO)
-  private val currentUserIdFlow = MutableStateFlow<String?>(null)
+    private val firestore = FirebaseFirestore.getInstance()
+    private val scope = CoroutineScope(Dispatchers.IO)
+    private val currentUserIdFlow = MutableStateFlow<String?>(null)
 
-  init {
-    scope.launch {
-      userPreferencesRepository.currentUserId.collect { userId -> currentUserIdFlow.value = userId }
+    init {
+        scope.launch {
+            userPreferencesRepository.currentUserId.collect { userId ->
+                currentUserIdFlow.value = userId
+            }
+        }
     }
-  }
 
-  override fun getAllEntries(): Flow<List<Entry>> =
-          currentUserIdFlow.flatMapLatest { userId ->
+    override fun getAllEntries(): Flow<List<Entry>> =
+        currentUserIdFlow.flatMapLatest { userId ->
             callbackFlow {
-              if (userId == null) {
-                trySend(emptyList())
-                awaitClose {}
-                return@callbackFlow
-              }
+                if (userId == null) {
+                    trySend(emptyList())
+                    awaitClose {}
+                    return@callbackFlow
+                }
 
-              val entriesCollection =
-                      firestore.collection("users").document(userId).collection("entries")
+                val entriesCollection =
+                    firestore.collection("users").document(userId).collection("entries")
 
-              val listener =
-                      entriesCollection.addSnapshotListener { snapshot, error ->
+                val listener =
+                    entriesCollection.addSnapshotListener { snapshot, error ->
                         if (error != null) {
-                          Log.e("FirestoreEntryRepo", "Error fetching entries", error)
-                          trySend(emptyList())
-                          return@addSnapshotListener
+                            Log.e("FirestoreEntryRepo", "Error fetching entries", error)
+                            trySend(emptyList())
+                            return@addSnapshotListener
                         }
 
                         if (snapshot != null) {
-                          val entries =
-                                  snapshot.documents.mapNotNull { it.toObject(Entry::class.java) }
-                          trySend(entries)
+                            val entries =
+                                snapshot.documents.mapNotNull { it.toObject(Entry::class.java) }
+                            trySend(entries)
                         } else {
-                          trySend(emptyList())
+                            trySend(emptyList())
                         }
-                      }
-              awaitClose { listener.remove() }
+                    }
+                awaitClose { listener.remove() }
             }
-          }
+        }
 
-  override fun getEntryById(id: String): Flow<Entry?> =
-          currentUserIdFlow.flatMapLatest { userId ->
+    override fun getEntryById(id: String): Flow<Entry?> =
+        currentUserIdFlow.flatMapLatest { userId ->
             callbackFlow {
-              if (userId == null) {
-                trySend(null)
-                awaitClose {}
-                return@callbackFlow
-              }
+                if (userId == null) {
+                    trySend(null)
+                    awaitClose {}
+                    return@callbackFlow
+                }
 
-              val docRef =
-                      firestore
-                              .collection("users")
-                              .document(userId)
-                              .collection("entries")
-                              .document(id)
-              val listener =
-                      docRef.addSnapshotListener { snapshot, error ->
+                val docRef =
+                    firestore
+                        .collection("users")
+                        .document(userId)
+                        .collection("entries")
+                        .document(id)
+                val listener =
+                    docRef.addSnapshotListener { snapshot, error ->
                         if (error != null) {
-                          Log.e("FirestoreEntryRepo", "Error fetching entry $id", error)
-                          trySend(null)
-                          return@addSnapshotListener
+                            Log.e("FirestoreEntryRepo", "Error fetching entry $id", error)
+                            trySend(null)
+                            return@addSnapshotListener
                         }
                         if (snapshot != null && snapshot.exists()) {
-                          trySend(snapshot.toObject(Entry::class.java))
+                            trySend(snapshot.toObject(Entry::class.java))
                         } else {
-                          trySend(null)
+                            trySend(null)
                         }
-                      }
-              awaitClose { listener.remove() }
+                    }
+                awaitClose { listener.remove() }
             }
-          }
+        }
 
-  override suspend fun addEntry(entry: Entry) {
-    val userId = currentUserIdFlow.value
-    if (userId != null) {
-      try {
-        firestore
-                .collection("users")
-                .document(userId)
-                .collection("entries")
-                .document(entry.id)
-                .set(entry)
-                .await()
-      } catch (e: Exception) {
-        Log.e("FirestoreEntryRepo", "Error adding entry", e)
-      }
+    override suspend fun addEntry(entry: Entry) {
+        val userId = currentUserIdFlow.value
+        if (userId != null) {
+            try {
+                firestore
+                    .collection("users")
+                    .document(userId)
+                    .collection("entries")
+                    .document(entry.id)
+                    .set(entry)
+                    .await()
+            } catch (e: Exception) {
+                Log.e("FirestoreEntryRepo", "Error adding entry", e)
+            }
+        }
     }
-  }
 
-  override suspend fun updateEntry(entry: Entry) {
-    addEntry(entry) // Firestore set acts as upsert/update
-  }
-
-  override suspend fun deleteEntry(id: String) {
-    val userId = currentUserIdFlow.value
-    if (userId != null) {
-      try {
-        firestore
-                .collection("users")
-                .document(userId)
-                .collection("entries")
-                .document(id)
-                .delete()
-                .await()
-      } catch (e: Exception) {
-        Log.e("FirestoreEntryRepo", "Error deleting entry", e)
-      }
+    override suspend fun updateEntry(entry: Entry) {
+        addEntry(entry) // Firestore set acts as upsert/update
     }
-  }
+
+    override suspend fun deleteEntry(id: String) {
+        val userId = currentUserIdFlow.value
+        if (userId != null) {
+            try {
+                firestore
+                    .collection("users")
+                    .document(userId)
+                    .collection("entries")
+                    .document(id)
+                    .delete()
+                    .await()
+            } catch (e: Exception) {
+                Log.e("FirestoreEntryRepo", "Error deleting entry", e)
+            }
+        }
+    }
 }

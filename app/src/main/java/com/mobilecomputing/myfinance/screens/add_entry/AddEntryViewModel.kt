@@ -17,18 +17,18 @@ import java.util.Date
 import java.util.UUID
 
 data class AddEntryUiState(
-        val amount: String = "",
-        val description: String = "",
-        val selectedCategory: Category? = null,
-        val selectedType: EntryType = EntryType.EXPENSE,
-        val categories: List<Category> = emptyList(),
-        val isSaved: Boolean = false,
-        val entryId: String? = null
+    val amount: String = "",
+    val description: String = "",
+    val selectedCategory: Category? = null,
+    val selectedType: EntryType = EntryType.EXPENSE,
+    val categories: List<Category> = emptyList(),
+    val isSaved: Boolean = false,
+    val entryId: String? = null
 )
 
 class AddEntryViewModel(
-        private val entryService: EntryService,
-        private val categoryRepository: CategoryRepository
+    private val entryService: EntryService,
+    private val categoryRepository: CategoryRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddEntryUiState())
@@ -72,14 +72,14 @@ class AddEntryViewModel(
             if (entry != null) {
                 _uiState.update {
                     it.copy(
-                            amount = entry.amount.toString(),
-                            description = entry.description ?: "",
-                            selectedCategory =
-                                    _uiState.value.categories.find { cat ->
-                                        cat.id == entry.categoryId
-                                    },
-                            selectedType = entry.type,
-                            entryId = entry.id
+                        amount = entry.amount.toString(),
+                        description = entry.description ?: "",
+                        selectedCategory =
+                            _uiState.value.categories.find { cat ->
+                                cat.id == entry.categoryId
+                            },
+                        selectedType = entry.type,
+                        entryId = entry.id
                     )
                 }
             }
@@ -95,14 +95,14 @@ class AddEntryViewModel(
                 val transactionId = currentState.entryId ?: UUID.randomUUID().toString()
 
                 val newEntry =
-                        Entry(
-                                id = transactionId,
-                                amount = amountValue,
-                                description = currentState.description,
-                                categoryId = currentState.selectedCategory.id,
-                                type = currentState.selectedType,
-                                date = Date()
-                        )
+                    Entry(
+                        id = transactionId,
+                        amount = amountValue,
+                        description = currentState.description,
+                        categoryId = currentState.selectedCategory.id,
+                        type = currentState.selectedType,
+                        date = Date()
+                    )
 
                 if (currentState.entryId != null) {
                     entryService.updateEntry(newEntry)
