@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -36,17 +37,28 @@ import com.mobilecomputing.myfinance.ui.AppViewModelProvider
 import com.mobilecomputing.myfinance.ui.theme.PrimaryPurple
 import com.mobilecomputing.myfinance.utils.AppConstants
 
+import androidx.compose.ui.platform.LocalContext
+import com.mobilecomputing.myfinance.utils.NotificationHandler
+
 @Composable
 fun RemindersScreen(
         viewModel: RemindersViewModel = viewModel(factory = AppViewModelProvider.Factory),
         onAddReminderClick: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
     RemindersScreenContent(
             uiState = uiState,
             onAddReminderClick = onAddReminderClick,
-            onDeleteReminder = viewModel::deleteReminder
+            onDeleteReminder = viewModel::deleteReminder,
+            onTestNotification = { title ->
+                NotificationHandler.showNotification(
+                    context,
+                    "Test: $title",
+                    "This is a manual test notification for $title"
+                )
+            }
     )
 }
 
@@ -54,7 +66,8 @@ fun RemindersScreen(
 fun RemindersScreenContent(
         uiState: RemindersUiState,
         onAddReminderClick: () -> Unit = {},
-        onDeleteReminder: (String) -> Unit = {}
+        onDeleteReminder: (String) -> Unit = {},
+        onTestNotification: (String) -> Unit = {}
 ) {
     Scaffold() { padding ->
         Column(
@@ -74,14 +87,14 @@ fun RemindersScreenContent(
                                 contentDescription = null,
                                 tint = Color.White
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(AppConstants.PADDING_SMALL))
                         Text(
                                 "Active Reminders",
                                 color = Color.White,
                                 style = MaterialTheme.typography.titleMedium
                         )
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
                     Text(
                             text = "${uiState.activeCount}",
                             style = MaterialTheme.typography.displayMedium,
@@ -103,12 +116,13 @@ fun RemindersScreenContent(
 
             LazyColumn(
                     modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_MEDIUM)
             ) {
                 items(uiState.reminders) { item ->
                     ReminderItem(
                             item = item,
-                            onDeleteClick = { onDeleteReminder(item.reminder.id) }
+                            onDeleteClick = { onDeleteReminder(item.reminder.id) },
+                            onTestClick = { onTestNotification(item.contractTitle) }
                     )
                 }
             }
@@ -118,14 +132,14 @@ fun RemindersScreenContent(
             Button(
                     onClick = onAddReminderClick,
                     modifier = Modifier.fillMaxWidth().height(56.dp),
-                    shape = RoundedCornerShape(28.dp),
+                    shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_BUTTON),
                     colors =
-                            androidx.compose.material3.ButtonDefaults.buttonColors(
+                            ButtonDefaults.buttonColors(
                                     containerColor = PrimaryPurple
                             )
             ) {
                 Icon(Icons.Default.Notifications, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(AppConstants.PADDING_SMALL))
                 Text("Add New Reminder")
             }
         }

@@ -21,9 +21,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.mobilecomputing.myfinance.screens.entries.components.FilterButtons
-import com.mobilecomputing.myfinance.screens.entries.components.TransactionItem
+import com.mobilecomputing.myfinance.screens.entries.components.EntryFilterButtons
+import com.mobilecomputing.myfinance.screens.entries.components.EntryItem
 import com.mobilecomputing.myfinance.ui.AppViewModelProvider
+import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable
 fun EntriesScreen(
@@ -41,19 +42,19 @@ fun EntriesScreen(
             }
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {
-            FilterButtons(
+            EntryFilterButtons(
                     selectedFilter = uiState.filter,
                     onFilterSelected = viewModel::onFilterChanged
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
 
             LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 items(uiState.transactions) { transaction ->
-                    TransactionItem(
+                    EntryItem(
                             transaction = transaction,
                             modifier = Modifier.clickable { onEntryClick(transaction.id) }
                     )

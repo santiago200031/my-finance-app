@@ -6,21 +6,20 @@ import com.mobilecomputing.myfinance.data.contract.Contract
 import com.mobilecomputing.myfinance.data.contract.ContractStatus
 import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.contract.PaymentCycle
-import com.mobilecomputing.myfinance.data.repository.ContractRepository
 import com.mobilecomputing.myfinance.data.repository.ReminderRepository
 import com.mobilecomputing.myfinance.data.repository.UserRepository
-import com.mobilecomputing.myfinance.domain.ContractService
+import com.mobilecomputing.myfinance.data.service.ContractService
 import com.mobilecomputing.myfinance.utils.DateUtils
-import java.time.LocalDate
-import java.time.ZoneId
-import java.time.format.DateTimeParseException
-import java.util.Date
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeParseException
+import java.util.Date
 
 data class AddContractUiState(
         val title: String = "",
@@ -37,7 +36,6 @@ data class AddContractUiState(
 )
 
 class AddContractViewModel(
-        private val contractRepository: ContractRepository,
         private val contractService: ContractService,
         private val reminderRepository: ReminderRepository,
         private val userRepository: UserRepository
@@ -84,7 +82,7 @@ class AddContractViewModel(
 
     fun loadContract(contractId: String) {
         viewModelScope.launch {
-            val contract = contractRepository.getContractById(contractId).first()
+            val contract = contractService.getContractById(contractId).first()
             if (contract != null) {
                 _uiState.update {
                     it.copy(
@@ -128,7 +126,7 @@ class AddContractViewModel(
             var start = LocalDate.now()
             try {
                 start = DateUtils.parseInputDate(currentState.startDate)
-            } catch (e: DateTimeParseException) {
+            } catch (_: DateTimeParseException) {
                 // Fallback to today if parsing fails
             }
 
@@ -136,7 +134,7 @@ class AddContractViewModel(
             if (currentState.expirationDate.isNotBlank()) {
                 try {
                     end = DateUtils.parseInputDate(currentState.expirationDate)
-                } catch (e: DateTimeParseException) {
+                } catch (_: DateTimeParseException) {
                     // Ignore validity check for simplicity
                 }
             }
@@ -185,9 +183,9 @@ class AddContractViewModel(
                 val checkedContract = contractService.checkContractStatus(newContract)
 
                 if (currentState.contractId != null) {
-                    contractRepository.updateContract(checkedContract)
+                    contractService.updateContract(checkedContract)
                 } else {
-                    contractRepository.addContract(checkedContract)
+                    contractService.addContract(checkedContract)
                 }
                 _uiState.update { it.copy(isSaved = true) }
             }
@@ -198,7 +196,7 @@ class AddContractViewModel(
         val contractId = _uiState.value.contractId
         if (contractId != null) {
             viewModelScope.launch {
-                contractRepository.deleteContract(contractId)
+                contractService.deleteContract(contractId)
                 reminderRepository.deleteRemindersForContract(contractId)
                 _uiState.update { it.copy(isSaved = true) }
             }

@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.mobilecomputing.myfinance.utils.AppConstants
 import com.mobilecomputing.myfinance.utils.FormatUtils
 
 @Composable
@@ -22,7 +23,7 @@ fun AnalysisCard(title: String, amount: Double, color: Color, description: Strin
                         CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
         ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(AppConstants.PADDING_MEDIUM)) {
                         Text(
                                 text = title,
                                 style = MaterialTheme.typography.titleMedium,
@@ -33,7 +34,7 @@ fun AnalysisCard(title: String, amount: Double, color: Color, description: Strin
                                 style = MaterialTheme.typography.headlineMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = color,
-                                modifier = Modifier.padding(vertical = 8.dp)
+                                modifier = Modifier.padding(vertical = AppConstants.PADDING_SMALL)
                         )
                         Text(
                                 text = description,

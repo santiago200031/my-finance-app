@@ -2,11 +2,11 @@ package com.mobilecomputing.myfinance.screens.entries
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mobilecomputing.myfinance.data.FinanceFilter
-import com.mobilecomputing.myfinance.data.contract.ContractType
+import com.mobilecomputing.myfinance.data.entry.EntryFilter
+import com.mobilecomputing.myfinance.data.entry.EntryType
 import com.mobilecomputing.myfinance.data.repository.CategoryRepository
-import com.mobilecomputing.myfinance.data.repository.EntryRepository
-import com.mobilecomputing.myfinance.ui.models.TransactionUiModel
+import com.mobilecomputing.myfinance.data.service.EntryService
+import com.mobilecomputing.myfinance.ui.models.EntryUiModel
 import com.mobilecomputing.myfinance.utils.DateUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,21 +16,21 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 data class EntriesUiState(
-        val transactions: List<TransactionUiModel> = emptyList(),
-        val filter: FinanceFilter = FinanceFilter.ALL
+    val transactions: List<EntryUiModel> = emptyList(),
+    val filter: EntryFilter = EntryFilter.ALL
 )
 
 class EntriesViewModel(
-        private val entryRepository: EntryRepository,
-        private val categoryRepository: CategoryRepository
+        entryService: EntryService,
+        categoryRepository: CategoryRepository
 ) : ViewModel() {
 
         // UI state holders
-        private val _filter = MutableStateFlow(FinanceFilter.ALL)
+        private val _filter = MutableStateFlow(EntryFilter.ALL)
 
         val uiState: StateFlow<EntriesUiState> =
                 combine(
-                                entryRepository.getAllEntries(),
+                                entryService.getAllEntries(),
                                 categoryRepository.getAllCategories(),
                                 _filter
                         ) { entries, categories, filter ->
@@ -39,16 +39,13 @@ class EntriesViewModel(
                                         entries.filter { entry ->
                                                 val matchesFilter =
                                                         when (filter) {
-                                                                FinanceFilter.ALL -> true
-                                                                FinanceFilter.INCOME ->
+                                                            EntryFilter.ALL -> true
+                                                            EntryFilter.INCOME ->
                                                                         entry.type ==
-                                                                                ContractType.INCOME
-                                                                FinanceFilter.EXPENSE ->
+                                                                                EntryType.INCOME
+                                                            EntryFilter.EXPENSE ->
                                                                         entry.type ==
-                                                                                ContractType.EXPENSE
-                                                                FinanceFilter.DEBT ->
-                                                                        entry.type ==
-                                                                                ContractType.DEBT
+                                                                                EntryType.EXPENSE
                                                         }
 
                                                 matchesFilter
@@ -61,7 +58,7 @@ class EntriesViewModel(
                                                         categories.find {
                                                                 it.id == entry.categoryId
                                                         }
-                                                TransactionUiModel(
+                                                EntryUiModel(
                                                         id = entry.id,
                                                         amount = entry.amount,
                                                         description = entry.description
@@ -84,7 +81,7 @@ class EntriesViewModel(
                                 initialValue = EntriesUiState()
                         )
 
-        fun onFilterChanged(filter: FinanceFilter) {
+        fun onFilterChanged(filter: EntryFilter) {
                 _filter.update { filter }
         }
 }

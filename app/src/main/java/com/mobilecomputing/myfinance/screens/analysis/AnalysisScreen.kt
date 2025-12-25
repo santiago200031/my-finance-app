@@ -19,6 +19,7 @@ import com.mobilecomputing.myfinance.ui.AppViewModelProvider
 import com.mobilecomputing.myfinance.ui.components.AnalysisCard
 import com.mobilecomputing.myfinance.ui.theme.GreenIncome
 import com.mobilecomputing.myfinance.ui.theme.RedExpense
+import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable
 
@@ -37,14 +38,14 @@ fun AnalysisScreenContent(uiState: AnalysisUiState) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(AppConstants.PADDING_MEDIUM),
+            verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_MEDIUM)
         ) {
             Text(
                 text = "Financial Overview",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier.padding(bottom = AppConstants.PADDING_SMALL)
             )
 
             AnalysisCard(

@@ -27,12 +27,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobilecomputing.myfinance.screens.dashboard.components.BalanceSummaryCard
-import com.mobilecomputing.myfinance.screens.entries.components.TransactionItem
+import com.mobilecomputing.myfinance.screens.entries.components.EntryItem
+import com.mobilecomputing.myfinance.ui.models.EntryUiModel
 import com.mobilecomputing.myfinance.ui.AppViewModelProvider
 import com.mobilecomputing.myfinance.ui.theme.GreenIncome
 import com.mobilecomputing.myfinance.ui.theme.PrimaryPurple
 import com.mobilecomputing.myfinance.ui.theme.RedExpense
 import com.mobilecomputing.myfinance.utils.FormatUtils
+import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable
 fun DashboardScreen(
@@ -42,36 +44,36 @@ fun DashboardScreen(
 ) {
         val uiState by viewModel.uiState.collectAsState()
 
-        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+        Column(modifier = Modifier.fillMaxSize().padding(AppConstants.PADDING_MEDIUM)) {
                 Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                        horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_MEDIUM)
                 ) {
                         BalanceSummaryCard(
                                 title = "Income",
-                                amount = "$${FormatUtils.formatAmount(uiState.totalIncome)}",
+                                amount = "$${FormatUtils.formatUSAmount(uiState.totalIncome)}",
                                 modifier = Modifier.weight(1f),
                                 amountColor = GreenIncome
                         )
                         BalanceSummaryCard(
                                 title = "Expenses",
-                                amount = "$${FormatUtils.formatAmount(uiState.totalExpenses)}",
+                                amount = "$${FormatUtils.formatUSAmount(uiState.totalExpenses)}",
                                 modifier = Modifier.weight(1f),
                                 amountColor = RedExpense
                         )
                         BalanceSummaryCard(
                                 title = "Net Growth",
-                                amount = "$${FormatUtils.formatAmount(uiState.netGrowth)}",
+                                amount = "$${FormatUtils.formatUSAmount(uiState.netGrowth)}",
                                 modifier = Modifier.weight(1f),
                                 containerColor = PrimaryPurple,
                                 contentColor = Color.White
                         )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(AppConstants.PADDING_MEDIUM))
 
                 Card(modifier = Modifier.fillMaxWidth()) {
-                        Column(modifier = Modifier.padding(16.dp)) {
+                        Column(modifier = Modifier.padding(AppConstants.PADDING_MEDIUM)) {
                                 Row(
                                         modifier = Modifier.fillMaxWidth(),
                                 ) {
@@ -80,10 +82,10 @@ fun DashboardScreen(
                                                 style = MaterialTheme.typography.titleMedium
                                         )
                                 }
-                                Spacer(modifier = Modifier.height(16.dp))
+                                Spacer(modifier = Modifier.height(AppConstants.PADDING_MEDIUM))
                                 Row(
                                         modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.spacedBy(16.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_MEDIUM),
                                 ) {
                                         Button(
                                                 onClick = onAddEntryClick,
@@ -92,7 +94,7 @@ fun DashboardScreen(
                                                 Icon(
                                                         Icons.Default.Add,
                                                         contentDescription = "Add new entry",
-                                                        modifier = Modifier.padding(end = 8.dp)
+                                                        modifier = Modifier.padding(end = AppConstants.PADDING_SMALL)
                                                 )
                                                 Text("Add Entry")
                                         }
@@ -110,15 +112,15 @@ fun DashboardScreen(
                         }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(AppConstants.PADDING_MEDIUM))
 
                 Text("Recent Activity", style = MaterialTheme.typography.titleLarge)
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
 
                 LazyColumn(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) { items(uiState.transactions) { transaction -> TransactionItem(transaction) } }
+                ) { items(uiState.transactions) { transaction -> EntryItem(transaction) } }
         }
 }

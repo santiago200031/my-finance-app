@@ -10,5 +10,9 @@ interface UserRepository {
 
     suspend fun getUserByEmail(email: String): User?
 
+    suspend fun addTrustedEmail(email: String)
+
+    suspend fun getUserById(userId: String): User?
+
     fun setCurrentUser(userId: String)
 }

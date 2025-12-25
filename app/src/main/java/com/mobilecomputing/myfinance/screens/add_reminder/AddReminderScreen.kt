@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobilecomputing.myfinance.ui.AppViewModelProvider
+import com.mobilecomputing.myfinance.utils.AppConstants
 import com.mobilecomputing.myfinance.utils.DateUtils
 import com.mobilecomputing.myfinance.utils.NotificationHandler
 
@@ -82,10 +83,10 @@ fun AddReminderScreen(
         Column(
                 modifier =
                         Modifier.padding(innerPadding)
-                                .padding(16.dp)
+                                .padding(AppConstants.PADDING_MEDIUM)
                                 .fillMaxSize()
                                 .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_MEDIUM)
         ) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 OutlinedTextField(
@@ -121,12 +122,12 @@ fun AddReminderScreen(
                                         containerColor = MaterialTheme.colorScheme.surfaceVariant
                                 )
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                    Column(modifier = Modifier.padding(AppConstants.PADDING_MEDIUM)) {
                         Text(
                                 text = "Contract Details",
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(bottom = 8.dp)
+                                modifier = Modifier.padding(bottom = AppConstants.PADDING_SMALL)
                         )
                         Row(
                                 modifier = Modifier.fillMaxWidth(),
@@ -159,7 +160,7 @@ fun AddReminderScreen(
                     modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(AppConstants.PADDING_MEDIUM))
 
             Button(
                     onClick = viewModel::saveReminder,

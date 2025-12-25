@@ -12,21 +12,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import com.mobilecomputing.myfinance.data.contract.ContractType
-import com.mobilecomputing.myfinance.ui.models.TransactionUiModel
+import com.mobilecomputing.myfinance.data.entry.EntryType
+import com.mobilecomputing.myfinance.ui.models.EntryUiModel
 import com.mobilecomputing.myfinance.ui.theme.GreenIncome
 import com.mobilecomputing.myfinance.ui.theme.RedExpense
+import com.mobilecomputing.myfinance.utils.AppConstants
 import com.mobilecomputing.myfinance.utils.FormatUtils
 
 @Composable
-fun TransactionItem(
-        transaction: TransactionUiModel,
-        modifier: Modifier = Modifier,
+fun EntryItem(
+    transaction: EntryUiModel,
+    modifier: Modifier = Modifier,
 ) {
     Card(modifier.fillMaxWidth()) {
         Row(
-                modifier = Modifier.padding(16.dp).fillMaxWidth(),
+                modifier = Modifier.padding(AppConstants.PADDING_MEDIUM).fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
         ) {
@@ -37,16 +37,14 @@ fun TransactionItem(
             }
             Text(
                     text =
-                            if (transaction.type == ContractType.EXPENSE ||
-                                            transaction.type == ContractType.DEBT
+                            if (transaction.type == EntryType.EXPENSE
                             ) {
-                                "-$${FormatUtils.formatAmount(transaction.amount)}"
+                                "-$${FormatUtils.formatUSAmount(transaction.amount)}"
                             } else {
-                                "+$${FormatUtils.formatAmount(transaction.amount)}"
+                                "+$${FormatUtils.formatUSAmount(transaction.amount)}"
                             },
                     color =
-                            if (transaction.type == ContractType.EXPENSE ||
-                                            transaction.type == ContractType.DEBT
+                            if (transaction.type == EntryType.EXPENSE
                             ) {
                                 RedExpense
                             } else {

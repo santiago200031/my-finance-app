@@ -5,18 +5,18 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.mobilecomputing.myfinance.screens.contracts.components.SummaryCard
 import com.mobilecomputing.myfinance.ui.theme.GreenIncome
 import com.mobilecomputing.myfinance.ui.theme.Orange
 import com.mobilecomputing.myfinance.ui.theme.RedExpense
+import com.mobilecomputing.myfinance.utils.AppConstants
 import com.mobilecomputing.myfinance.utils.FormatUtils
 
 @Composable
 fun SummaryCardsRow(activeCount: Int, expiringCount: Int, monthlyNetValue: Double) {
         Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
+                horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_MEDIUM)
         ) {
                 SummaryCard(
                         title = "Active",

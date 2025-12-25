@@ -24,12 +24,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobilecomputing.myfinance.data.contract.ContractStatus
 import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.contract.PaymentCycle
 import com.mobilecomputing.myfinance.ui.AppViewModelProvider
+import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable
 fun AddContractScreen(
@@ -54,8 +54,8 @@ fun AddContractScreen(
 
         Column(
                 modifier =
-                        Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                        Modifier.fillMaxSize().padding(AppConstants.PADDING_MEDIUM).verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_MEDIUM)
         ) {
                 Text(
                         text = if (contractId != null) "Edit Contract" else "Add New Contract",
@@ -64,9 +64,9 @@ fun AddContractScreen(
 
                 Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL)
                 ) {
-                        ContractType.values().forEach { type ->
+                        ContractType.entries.forEach { type ->
                                 val isSelected = uiState.selectedType == type
                                 if (isSelected) {
                                         Button(
@@ -118,7 +118,7 @@ fun AddContractScreen(
 
                 Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL)
                 ) {
                         OutlinedTextField(
                                 value = uiState.startDate,
@@ -138,9 +138,9 @@ fun AddContractScreen(
                 Text("Billing Cycle", style = MaterialTheme.typography.titleMedium)
                 Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL)
                 ) {
-                        PaymentCycle.values().forEach { cycle ->
+                        PaymentCycle.entries.forEach { cycle ->
                                 val isSelected = uiState.billingCycle == cycle
                                 if (isSelected) {
                                         Button(
@@ -173,9 +173,9 @@ fun AddContractScreen(
                 Text("Status", style = MaterialTheme.typography.titleMedium)
                 Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL)
                 ) {
-                        ContractStatus.values().forEach { status ->
+                        ContractStatus.entries.forEach { status ->
                                 val isSelected = uiState.status == status
                                 if (isSelected) {
                                         Button(
@@ -201,7 +201,7 @@ fun AddContractScreen(
                         }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(AppConstants.PADDING_MEDIUM))
 
                 Button(
                         onClick = viewModel::saveContract,

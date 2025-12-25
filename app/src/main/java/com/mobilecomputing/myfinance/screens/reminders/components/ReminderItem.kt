@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Alarm
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -30,18 +31,19 @@ import com.mobilecomputing.myfinance.data.reminder.Reminder
 import com.mobilecomputing.myfinance.screens.reminders.ReminderUiItem
 import com.mobilecomputing.myfinance.ui.theme.PrimaryPurple
 import com.mobilecomputing.myfinance.ui.theme.SecondaryPurple
-import com.mobilecomputing.myfinance.utils.DateUtils
+import com.mobilecomputing.myfinance.utils.AppConstants
 import com.mobilecomputing.myfinance.utils.FormatUtils
 import java.time.LocalDate
+import java.util.Date
 
 @Composable
-fun ReminderItem(item: ReminderUiItem, onDeleteClick: () -> Unit) {
+fun ReminderItem(item: ReminderUiItem, onDeleteClick: () -> Unit, onTestClick: () -> Unit) {
         Card(
                 modifier = Modifier.fillMaxWidth(),
                 elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(AppConstants.PADDING_MEDIUM)) {
                         Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -52,46 +54,55 @@ fun ReminderItem(item: ReminderUiItem, onDeleteClick: () -> Unit) {
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold
                                 )
-                                IconButton(onClick = onDeleteClick) {
+                                Row {
+                                    IconButton(onClick = onTestClick) {
+                                        Icon(
+                                            Icons.Default.Notifications, // Use a bell or similar icon
+                                            contentDescription = "Test Notification",
+                                            tint = PrimaryPurple
+                                        )
+                                    }
+                                    IconButton(onClick = onDeleteClick) {
                                         Icon(
                                                 Icons.Default.Delete,
                                                 contentDescription = "Delete Reminder",
                                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
+                                    }
                                 }
                         }
 
                         Text(
                                 text =
-                                        "${FormatUtils.formatAmount(item.contractAmount)} due in ${item.daysUntil} days",
+                                        "${FormatUtils.formatUSAmount(item.contractAmount)} due in ${item.daysUntil} days",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
 
                         Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                         Icons.Default.Alarm,
                                         contentDescription = null,
-                                        modifier = Modifier.width(16.dp),
+                                        modifier = Modifier.width(AppConstants.PADDING_MEDIUM),
                                         tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
-                                        text = DateUtils.formatDate(item.reminder.reminderDate),
+                                        text = java.text.SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault()).format(item.reminder.reminderDate),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                         }
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
 
                         Box(
                                 modifier =
                                         Modifier.background(
                                                         color = SecondaryPurple,
-                                                        shape = RoundedCornerShape(16.dp)
+                                                        shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_MEDIUM)
                                                 )
                                                 .padding(horizontal = 12.dp, vertical = 4.dp)
                         ) {
@@ -108,7 +119,7 @@ fun ReminderItem(item: ReminderUiItem, onDeleteClick: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun ReminderItemPreview() {
-        val dummyReminder = Reminder(contractId = "123", reminderDate = LocalDate.now().plusDays(3))
+        val dummyReminder = Reminder(contractId = "123", reminderDate = Date())
         val dummyItem =
                 ReminderUiItem(
                         reminder = dummyReminder,
@@ -116,5 +127,5 @@ fun ReminderItemPreview() {
                         contractAmount = 45.0,
                         daysUntil = 3
                 )
-        ReminderItem(item = dummyItem, onDeleteClick = {})
+        ReminderItem(item = dummyItem, onDeleteClick = {}, onTestClick = {})
 }

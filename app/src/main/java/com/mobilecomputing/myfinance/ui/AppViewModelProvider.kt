@@ -19,32 +19,30 @@ object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
             DashboardViewModel(
-                    myFinanceApplication().container.entryRepository,
+                    myFinanceApplication().container.entryService,
                     myFinanceApplication().container.categoryRepository
             )
         }
         initializer {
             EntriesViewModel(
-                    myFinanceApplication().container.entryRepository,
+                    myFinanceApplication().container.entryService,
                     myFinanceApplication().container.categoryRepository
             )
         }
         initializer {
             AddEntryViewModel(
-                    myFinanceApplication().container.entryRepository,
+                    myFinanceApplication().container.entryService,
                     myFinanceApplication().container.categoryRepository
             )
         }
         initializer {
             ContractsViewModel(
-                    myFinanceApplication().container.contractRepository,
                     myFinanceApplication().container.contractService,
                     myFinanceApplication().container.userRepository
             )
         }
         initializer {
             AddContractViewModel(
-                    myFinanceApplication().container.contractRepository,
                     myFinanceApplication().container.contractService,
                     myFinanceApplication().container.reminderRepository,
                     myFinanceApplication().container.userRepository
@@ -53,19 +51,19 @@ object AppViewModelProvider {
         initializer {
             RemindersViewModel(
                     myFinanceApplication().container.reminderRepository,
-                    myFinanceApplication().container.contractRepository
+                    myFinanceApplication().container.contractService
             )
         }
         initializer {
             AddReminderViewModel(
+                    myFinanceApplication(),
                     myFinanceApplication().container.reminderRepository,
-                    myFinanceApplication().container.contractRepository
+                    myFinanceApplication().container.contractService
             )
         }
         initializer {
             AnalysisViewModel(
-                    myFinanceApplication().container.entryRepository,
-                    myFinanceApplication().container.contractRepository,
+                    myFinanceApplication().container.entryService,
                     myFinanceApplication().container.contractService
             )
         }

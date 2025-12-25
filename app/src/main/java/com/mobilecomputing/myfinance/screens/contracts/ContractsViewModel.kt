@@ -2,12 +2,12 @@ package com.mobilecomputing.myfinance.screens.contracts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mobilecomputing.myfinance.data.FinanceFilter
 import com.mobilecomputing.myfinance.data.contract.Contract
+import com.mobilecomputing.myfinance.data.contract.ContractFilter
 import com.mobilecomputing.myfinance.data.contract.ContractType
-import com.mobilecomputing.myfinance.data.repository.ContractRepository
 import com.mobilecomputing.myfinance.data.repository.UserRepository
-import com.mobilecomputing.myfinance.domain.ContractService
+import com.mobilecomputing.myfinance.data.service.ContractService
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -21,41 +21,57 @@ import kotlinx.coroutines.launch
 
 data class ContractsUiState(
         val contracts: List<Contract> = emptyList(),
-        val filter: FinanceFilter = FinanceFilter.ALL,
+        val filter: ContractFilter = ContractFilter.ALL,
         val activeCount: Int = 0,
         val expiringCount: Int = 0,
         val monthlyNetValue: Double = 0.0
 )
 
 class ContractsViewModel(
-        private val contractRepository: ContractRepository,
         private val contractService: ContractService,
         private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val _filter = MutableStateFlow(FinanceFilter.ALL)
+    private val _filter = MutableStateFlow(ContractFilter.ALL)
     private val _currentUserId = MutableStateFlow<String?>(null)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<ContractsUiState> =
-            combine(_currentUserId, _filter) { userId, filter -> Pair(userId, filter) }
-                    .flatMapLatest { (userId, filter) ->
+            combine(_currentUserId, _filter, userRepository.getCurrentUser()) {
+                            userId,
+                            filter,
+                            currentUser ->
+                        Triple(userId, filter, currentUser)
+                    }
+                    .flatMapLatest { (userId, filter, currentUser) ->
                         val contractsFlow =
                                 if (userId == null) {
-                                    contractRepository.getAllContracts()
+                                    contractService.getAllContracts()
                                 } else {
-                                    contractRepository.getContractsForUser(userId)
+                                    // Verify trust
+                                    val targetUser = userRepository.getUserById(userId)
+                                    val isTrusted =
+                                            targetUser?.trustedEmails?.contains(
+                                                    currentUser?.email
+                                            ) == true
+                                    if (isTrusted) {
+                                        contractService.getContractsForUser(userId)
+                                    } else {
+                                        // Return empty flow if not trusted
+                                        kotlinx.coroutines.flow.flowOf(emptyList())
+                                    }
                                 }
 
                         contractsFlow.map { contracts ->
                             val filteredContracts =
                                     contracts.filter { contract ->
                                         when (filter) {
-                                            FinanceFilter.ALL -> true
-                                            FinanceFilter.INCOME ->
+                                            ContractFilter.ALL -> true
+                                            ContractFilter.INCOME ->
                                                     contract.type == ContractType.INCOME
-                                            FinanceFilter.EXPENSE ->
+                                            ContractFilter.EXPENSE ->
                                                     contract.type == ContractType.EXPENSE
-                                            FinanceFilter.DEBT -> contract.type == ContractType.DEBT
+                                            ContractFilter.DEBT -> contract.type == ContractType.DEBT
                                         }
                                     }
 
@@ -80,27 +96,23 @@ class ContractsViewModel(
 
     fun refreshContractStatuses() {
         viewModelScope.launch {
-            val currentContracts = contractRepository.getAllContracts().first()
+            val currentContracts = contractService.getAllContracts().first()
 
             currentContracts.forEach { contract ->
                 val updatedContract = contractService.checkContractStatus(contract)
                 if (updatedContract != contract) {
-                    contractRepository.updateContract(updatedContract)
+                    contractService.updateContract(updatedContract)
                 }
             }
         }
     }
 
-    fun onFilterChanged(filter: FinanceFilter) {
+    fun onFilterChanged(filter: ContractFilter) {
         _filter.update { filter }
     }
 
     fun switchUser(userId: String) {
         _currentUserId.value = userId
-    }
-
-    fun resetToCurrentUser() {
-        _currentUserId.value = null
     }
 
     suspend fun resolveUserIdFromEmail(email: String): String? {
