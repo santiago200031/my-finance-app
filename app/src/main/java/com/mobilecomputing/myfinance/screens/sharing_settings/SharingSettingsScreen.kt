@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -56,12 +57,12 @@ fun SharingSettingsScreen(
         .padding(AppConstants.PADDING_MEDIUM)) {
         Text(
             "Sharing Settings",
-            style = androidx.compose.material3.MaterialTheme.typography.headlineMedium
+            style = MaterialTheme.typography.headlineMedium
         )
 
         Spacer(modifier = Modifier.height(AppConstants.PADDING_MEDIUM))
 
-        // Add Trusted Email Section
+        // Trusted Email Section
         OutlinedTextField(
             value = emailInput,
             onValueChange = { emailInput = it },
