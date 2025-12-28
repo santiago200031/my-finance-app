@@ -1,4 +1,4 @@
-package com.mobilecomputing.myfinance.screens.settings
+package com.mobilecomputing.myfinance.screens.settings.components
 
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme

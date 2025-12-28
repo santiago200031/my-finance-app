@@ -1,4 +1,4 @@
-package com.mobilecomputing.myfinance.screens.export_data
+package com.mobilecomputing.myfinance.screens.export_data.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable

@@ -37,8 +37,7 @@ class AnalysisViewModel(entryService: EntryService, private val contractService:
                     DateUtils.isSameMonth(entry.date, selectedDate)
                 }
 
-            val spendingEntries =
-                currentMonthEntries.filter { it.type == EntryType.EXPENSE }
+            val spendingEntries = currentMonthEntries.filter { it.type == EntryType.EXPENSE }
             val currentMonthSpending = spendingEntries.sumOf { it.amount }
 
             // Filter contracts active in the selected month

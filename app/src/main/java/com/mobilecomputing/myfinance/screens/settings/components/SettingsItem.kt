@@ -1,4 +1,4 @@
-package com.mobilecomputing.myfinance.screens.settings
+package com.mobilecomputing.myfinance.screens.settings.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row

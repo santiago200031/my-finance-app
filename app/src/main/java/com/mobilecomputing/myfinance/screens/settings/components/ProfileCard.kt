@@ -1,4 +1,4 @@
-package com.mobilecomputing.myfinance.screens.settings
+package com.mobilecomputing.myfinance.screens.settings.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

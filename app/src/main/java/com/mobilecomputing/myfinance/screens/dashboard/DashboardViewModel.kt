@@ -12,56 +12,57 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
 data class DashboardUiState(
-    val transactions: List<EntryUiModel> = emptyList(),
-    val totalIncome: Double = 0.0,
-    val totalExpenses: Double = 0.0,
-    val netGrowth: Double = 0.0
+        val transactions: List<EntryUiModel> = emptyList(),
+        val totalIncome: Double = 0.0,
+        val totalExpenses: Double = 0.0,
+        val netGrowth: Double = 0.0
 )
 
-class DashboardViewModel(entryService: EntryService, categoryRepository: CategoryRepository) :
-    ViewModel() {
+class DashboardViewModel(
+        entryService: EntryService,
+        categoryRepository: CategoryRepository,
+        sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5000)
+) : ViewModel() {
 
     val uiState: StateFlow<DashboardUiState> =
-        combine(
-            entryService.getAllEntries(),
-            categoryRepository.getAllCategories()
-        ) { entries, categories ->
+            combine(entryService.getAllEntries(), categoryRepository.getAllCategories()) {
+                            entries,
+                            categories ->
+                        val totalIncome = entryService.calculateTotalIncome(entries)
+                        val totalExpenses = entryService.calculateTotalExpenses(entries)
+                        val netGrowth = entryService.calculateNetGrowth(entries)
 
-            val totalIncome = entryService.calculateTotalIncome(entries)
-            val totalExpenses = entryService.calculateTotalExpenses(entries)
-            val netGrowth = entryService.calculateNetGrowth(entries)
+                        val uiTransactions =
+                                entries
+                                        .sortedByDescending { it.date }
+                                        .map { entry ->
+                                            val category =
+                                                    categories.find { it.id == entry.categoryId }
+                                            EntryUiModel(
+                                                    id = entry.id,
+                                                    amount = entry.amount,
+                                                    description = entry.description
+                                                                    ?: "No Description",
+                                                    date = entry.date,
+                                                    categoryName = category?.title
+                                                                    ?: "Uncategorized",
+                                                    type = entry.type,
+                                                    categoryId = entry.categoryId,
+                                                    formattedDate = DateUtils.formatDate(entry.date)
+                                            )
+                                        }
+                                        .take(3)
 
-            val uiTransactions =
-                entries
-                    .sortedByDescending { it.date }
-                    .map { entry ->
-                        val category =
-                            categories.find { it.id == entry.categoryId }
-                        EntryUiModel(
-                            id = entry.id,
-                            amount = entry.amount,
-                            description = entry.description
-                                ?: "No Description",
-                            date = entry.date,
-                            categoryName = category?.title
-                                ?: "Uncategorized",
-                            type = entry.type,
-                            categoryId = entry.categoryId,
-                            formattedDate = DateUtils.formatDate(entry.date)
+                        DashboardUiState(
+                                transactions = uiTransactions,
+                                totalIncome = totalIncome,
+                                totalExpenses = totalExpenses,
+                                netGrowth = netGrowth
                         )
                     }
-                    .take(3)
-
-            DashboardUiState(
-                transactions = uiTransactions,
-                totalIncome = totalIncome,
-                totalExpenses = totalExpenses,
-                netGrowth = netGrowth
-            )
-        }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = DashboardUiState()
-            )
+                    .stateIn(
+                            scope = viewModelScope,
+                            started = sharingStarted,
+                            initialValue = DashboardUiState()
+                    )
 }

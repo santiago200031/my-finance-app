@@ -1,12 +1,12 @@
-package com.mobilecomputing.myfinance.screens.settings
+package com.mobilecomputing.myfinance.screens.settings.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.ImportExport
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -17,14 +17,10 @@ import androidx.compose.ui.unit.dp
 import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable
-fun DataManagementSection(
-    onSharingSettingsClick: () -> Unit,
-    onSwitchUserClick: () -> Unit,
-    onExportDataClick: () -> Unit
-) {
+fun LocalizationSection(language: String, currency: String, dateFormat: String) {
     Column {
         Text(
-            text = "Data Management",
+            text = "Localization",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(bottom = AppConstants.PADDING_SMALL)
@@ -37,21 +33,21 @@ fun DataManagementSection(
         ) {
             Column {
                 SettingsItem(
-                    icon = Icons.Default.Download,
-                    label = "Export Data",
-                    onClick = onExportDataClick
+                    icon = Icons.Default.Language,
+                    label = "Language",
+                    value = if (language == "en") "English" else language
                 )
                 CustomDivider()
                 SettingsItem(
-                    icon = Icons.Default.Share,
-                    label = "Sharing Settings",
-                    onClick = onSharingSettingsClick
+                    icon = Icons.Default.AttachMoney,
+                    label = "Currency",
+                    value = "$currency ($)"
                 )
                 CustomDivider()
                 SettingsItem(
-                    icon = Icons.Default.ImportExport,
-                    label = "Switch User",
-                    onClick = onSwitchUserClick
+                    icon = Icons.Default.CalendarToday,
+                    label = "Date Format",
+                    value = dateFormat
                 )
             }
         }

@@ -1,4 +1,4 @@
-package com.mobilecomputing.myfinance.screens.settings
+package com.mobilecomputing.myfinance.screens.settings.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,6 +9,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.mobilecomputing.myfinance.screens.settings.SettingsUiState
 import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable

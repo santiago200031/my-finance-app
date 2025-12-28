@@ -7,6 +7,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobilecomputing.myfinance.data.models.User
 import com.mobilecomputing.myfinance.data.models.user.UserSettings
+import com.mobilecomputing.myfinance.screens.settings.components.SettingsScreenContent
 import com.mobilecomputing.myfinance.ui.AppViewModelProvider
 
 @Composable
