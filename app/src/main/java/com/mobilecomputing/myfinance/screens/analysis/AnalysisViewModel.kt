@@ -41,7 +41,6 @@ class AnalysisViewModel(entryService: EntryService, private val contractService:
                 currentMonthEntries.filter { it.type == EntryType.EXPENSE }
             val currentMonthSpending = spendingEntries.sumOf { it.amount }
 
-            // Fixed Contract Expenses (Contracts only, monthly normalized)
             // Filter contracts active in the selected month
             val startOfMonth = DateUtils.getStartOfMonth(selectedDate)
             val endOfMonth = DateUtils.getEndOfMonth(selectedDate)

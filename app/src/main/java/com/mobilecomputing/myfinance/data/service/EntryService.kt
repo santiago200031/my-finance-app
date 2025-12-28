@@ -1,6 +1,7 @@
 package com.mobilecomputing.myfinance.data.service
 
 import com.mobilecomputing.myfinance.data.entry.Entry
+import com.mobilecomputing.myfinance.data.entry.EntryType
 import com.mobilecomputing.myfinance.data.repository.EntryRepository
 import kotlinx.coroutines.flow.Flow
 
@@ -20,5 +21,17 @@ class EntryService(private val entryRepository: EntryRepository) {
 
     suspend fun deleteEntry(id: String) {
         entryRepository.deleteEntry(id)
+    }
+
+    fun calculateTotalIncome(entries: List<Entry>): Double {
+        return entries.filter { it.type == EntryType.INCOME }.sumOf { it.amount }
+    }
+
+    fun calculateTotalExpenses(entries: List<Entry>): Double {
+        return entries.filter { it.type == EntryType.EXPENSE }.sumOf { it.amount }
+    }
+
+    fun calculateNetGrowth(entries: List<Entry>): Double {
+        return calculateTotalIncome(entries) - calculateTotalExpenses(entries)
     }
 }

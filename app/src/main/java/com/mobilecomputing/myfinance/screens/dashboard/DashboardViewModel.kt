@@ -2,7 +2,6 @@ package com.mobilecomputing.myfinance.screens.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mobilecomputing.myfinance.data.entry.EntryType
 import com.mobilecomputing.myfinance.data.repository.CategoryRepository
 import com.mobilecomputing.myfinance.data.service.EntryService
 import com.mobilecomputing.myfinance.ui.models.EntryUiModel
@@ -23,13 +22,14 @@ class DashboardViewModel(entryService: EntryService, categoryRepository: Categor
     ViewModel() {
 
     val uiState: StateFlow<DashboardUiState> =
-        combine(entryService.getAllEntries(), categoryRepository.getAllCategories()) { entries,
-                                                                                       categories ->
-            val totalIncome =
-                entries.filter { it.type == EntryType.INCOME }.sumOf { it.amount }
-            val totalExpenses =
-                entries.filter { it.type == EntryType.EXPENSE }.sumOf { it.amount }
-            val netGrowth = totalIncome - totalExpenses
+        combine(
+            entryService.getAllEntries(),
+            categoryRepository.getAllCategories()
+        ) { entries, categories ->
+
+            val totalIncome = entryService.calculateTotalIncome(entries)
+            val totalExpenses = entryService.calculateTotalExpenses(entries)
+            val netGrowth = entryService.calculateNetGrowth(entries)
 
             val uiTransactions =
                 entries
