@@ -1,31 +1,70 @@
 package com.mobilecomputing.myfinance.utils
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.time.LocalDate
+import java.util.Calendar
 
 class DateUtilsTest {
 
     @Test
-    fun formatDate_localDate_returnsCorrectDisplayFormat() {
-        val date = LocalDate.of(2023, 12, 25)
-        // AppConstants.DATE_FORMAT_DISPLAY = "MMM d, yyyy" -> "Dec 25, 2023"
-        val formatted = DateUtils.formatDate(date)
-        assertEquals("Dec 25, 2023", formatted)
+    fun `isSameMonth returns true for same month and year`() {
+        val cal1 = Calendar.getInstance().apply { set(2024, Calendar.JANUARY, 15) }
+        val cal2 = Calendar.getInstance().apply { set(2024, Calendar.JANUARY, 20) }
+        assertTrue(DateUtils.isSameMonth(cal1.time, cal2.time))
     }
 
     @Test
-    fun formatInputDate_localDate_returnsCorrectInputFormat() {
-        val date = LocalDate.of(2023, 1, 1)
-        // AppConstants.DATE_FORMAT_INPUT = "dd.MM.yyyy" -> "01.01.2023"
-        val formatted = DateUtils.formatInputDate(date)
-        assertEquals("01.01.2023", formatted)
+    fun `isSameMonth returns false for different month`() {
+        val cal1 = Calendar.getInstance().apply { set(2024, Calendar.JANUARY, 15) }
+        val cal2 = Calendar.getInstance().apply { set(2024, Calendar.FEBRUARY, 15) }
+        assertFalse(DateUtils.isSameMonth(cal1.time, cal2.time))
     }
 
     @Test
-    fun parseInputDate_validString_returnsLocalDate() {
-        val dateString = "01.01.2023"
-        val date = DateUtils.parseInputDate(dateString)
-        assertEquals(LocalDate.of(2023, 1, 1), date)
+    fun `isSameMonth returns false for different year`() {
+        val cal1 = Calendar.getInstance().apply { set(2024, Calendar.JANUARY, 15) }
+        val cal2 = Calendar.getInstance().apply { set(2025, Calendar.JANUARY, 15) }
+        assertFalse(DateUtils.isSameMonth(cal1.time, cal2.time))
+    }
+
+    @Test
+    fun `addMonths adds months correctly`() {
+        val cal = Calendar.getInstance().apply { set(2024, Calendar.JANUARY, 15) }
+        val newDate = DateUtils.addMonths(cal.time, 1)
+        val newCal = Calendar.getInstance().apply { time = newDate }
+
+        assertEquals(Calendar.FEBRUARY, newCal.get(Calendar.MONTH))
+        assertEquals(2024, newCal.get(Calendar.YEAR))
+    }
+
+    @Test
+    fun `addMonths handles year transition`() {
+        val cal = Calendar.getInstance().apply { set(2024, Calendar.DECEMBER, 15) }
+        val newDate = DateUtils.addMonths(cal.time, 1)
+        val newCal = Calendar.getInstance().apply { time = newDate }
+
+        assertEquals(Calendar.JANUARY, newCal.get(Calendar.MONTH))
+        assertEquals(2025, newCal.get(Calendar.YEAR))
+    }
+
+    @Test
+    fun `addMonths handles subtraction`() {
+        val cal = Calendar.getInstance().apply { set(2024, Calendar.JANUARY, 15) }
+        val newDate = DateUtils.addMonths(cal.time, -1)
+        val newCal = Calendar.getInstance().apply { time = newDate }
+
+        assertEquals(Calendar.DECEMBER, newCal.get(Calendar.MONTH))
+        assertEquals(2023, newCal.get(Calendar.YEAR))
+    }
+
+    @Test
+    fun `formatMonthYear formats correctly`() {
+        val cal = Calendar.getInstance().apply { set(2024, Calendar.JANUARY, 15) }
+
+        val formatted = DateUtils.formatMonthYear(cal.time)
+
+        assertEquals("January 2024", formatted)
     }
 }

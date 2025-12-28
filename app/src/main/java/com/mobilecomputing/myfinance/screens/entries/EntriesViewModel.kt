@@ -14,67 +14,65 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import java.util.Date
 
 data class EntriesUiState(
     val transactions: List<EntryUiModel> = emptyList(),
-    val filter: EntryFilter = EntryFilter.ALL
+    val filter: EntryFilter = EntryFilter.ALL,
+    val selectedDate: Date = Date()
 )
 
-class EntriesViewModel(
-    entryService: EntryService,
-    categoryRepository: CategoryRepository
-) : ViewModel() {
+class EntriesViewModel(entryService: EntryService, categoryRepository: CategoryRepository) :
+    ViewModel() {
 
     // UI state holders
     private val _filter = MutableStateFlow(EntryFilter.ALL)
+    private val _selectedDate = MutableStateFlow(Date())
 
     val uiState: StateFlow<EntriesUiState> =
         combine(
             entryService.getAllEntries(),
             categoryRepository.getAllCategories(),
-            _filter
-        ) { entries, categories, filter ->
+            _filter,
+            _selectedDate
+        ) { entries, categories, filter, selectedDate ->
             // Filter and map
             val filteredEntries =
                 entries.filter { entry ->
                     val matchesFilter =
                         when (filter) {
                             EntryFilter.ALL -> true
-                            EntryFilter.INCOME ->
-                                entry.type ==
-                                        EntryType.INCOME
-
+                            EntryFilter.INCOME -> entry.type == EntryType.INCOME
                             EntryFilter.EXPENSE ->
-                                entry.type ==
-                                        EntryType.EXPENSE
+                                entry.type == EntryType.EXPENSE
                         }
 
-                    matchesFilter
+                    val matchesDate =
+                        DateUtils.isSameMonth(entry.date, selectedDate)
+
+                    matchesFilter && matchesDate
                 }
 
             val uiTransactions =
-                filteredEntries.sortedByDescending { it.date }.map { entry
-                    ->
-                    val category =
-                        categories.find {
-                            it.id == entry.categoryId
-                        }
+                filteredEntries.sortedByDescending { it.date }.map { entry ->
+                    val category = categories.find { it.id == entry.categoryId }
                     EntryUiModel(
                         id = entry.id,
                         amount = entry.amount,
-                        description = entry.description
-                            ?: "No Description",
+                        description = entry.description ?: "No Description",
                         date = entry.date,
-                        categoryName = category?.title
-                            ?: "Uncategorized",
+                        categoryName = category?.title ?: "Uncategorized",
                         type = entry.type,
                         categoryId = entry.categoryId,
-                        formattedDate =
-                            DateUtils.formatDate(entry.date)
+                        formattedDate = DateUtils.formatDate(entry.date)
                     )
                 }
 
-            EntriesUiState(transactions = uiTransactions, filter = filter)
+            EntriesUiState(
+                transactions = uiTransactions,
+                filter = filter,
+                selectedDate = selectedDate
+            )
         }
             .stateIn(
                 scope = viewModelScope,
@@ -84,5 +82,9 @@ class EntriesViewModel(
 
     fun onFilterChanged(filter: EntryFilter) {
         _filter.update { filter }
+    }
+
+    fun updateMonth(increment: Long) {
+        _selectedDate.update { DateUtils.addMonths(it, increment) }
     }
 }

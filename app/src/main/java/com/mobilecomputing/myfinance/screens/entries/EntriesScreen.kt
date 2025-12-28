@@ -19,11 +19,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobilecomputing.myfinance.screens.entries.components.EntryFilterButtons
 import com.mobilecomputing.myfinance.screens.entries.components.EntryItem
 import com.mobilecomputing.myfinance.ui.AppViewModelProvider
+import com.mobilecomputing.myfinance.ui.components.MonthYearSelector
 import com.mobilecomputing.myfinance.utils.AppConstants
 
 @Composable
@@ -49,11 +49,17 @@ fun EntriesScreen(
                 onFilterSelected = viewModel::onFilterChanged
             )
 
+            MonthYearSelector(
+                currentDate = uiState.selectedDate,
+                onPreviousMonth = { viewModel.updateMonth(-1) },
+                onNextMonth = { viewModel.updateMonth(1) }
+            )
+
             Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
 
             LazyColumn(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_XSMALL)
             ) {
                 items(uiState.transactions) { transaction ->
                     EntryItem(

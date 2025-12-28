@@ -103,7 +103,7 @@ fun RemindersScreenContent(
                         color = Color.White,
                         fontWeight = FontWeight.Bold
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(AppConstants.PADDING_XSMALL))
                     val nextAlertText =
                         if (uiState.nextAlertInDays != null) {
                             "Next alert in ${uiState.nextAlertInDays} day(s)"
@@ -137,10 +137,7 @@ fun RemindersScreenContent(
                     .fillMaxWidth()
                     .height(56.dp),
                 shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_BUTTON),
-                colors =
-                    ButtonDefaults.buttonColors(
-                        containerColor = PrimaryPurple
-                    )
+                colors = ButtonDefaults.buttonColors(containerColor = PrimaryPurple)
             ) {
                 Icon(Icons.Default.Notifications, contentDescription = null)
                 Spacer(modifier = Modifier.width(AppConstants.PADDING_SMALL))

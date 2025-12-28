@@ -87,10 +87,14 @@ fun ReminderItem(item: ReminderUiItem, onDeleteClick: () -> Unit, onTestClick: (
                     modifier = Modifier.width(AppConstants.PADDING_MEDIUM),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(AppConstants.PADDING_XSMALL))
                 Text(
-                    text = java.text.SimpleDateFormat("dd.MM.yyyy", java.util.Locale.getDefault())
-                        .format(item.reminder.reminderDate),
+                    text =
+                        java.text.SimpleDateFormat(
+                            "dd.MM.yyyy",
+                            java.util.Locale.getDefault()
+                        )
+                            .format(item.reminder.reminderDate),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -103,15 +107,17 @@ fun ReminderItem(item: ReminderUiItem, onDeleteClick: () -> Unit, onTestClick: (
                     Modifier
                         .background(
                             color = SecondaryPurple,
-                            shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_MEDIUM)
+                            shape =
+                                RoundedCornerShape(
+                                    AppConstants.CORNER_RADIUS_MEDIUM
+                                )
                         )
-                        .padding(horizontal = 12.dp, vertical = 4.dp)
+                        .padding(
+                            horizontal = AppConstants.PADDING_CHIP_HORIZONTAL,
+                            vertical = AppConstants.PADDING_XSMALL
+                        )
             ) {
-                Text(
-                    "Contract",
-                    color = PrimaryPurple,
-                    style = MaterialTheme.typography.labelSmall
-                )
+                Text("Contract", color = PrimaryPurple, style = MaterialTheme.typography.labelSmall)
             }
         }
     }

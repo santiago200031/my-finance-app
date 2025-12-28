@@ -58,9 +58,7 @@ fun ContractItem(contract: Contract, onContractClick: () -> Unit = {}) {
             Modifier
                 .fillMaxWidth()
                 .padding(horizontal = AppConstants.PADDING_MEDIUM)
-                .clickable {
-                    onContractClick()
-                },
+                .clickable { onContractClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
@@ -92,13 +90,16 @@ fun ContractItem(contract: Contract, onContractClick: () -> Unit = {}) {
                     modifier =
                         Modifier
                             .background(
-                                color =
-                                    badgeColor.copy(
-                                        alpha = 0.1f
-                                    ),
-                                shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_MEDIUM)
+                                color = badgeColor.copy(alpha = 0.1f),
+                                shape =
+                                    RoundedCornerShape(
+                                        AppConstants.CORNER_RADIUS_MEDIUM
+                                    )
                             )
-                            .padding(horizontal = AppConstants.PADDING_SMALL, vertical = 4.dp)
+                            .padding(
+                                horizontal = AppConstants.PADDING_SMALL,
+                                vertical = AppConstants.PADDING_XSMALL
+                            )
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
@@ -110,7 +111,7 @@ fun ContractItem(contract: Contract, onContractClick: () -> Unit = {}) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(AppConstants.PADDING_XSMALL))
 
             // Monthly . Cost
             Text(
@@ -127,9 +128,10 @@ fun ContractItem(contract: Contract, onContractClick: () -> Unit = {}) {
                 Icon(
                     imageVector = Icons.Default.Schedule,
                     contentDescription = null,
-                    modifier = Modifier
-                        .padding(end = 4.dp)
-                        .width(AppConstants.PADDING_MEDIUM),
+                    modifier =
+                        Modifier
+                            .padding(end = AppConstants.PADDING_XSMALL)
+                            .width(AppConstants.PADDING_MEDIUM),
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
@@ -153,12 +155,17 @@ fun ContractItem(contract: Contract, onContractClick: () -> Unit = {}) {
                         Modifier
                             .background(
                                 color =
-                                    MaterialTheme.colorScheme
-                                        .primaryContainer
+                                    MaterialTheme.colorScheme.primaryContainer
                                         .copy(alpha = 0.5f),
-                                shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_SMALL)
+                                shape =
+                                    RoundedCornerShape(
+                                        AppConstants.CORNER_RADIUS_SMALL
+                                    )
                             )
-                            .padding(horizontal = AppConstants.PADDING_SMALL, vertical = 4.dp)
+                            .padding(
+                                horizontal = AppConstants.PADDING_SMALL,
+                                vertical = AppConstants.PADDING_XSMALL
+                            )
                 ) {
                     Text(
                         "Auto-renew enabled",

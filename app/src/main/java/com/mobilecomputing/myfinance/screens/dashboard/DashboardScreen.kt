@@ -24,7 +24,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobilecomputing.myfinance.screens.dashboard.components.BalanceSummaryCard
 import com.mobilecomputing.myfinance.screens.entries.components.EntryItem
@@ -77,21 +76,13 @@ fun DashboardScreen(
             Column(modifier = Modifier.padding(AppConstants.PADDING_MEDIUM)) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(
-                        "Quick Actions",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
+                ) { Text("Quick Actions", style = MaterialTheme.typography.titleMedium) }
                 Spacer(modifier = Modifier.height(AppConstants.PADDING_MEDIUM))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_MEDIUM),
                 ) {
-                    Button(
-                        onClick = onAddEntryClick,
-                        modifier = Modifier.weight(1f)
-                    ) {
+                    Button(onClick = onAddEntryClick, modifier = Modifier.weight(1f)) {
                         Icon(
                             Icons.Default.Add,
                             contentDescription = "Add new entry",
@@ -103,10 +94,7 @@ fun DashboardScreen(
                         onClick = onRemindersClick,
                         modifier = Modifier.weight(1f),
                     ) {
-                        Icon(
-                            Icons.Default.Notifications,
-                            contentDescription = "Check reminders"
-                        )
+                        Icon(Icons.Default.Notifications, contentDescription = "Check reminders")
                         Text("Reminders")
                     }
                 }
@@ -121,7 +109,7 @@ fun DashboardScreen(
 
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_XSMALL)
         ) { items(uiState.transactions) { transaction -> EntryItem(transaction) } }
     }
 }

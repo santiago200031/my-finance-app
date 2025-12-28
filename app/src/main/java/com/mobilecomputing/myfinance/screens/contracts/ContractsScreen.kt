@@ -31,6 +31,7 @@ import com.mobilecomputing.myfinance.data.contract.PaymentCycle
 import com.mobilecomputing.myfinance.screens.contracts.components.ContractFilterButtons
 import com.mobilecomputing.myfinance.screens.contracts.components.ContractItem
 import com.mobilecomputing.myfinance.ui.AppViewModelProvider
+import com.mobilecomputing.myfinance.ui.components.MonthYearSelector
 import com.mobilecomputing.myfinance.ui.components.SummaryCardsRow
 import com.mobilecomputing.myfinance.utils.AppConstants
 import java.util.Date
@@ -49,7 +50,9 @@ fun ContractsScreen(
         uiState = uiState,
         onAddContractClick = onAddContractClick,
         onContractClick = onContractClick,
-        onFilterSelected = viewModel::onFilterChanged
+        onFilterSelected = viewModel::onFilterChanged,
+        onPreviousMonth = { viewModel.updateMonth(-1) },
+        onNextMonth = { viewModel.updateMonth(1) }
     )
 }
 
@@ -58,7 +61,9 @@ fun ContractsScreenContent(
     uiState: ContractsUiState,
     onAddContractClick: () -> Unit = {},
     onContractClick: (String) -> Unit = {},
-    onFilterSelected: (ContractFilter) -> Unit = {}
+    onFilterSelected: (ContractFilter) -> Unit = {},
+    onPreviousMonth: () -> Unit = {},
+    onNextMonth: () -> Unit = {}
 ) {
     Scaffold(
         floatingActionButton = {
@@ -72,6 +77,12 @@ fun ContractsScreenContent(
             .padding(padding)) {
 
             // Summary Dashboard
+            MonthYearSelector(
+                currentDate = uiState.selectedDate,
+                onPreviousMonth = onPreviousMonth,
+                onNextMonth = onNextMonth
+            )
+
             SummaryCardsRow(
                 activeCount = uiState.activeCount,
                 expiringCount = uiState.expiringCount,
@@ -93,10 +104,7 @@ fun ContractsScreenContent(
                 contentPadding = PaddingValues(bottom = 80.dp)
             ) {
                 items(uiState.contracts) { contract ->
-                    ContractItem(
-                        contract,
-                        onContractClick = { onContractClick(contract.id) }
-                    )
+                    ContractItem(contract, onContractClick = { onContractClick(contract.id) })
                 }
             }
         }
