@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -63,9 +64,11 @@ fun BudgetPlanningScreen(
     val uiState by viewModel.uiState.collectAsState()
     var showEditDialog by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(AppConstants.PADDING_MEDIUM)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(AppConstants.PADDING_MEDIUM)
+    ) {
         when (val state = uiState) {
             is BudgetUiState.Loading -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -317,6 +320,53 @@ fun EditBudgetDialog(
                 }
             ) { Text("Save") }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BudgetPlanningScreenPreview() {
+    val dummyCategory =
+        com.mobilecomputing.myfinance.data.category.Category(
+            id = "1",
+            title = "Groceries",
+            budgetLimit = 500.0,
+            iconKey = "shopping_cart",
+            colorHex = "#FF0000"
+        )
+    val dummyStatus =
+        CategoryBudgetStatus(
+            category = dummyCategory,
+            spentAmount = 150.0,
+            remainingAmount = 350.0,
+            percentUsed = 30
+        )
+    val dummyOverview =
+        BudgetOverview(
+            totalBudget = 2000.0,
+            totalSpent = 800.0,
+            percentUsed = 40,
+            categoryStatuses =
+                listOf(
+                    dummyStatus,
+                    dummyStatus.copy(
+                        category =
+                            dummyCategory.copy(
+                                id = "2",
+                                title = "Transport"
+                            ),
+                        percentUsed = 80
+                    ),
+                    dummyStatus.copy(
+                        category =
+                            dummyCategory.copy(
+                                id = "3",
+                                title = "Entertainment"
+                            ),
+                        percentUsed = 100
+                    )
+                )
+        )
+
+    MaterialTheme { BudgetContent(overview = dummyOverview, onEditClick = {}) }
 }
