@@ -29,6 +29,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -55,14 +56,16 @@ fun AddReminderScreen(
     var expanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
-    if (uiState.showNotification) {
-        NotificationHandler.showNotification(
-            context,
-            "Reminder Set",
-            "Reminder for ${uiState.selectedContract?.title} set on ${uiState.reminderDate}"
-        )
-        viewModel.resetSaveState()
-        navigateBack() // Navigate back after save
+    LaunchedEffect(uiState.showNotification) {
+        if (uiState.showNotification) {
+            NotificationHandler.showNotification(
+                context,
+                "Reminder Set",
+                "Reminder for ${uiState.selectedContract?.title} set on ${uiState.reminderDate}"
+            )
+            viewModel.resetSaveState()
+            navigateBack()
+        }
     }
 
     Scaffold(

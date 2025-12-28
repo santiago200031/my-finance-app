@@ -19,48 +19,38 @@ data class DashboardUiState(
     val netGrowth: Double = 0.0
 )
 
-class DashboardViewModel(
-    entryService: EntryService,
-    categoryRepository: CategoryRepository
-) : ViewModel() {
+class DashboardViewModel(entryService: EntryService, categoryRepository: CategoryRepository) :
+    ViewModel() {
 
     val uiState: StateFlow<DashboardUiState> =
         combine(entryService.getAllEntries(), categoryRepository.getAllCategories()) { entries,
                                                                                        categories ->
             val totalIncome =
-                entries.filter {
-                    it.type == EntryType.INCOME
-                }.sumOf {
-                    it.amount
-                }
+                entries.filter { it.type == EntryType.INCOME }.sumOf { it.amount }
             val totalExpenses =
-                entries
-                    .filter {
-                        it.type == EntryType.EXPENSE
-                    }
-                    .sumOf { it.amount }
+                entries.filter { it.type == EntryType.EXPENSE }.sumOf { it.amount }
             val netGrowth = totalIncome - totalExpenses
 
             val uiTransactions =
-                entries.sortedByDescending { it.date }.map { entry ->
-                    val category =
-                        categories.find {
-                            it.id == entry.categoryId
-                        }
-                    EntryUiModel(
-                        id = entry.id,
-                        amount = entry.amount,
-                        description = entry.description
-                            ?: "No Description",
-                        date = entry.date,
-                        categoryName = category?.title
-                            ?: "Uncategorized",
-                        type = entry.type,
-                        categoryId = entry.categoryId,
-                        formattedDate =
-                            DateUtils.formatDate(entry.date)
-                    )
-                }
+                entries
+                    .sortedByDescending { it.date }
+                    .map { entry ->
+                        val category =
+                            categories.find { it.id == entry.categoryId }
+                        EntryUiModel(
+                            id = entry.id,
+                            amount = entry.amount,
+                            description = entry.description
+                                ?: "No Description",
+                            date = entry.date,
+                            categoryName = category?.title
+                                ?: "Uncategorized",
+                            type = entry.type,
+                            categoryId = entry.categoryId,
+                            formattedDate = DateUtils.formatDate(entry.date)
+                        )
+                    }
+                    .take(3)
 
             DashboardUiState(
                 transactions = uiTransactions,

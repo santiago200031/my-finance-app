@@ -5,9 +5,8 @@ import java.util.Date
 import java.util.UUID
 
 data class Reminder(
-    @DocumentId
-    val id: String = UUID.randomUUID().toString(),
-    val contractId: String,
-    val reminderDate: Date,
+    @DocumentId val id: String = UUID.randomUUID().toString(),
+    val contractId: String = "",
+    val reminderDate: Date = Date(),
     val isActive: Boolean = true
 )

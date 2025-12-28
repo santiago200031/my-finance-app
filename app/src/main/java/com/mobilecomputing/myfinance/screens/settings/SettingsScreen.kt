@@ -34,9 +34,9 @@ fun SettingsScreenPreview() {
             SettingsUiState(
                 user =
                     User(
-                        firstName = "John",
-                        lastName = "Doe",
-                        email = "john.doe@example.com",
+                        firstName = "Santiago",
+                        lastName = "Villavicencio",
+                        email = "s-svilla@haw-landshut.de",
                         settings =
                             UserSettings(
                                 isDarkTheme = true,
