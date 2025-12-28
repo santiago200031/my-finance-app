@@ -12,11 +12,3 @@ data class User(
     val trustedEmails: List<String> = emptyList(),
     val settings: UserSettings = UserSettings()
 )
-
-data class UserSettings(
-    val currency: String = "EUR",
-    val language: String = "en",
-    val dateFormat: String = "MM/DD/YYYY",
-    val theme: String = "DARK",
-    val notificationsEnabled: Boolean = true
-)

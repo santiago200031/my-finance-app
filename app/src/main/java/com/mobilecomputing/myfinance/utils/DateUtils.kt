@@ -30,7 +30,6 @@ object DateUtils {
         return formatDate(localDate)
     }
 
-
     fun isSameMonth(date1: Date, date2: Date): Boolean {
         val localDate1 = date1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
         val localDate2 = date2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
