@@ -9,6 +9,7 @@ import com.mobilecomputing.myfinance.screens.add_contract.AddContractViewModel
 import com.mobilecomputing.myfinance.screens.add_entry.AddEntryViewModel
 import com.mobilecomputing.myfinance.screens.add_reminder.AddReminderViewModel
 import com.mobilecomputing.myfinance.screens.analysis.AnalysisViewModel
+import com.mobilecomputing.myfinance.screens.budget_planning.BudgetPlanningViewModel
 import com.mobilecomputing.myfinance.screens.contracts.ContractsViewModel
 import com.mobilecomputing.myfinance.screens.dashboard.DashboardViewModel
 import com.mobilecomputing.myfinance.screens.entries.EntriesViewModel
@@ -68,6 +69,7 @@ object AppViewModelProvider {
             )
         }
         initializer { SettingsViewModel(myFinanceApplication().container.userRepository) }
+        initializer { BudgetPlanningViewModel(myFinanceApplication().container.budgetService) }
     }
 }
 

@@ -9,7 +9,8 @@ data class Category(
     val type: ContractType = ContractType.EXPENSE,
     val iconKey: String = "help", // Default icon
     val colorHex: String = "#000000",
-    val isSystemDefault: Boolean = false
+    val isSystemDefault: Boolean = false,
+    val budgetLimit: Double = 0.0
 ) {
     companion object {
         // Defaults to seed

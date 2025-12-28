@@ -13,4 +13,8 @@ class FakeCategoryRepository : CategoryRepository {
     override suspend fun getCategoryById(id: String): Category? {
         return Category.defaultCategories.find { it.id == id }
     }
+
+    override suspend fun updateCategory(category: Category) {
+        TODO("Not yet implemented")
+    }
 }
