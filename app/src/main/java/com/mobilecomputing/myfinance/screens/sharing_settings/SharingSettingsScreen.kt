@@ -119,7 +119,7 @@ fun SharingSettingsContent(
 fun SharingSettingsScreenPreview() {
     MaterialTheme {
         SharingSettingsContent(
-            emailInput = "test@example.com",
+            emailInput = "s-svilla@haw-landshut.de",
             onEmailInputChange = {},
             onAddTrustedEmail = {},
             currentUser =
