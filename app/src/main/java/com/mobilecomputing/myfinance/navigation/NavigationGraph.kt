@@ -63,7 +63,8 @@ fun NavigationGraph(navController: NavHostController) {
             SettingsScreen(
                 onSharingSettingsClick = {
                     navController.navigate(Screen.SharingSettings.route)
-                }
+                },
+                onExportDataClick = { navController.navigate(Screen.ExportData.route) }
             )
         }
         composable(Screen.Reminders.route) {

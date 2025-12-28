@@ -4,6 +4,7 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Date
+import java.util.Locale
 
 object DateUtils {
     private const val DISPLAY_PATTERN = AppConstants.DATE_FORMAT_DISPLAY
@@ -29,6 +30,7 @@ object DateUtils {
         return formatDate(localDate)
     }
 
+
     fun isSameMonth(date1: Date, date2: Date): Boolean {
         val localDate1 = date1.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
         val localDate2 = date2.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
@@ -44,7 +46,7 @@ object DateUtils {
     fun formatMonthYear(date: Date): String {
         val localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
         // Display format example: "January 2024"
-        val formatter = DateTimeFormatter.ofPattern("MMMM yyyy")
+        val formatter = DateTimeFormatter.ofPattern("MMMM yyyy", Locale.ENGLISH)
         return localDate.format(formatter)
     }
 

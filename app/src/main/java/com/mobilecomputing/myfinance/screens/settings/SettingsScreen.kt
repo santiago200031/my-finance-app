@@ -48,7 +48,8 @@ import com.mobilecomputing.myfinance.utils.AppConstants
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel = viewModel(factory = AppViewModelProvider.Factory),
-    onSharingSettingsClick: () -> Unit = {}
+    onSharingSettingsClick: () -> Unit = {},
+    onExportDataClick: () -> Unit = {}
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val scrollState = rememberScrollState()
@@ -78,7 +79,8 @@ fun SettingsScreen(
 
             DataManagementSection(
                 onSharingSettingsClick = onSharingSettingsClick,
-                onSwitchUserClick = viewModel::switchUser
+                onSwitchUserClick = viewModel::switchUser,
+                onExportDataClick = onExportDataClick
             )
         }
     }
@@ -104,8 +106,7 @@ fun ProfileCard(user: User) {
                 contentAlignment = Alignment.Center
             ) {
                 // Show initials if no image
-                val initials =
-                    (user.firstName.take(1) + user.lastName.take(1)).uppercase()
+                val initials = (user.firstName.take(1) + user.lastName.take(1)).uppercase()
                 Text(
                     text = initials,
                     color = MaterialTheme.colorScheme.onPrimary,
@@ -145,10 +146,7 @@ fun AppearanceSection(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
         Card(
             modifier = Modifier.fillMaxWidth(),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-            colors =
-                CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
             SettingsItem(
                 icon = Icons.Default.LightMode,
@@ -160,10 +158,7 @@ fun AppearanceSection(isDarkTheme: Boolean, onThemeChange: (Boolean) -> Unit) {
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(end = AppConstants.PADDING_SMALL)
                         )
-                        Switch(
-                            checked = isDarkTheme,
-                            onCheckedChange = { onThemeChange(it) }
-                        )
+                        Switch(checked = isDarkTheme, onCheckedChange = { onThemeChange(it) })
                     }
                 }
             )
@@ -184,10 +179,7 @@ fun LocalizationSection(language: String, currency: String, dateFormat: String) 
         Card(
             modifier = Modifier.fillMaxWidth(),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-            colors =
-                CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
             Column {
                 SettingsItem(
@@ -213,7 +205,11 @@ fun LocalizationSection(language: String, currency: String, dateFormat: String) 
 }
 
 @Composable
-fun DataManagementSection(onSharingSettingsClick: () -> Unit, onSwitchUserClick: () -> Unit) {
+fun DataManagementSection(
+    onSharingSettingsClick: () -> Unit,
+    onSwitchUserClick: () -> Unit,
+    onExportDataClick: () -> Unit
+) {
     Column {
         Text(
             text = "Data Management",
@@ -225,13 +221,14 @@ fun DataManagementSection(onSharingSettingsClick: () -> Unit, onSwitchUserClick:
         Card(
             modifier = Modifier.fillMaxWidth(),
             elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-            colors =
-                CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
             Column {
-                SettingsItem(icon = Icons.Default.Download, label = "Export Data")
+                SettingsItem(
+                    icon = Icons.Default.Download,
+                    label = "Export Data",
+                    onClick = onExportDataClick
+                )
                 CustomDivider()
                 SettingsItem(
                     icon = Icons.Default.Share,
@@ -258,10 +255,11 @@ fun SettingsItem(
     onClick: () -> Unit = {}
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(AppConstants.PADDING_MEDIUM),
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .clickable { onClick() }
+                .padding(AppConstants.PADDING_MEDIUM),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(

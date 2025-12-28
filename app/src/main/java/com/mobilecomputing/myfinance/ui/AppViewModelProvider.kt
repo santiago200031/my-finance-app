@@ -13,6 +13,7 @@ import com.mobilecomputing.myfinance.screens.budget_planning.BudgetPlanningViewM
 import com.mobilecomputing.myfinance.screens.contracts.ContractsViewModel
 import com.mobilecomputing.myfinance.screens.dashboard.DashboardViewModel
 import com.mobilecomputing.myfinance.screens.entries.EntriesViewModel
+import com.mobilecomputing.myfinance.screens.export_data.ExportViewModel
 import com.mobilecomputing.myfinance.screens.reminders.RemindersViewModel
 import com.mobilecomputing.myfinance.screens.settings.SettingsViewModel
 
@@ -70,6 +71,12 @@ object AppViewModelProvider {
         }
         initializer { SettingsViewModel(myFinanceApplication().container.userRepository) }
         initializer { BudgetPlanningViewModel(myFinanceApplication().container.budgetService) }
+        initializer {
+            ExportViewModel(
+                myFinanceApplication().container.entryRepository,
+                myFinanceApplication().container.categoryRepository
+            )
+        }
     }
 }
 
