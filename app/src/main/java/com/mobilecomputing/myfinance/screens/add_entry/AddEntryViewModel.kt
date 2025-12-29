@@ -124,6 +124,13 @@ class AddEntryViewModel(
         }
     }
 
+    fun addCategory(category: Category) {
+        viewModelScope.launch {
+            categoryRepository.addCategory(category)
+            _uiState.update { it.copy(selectedCategory = category) }
+        }
+    }
+
     fun resetSaveState() {
         _uiState.update { it.copy(isSaved = false) }
     }

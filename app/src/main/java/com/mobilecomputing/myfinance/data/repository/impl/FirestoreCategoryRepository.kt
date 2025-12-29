@@ -107,6 +107,21 @@ class FirestoreCategoryRepository(
         }
     }
 
+    override suspend fun addCategory(category: Category) {
+        val userId = currentUserIdFlow.value ?: return
+        try {
+            firestore
+                .collection("users")
+                .document(userId)
+                .collection("categories")
+                .document(category.id)
+                .set(category)
+                .await()
+        } catch (e: Exception) {
+            Log.e("FirestoreCategoryRepo", "Error adding category", e)
+        }
+    }
+
     override suspend fun updateCategory(category: Category) {
         val userId = currentUserIdFlow.value ?: return
         try {
@@ -119,6 +134,21 @@ class FirestoreCategoryRepository(
                 .await()
         } catch (e: Exception) {
             Log.e("FirestoreCategoryRepo", "Error updating category", e)
+        }
+    }
+
+    override suspend fun deleteCategory(categoryId: String) {
+        val userId = currentUserIdFlow.value ?: return
+        try {
+            firestore
+                .collection("users")
+                .document(userId)
+                .collection("categories")
+                .document(categoryId)
+                .delete()
+                .await()
+        } catch (e: Exception) {
+            Log.e("FirestoreCategoryRepo", "Error deleting category", e)
         }
     }
 }

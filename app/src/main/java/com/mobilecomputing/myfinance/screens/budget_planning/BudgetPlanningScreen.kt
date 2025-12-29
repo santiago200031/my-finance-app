@@ -47,6 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mobilecomputing.myfinance.data.category.Category
 import com.mobilecomputing.myfinance.data.service.BudgetOverview
 import com.mobilecomputing.myfinance.data.service.CategoryBudgetStatus
 import com.mobilecomputing.myfinance.ui.AppViewModelProvider
@@ -56,6 +57,7 @@ import com.mobilecomputing.myfinance.ui.theme.BudgetOrange
 import com.mobilecomputing.myfinance.ui.theme.BudgetRed
 import com.mobilecomputing.myfinance.ui.theme.PrimaryPurple
 import com.mobilecomputing.myfinance.utils.AppConstants
+import java.util.UUID
 
 @Composable
 fun BudgetPlanningScreen(
@@ -63,6 +65,7 @@ fun BudgetPlanningScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var showEditDialog by remember { mutableStateOf(false) }
+    var showAddDialog by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -77,7 +80,11 @@ fun BudgetPlanningScreen(
             }
 
             is BudgetUiState.Success -> {
-                BudgetContent(overview = state.overview, onEditClick = { showEditDialog = true })
+                BudgetContent(
+                    overview = state.overview,
+                    onEditClick = { showEditDialog = true },
+                    onAddCategoryClick = { showAddDialog = true }
+                )
             }
 
             is BudgetUiState.Error -> {
@@ -98,27 +105,108 @@ fun BudgetPlanningScreen(
             }
         )
     }
+
+    if (showAddDialog) {
+        AddCategoryDialog(
+            onDismiss = { showAddDialog = false },
+            onSave = { title, limit ->
+                viewModel.addCategory(
+                    Category(
+                        id = UUID.randomUUID().toString(),
+                        title = title,
+                        budgetLimit = limit,
+                        iconKey = "default",
+                        colorHex = "#FF00FF"
+                    )
+                )
+            }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddCategoryDialog(onDismiss: () -> Unit, onSave: (String, Double) -> Unit) {
+    var title by remember { mutableStateOf("") }
+    var limit by remember { mutableStateOf("") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Add New Category") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL)) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Category Name") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = limit,
+                    onValueChange = { limit = it },
+                    label = { Text("Budget Limit") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    val limitValue = limit.toDoubleOrNull() ?: 0.0
+                    if (title.isNotBlank()) {
+                        onSave(title, limitValue)
+                        onDismiss()
+                    }
+                },
+                enabled = title.isNotBlank()
+            ) { Text("Add") }
+        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
+    )
 }
 
 @Composable
-fun BudgetContent(overview: BudgetOverview, onEditClick: () -> Unit) {
+fun BudgetContent(
+    overview: BudgetOverview,
+    onEditClick: () -> Unit,
+    onAddCategoryClick: () -> Unit
+) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_MEDIUM)
     ) {
         item { TotalBudgetCard(overview) }
 
-        items(overview.categoryStatuses) { status -> CategoryBudgetCard(status) }
+        items(overview.categoryStatuses) { status ->
+            CategoryBudgetCard(
+                status = status
+            )
+        }
 
         item {
-            Button(
-                onClick = onEditClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = BudgetActionColor),
-                shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_BUTTON)
-            ) { Text("Edit Budget Amounts", color = Color.White, fontSize = 16.sp) }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    onClick = onEditClick,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(56.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = BudgetActionColor),
+                    shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_BUTTON)
+                ) { Text("Edit Budget", color = Color.White, fontSize = 16.sp) }
+
+                Button(
+                    onClick = onAddCategoryClick,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(56.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryPurple),
+                    shape = RoundedCornerShape(AppConstants.CORNER_RADIUS_BUTTON)
+                ) { Text("Add Category", color = Color.White, fontSize = 16.sp) }
+            }
         }
     }
 }
@@ -159,13 +247,15 @@ fun TotalBudgetCard(overview: BudgetOverview) {
 }
 
 @Composable
-fun CategoryBudgetCard(status: CategoryBudgetStatus) {
+fun CategoryBudgetCard(
+    status: CategoryBudgetStatus
+) {
     val isOverBudget = status.spentAmount > status.category.budgetLimit
     val progressColor =
         when {
-            status.percentUsed >= 100 -> BudgetRed // Red
-            status.percentUsed >= 80 -> BudgetOrange // Orange
-            else -> BudgetGreen // Green
+            status.percentUsed >= 100 -> BudgetRed
+            status.percentUsed >= 80 -> BudgetOrange
+            else -> BudgetGreen
         }
 
     Card(
@@ -267,7 +357,7 @@ fun CategoryBudgetCard(status: CategoryBudgetStatus) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditBudgetDialog(
-    categories: List<com.mobilecomputing.myfinance.data.category.Category>,
+    categories: List<Category>,
     onDismiss: () -> Unit,
     onSave: (String, Double) -> Unit
 ) {
@@ -281,7 +371,7 @@ fun EditBudgetDialog(
             Column {
                 Text("Select Category", fontSize = 12.sp, color = Color.Gray)
                 Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
-                // Simple dropdown-like implementation for categories
+
                 categories.forEach { category ->
                     Row(
                         modifier =
@@ -368,5 +458,11 @@ fun BudgetPlanningScreenPreview() {
                 )
         )
 
-    MaterialTheme { BudgetContent(overview = dummyOverview, onEditClick = {}) }
+    MaterialTheme {
+        BudgetContent(
+            overview = dummyOverview,
+            onEditClick = {},
+            onAddCategoryClick = {}
+        )
+    }
 }

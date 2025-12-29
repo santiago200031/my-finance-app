@@ -31,9 +31,9 @@ class BudgetService(
         return combine(
             categoryRepository.getAllCategories(),
             entryRepository.getAllEntries()
-        ) { categories, entries ->
-            val expenseCategories =
-                categories.filter { it.type == ContractType.EXPENSE }
+        ) { categories,
+            entries ->
+            val expenseCategories = categories.filter { it.type == ContractType.EXPENSE }
 
             val calendar = Calendar.getInstance()
             val filteredEntries =
@@ -47,14 +47,13 @@ class BudgetService(
             val categoryStatuses =
                 expenseCategories.map { category ->
                     val spent =
-                        filteredEntries
-                            .filter { it.categoryId == category.id }
-                            .sumOf { it.amount }
+                        filteredEntries.filter { it.categoryId == category.id }.sumOf {
+                            it.amount
+                        }
                     val remaining = category.budgetLimit - spent
                     val percent =
                         if (category.budgetLimit > 0)
-                            ((spent / category.budgetLimit) * 100)
-                                .toInt()
+                            ((spent / category.budgetLimit) * 100).toInt()
                         else 0
                     CategoryBudgetStatus(category, spent, remaining, percent)
                 }
@@ -62,8 +61,7 @@ class BudgetService(
             val totalBudget = expenseCategories.sumOf { it.budgetLimit }
             val totalSpent = filteredEntries.sumOf { it.amount }
             val totalPercent =
-                if (totalBudget > 0) ((totalSpent / totalBudget) * 100).toInt()
-                else 0
+                if (totalBudget > 0) ((totalSpent / totalBudget) * 100).toInt() else 0
 
             BudgetOverview(totalBudget, totalSpent, totalPercent, categoryStatuses)
         }
@@ -74,5 +72,13 @@ class BudgetService(
         if (category != null) {
             categoryRepository.updateCategory(category.copy(budgetLimit = newLimit))
         }
+    }
+
+    suspend fun addCategory(category: Category) {
+        categoryRepository.addCategory(category)
+    }
+
+    suspend fun deleteCategory(categoryId: String) {
+        categoryRepository.deleteCategory(categoryId)
     }
 }

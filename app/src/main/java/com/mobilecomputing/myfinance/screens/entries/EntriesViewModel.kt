@@ -2,8 +2,11 @@ package com.mobilecomputing.myfinance.screens.entries
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mobilecomputing.myfinance.data.category.Category
+import com.mobilecomputing.myfinance.data.entry.Entry
 import com.mobilecomputing.myfinance.data.entry.EntryFilter
 import com.mobilecomputing.myfinance.data.entry.EntryType
+import com.mobilecomputing.myfinance.data.models.User
 import com.mobilecomputing.myfinance.data.repository.CategoryRepository
 import com.mobilecomputing.myfinance.data.repository.UserRepository
 import com.mobilecomputing.myfinance.data.service.EntryService
@@ -20,7 +23,9 @@ import java.util.Date
 data class EntriesUiState(
     val transactions: List<EntryUiModel> = emptyList(),
     val filter: EntryFilter = EntryFilter.ALL,
-    val selectedDate: Date = Date()
+    val selectedDate: Date = Date(),
+    val categories: List<Category> = emptyList(),
+    val selectedCategory: Category? = null
 )
 
 class EntriesViewModel(
@@ -32,6 +37,7 @@ class EntriesViewModel(
     // UI state holders
     private val _filter = MutableStateFlow(EntryFilter.ALL)
     private val _selectedDate = MutableStateFlow(Date())
+    private val _selectedCategory = MutableStateFlow<Category?>(null)
 
     val uiState: StateFlow<EntriesUiState> =
         combine(
@@ -39,8 +45,16 @@ class EntriesViewModel(
             categoryRepository.getAllCategories(),
             userRepository.getCurrentUser(),
             _filter,
-            _selectedDate
-        ) { entries, categories, user, filter, selectedDate ->
+            _selectedDate,
+            _selectedCategory
+        ) { args: Array<Any?> ->
+            val entries = args[0] as List<Entry>
+            val categories = args[1] as List<Category>
+            val user = args[2] as? User
+            val filter = args[3] as EntryFilter
+            val selectedDate = args[4] as Date
+            val selectedCategory = args[5] as? Category
+
             // Filter and map
             val filteredEntries =
                 entries.filter { entry ->
@@ -55,7 +69,11 @@ class EntriesViewModel(
                     val matchesDate =
                         DateUtils.isSameMonth(entry.date, selectedDate)
 
-                    matchesFilter && matchesDate
+                    val matchesCategory =
+                        selectedCategory == null ||
+                                entry.categoryId == selectedCategory.id
+
+                    matchesFilter && matchesDate && matchesCategory
                 }
 
             val uiTransactions =
@@ -82,7 +100,9 @@ class EntriesViewModel(
             EntriesUiState(
                 transactions = uiTransactions,
                 filter = filter,
-                selectedDate = selectedDate
+                selectedDate = selectedDate,
+                categories = categories,
+                selectedCategory = selectedCategory
             )
         }
             .stateIn(
@@ -97,5 +117,9 @@ class EntriesViewModel(
 
     fun updateMonth(increment: Long) {
         _selectedDate.update { DateUtils.addMonths(it, increment) }
+    }
+
+    fun onCategorySelected(category: Category?) {
+        _selectedCategory.update { category }
     }
 }

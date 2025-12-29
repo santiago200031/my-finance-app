@@ -10,15 +10,20 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -31,12 +36,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mobilecomputing.myfinance.data.category.Category
 import com.mobilecomputing.myfinance.data.entry.EntryType
 import com.mobilecomputing.myfinance.ui.AppViewModelProvider
 import com.mobilecomputing.myfinance.utils.AppConstants
+import java.util.UUID
 
 @Composable
 fun AddEntryScreen(
@@ -46,6 +55,7 @@ fun AddEntryScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     var expanded by remember { mutableStateOf(false) }
+    var showAddDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(entryId) {
         if (entryId != null) {
@@ -61,10 +71,11 @@ fun AddEntryScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(AppConstants.PADDING_MEDIUM)
-            .verticalScroll(rememberScrollState()),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(AppConstants.PADDING_MEDIUM)
+                .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_MEDIUM)
     ) {
         Text(
@@ -126,11 +137,35 @@ fun AddEntryScreen(
                         }
                     )
                 }
+
+                HorizontalDivider()
+
+                DropdownMenuItem(
+                    text = {
+                        Row(
+                            verticalAlignment =
+                                Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                Icons.Default.Add,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("Add New Category", color = MaterialTheme.colorScheme.primary)
+                        }
+                    },
+                    onClick = {
+                        expanded = false
+                        showAddDialog = true
+                    }
+                )
             }
             // Transparent overlay to capture clicks for dropdown
-            Box(modifier = Modifier
-                .matchParentSize()
-                .clickable { expanded = true })
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .clickable { expanded = true })
         }
 
         // Description Input
@@ -156,11 +191,69 @@ fun AddEntryScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors =
                     ButtonDefaults.outlinedButtonColors(
-                        contentColor =
-                            MaterialTheme.colorScheme
-                                .error
+                        contentColor = MaterialTheme.colorScheme.error
                     )
             ) { Text("Delete Entry") }
         }
     }
+    if (showAddDialog) {
+        AddCategoryDialog(
+            onDismiss = { showAddDialog = false },
+            onSave = { title, limit ->
+                viewModel.addCategory(
+                    Category(
+                        id = UUID.randomUUID().toString(),
+                        title = title,
+                        budgetLimit = limit,
+                        iconKey = "default",
+                        colorHex = "#FF00FF"
+                    )
+                )
+            }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddCategoryDialog(onDismiss: () -> Unit, onSave: (String, Double) -> Unit) {
+    var title by remember { mutableStateOf("") }
+    var limit by remember { mutableStateOf("") }
+
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Add New Category") },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(AppConstants.PADDING_SMALL)) {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    label = { Text("Category Name") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                OutlinedTextField(
+                    value = limit,
+                    onValueChange = { limit = it },
+                    label = { Text("Budget Limit") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    val limitValue = limit.toDoubleOrNull() ?: 0.0
+                    if (title.isNotBlank()) {
+                        onSave(title, limitValue)
+                        onDismiss()
+                    }
+                },
+                enabled = title.isNotBlank()
+            ) { Text("Add") }
+        },
+        dismissButton = {
+            androidx.compose.material3.TextButton(onClick = onDismiss) { Text("Cancel") }
+        }
+    )
 }

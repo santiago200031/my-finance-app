@@ -36,4 +36,12 @@ class BudgetPlanningViewModel(private val budgetService: BudgetService) : ViewMo
     fun updateBudgetLimit(categoryId: String, newLimit: Double) {
         viewModelScope.launch { budgetService.updateCategoryBudget(categoryId, newLimit) }
     }
+
+    fun addCategory(category: com.mobilecomputing.myfinance.data.category.Category) {
+        viewModelScope.launch { budgetService.addCategory(category) }
+    }
+
+    fun deleteCategory(categoryId: String) {
+        viewModelScope.launch { budgetService.deleteCategory(categoryId) }
+    }
 }
