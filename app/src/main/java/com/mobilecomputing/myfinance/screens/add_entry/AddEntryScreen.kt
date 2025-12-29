@@ -39,7 +39,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobilecomputing.myfinance.data.category.Category
 import com.mobilecomputing.myfinance.data.entry.EntryType
@@ -142,16 +141,13 @@ fun AddEntryScreen(
 
                 DropdownMenuItem(
                     text = {
-                        Row(
-                            verticalAlignment =
-                                Alignment.CenterVertically
-                        ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 Icons.Default.Add,
                                 contentDescription = null,
-                                modifier = Modifier.size(16.dp)
+                                modifier = Modifier.size(AppConstants.ICON_SIZE_SMALL)
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(AppConstants.PADDING_SMALL))
                             Text("Add New Category", color = MaterialTheme.colorScheme.primary)
                         }
                     },
@@ -162,10 +158,9 @@ fun AddEntryScreen(
                 )
             }
             // Transparent overlay to capture clicks for dropdown
-            Box(
-                modifier = Modifier
-                    .matchParentSize()
-                    .clickable { expanded = true })
+            Box(modifier = Modifier
+                .matchParentSize()
+                .clickable { expanded = true })
         }
 
         // Description Input
@@ -206,7 +201,7 @@ fun AddEntryScreen(
                         title = title,
                         budgetLimit = limit,
                         iconKey = "default",
-                        colorHex = "#FF00FF"
+                        colorHex = AppConstants.DEFAULT_CATEGORY_COLOR
                     )
                 )
             }

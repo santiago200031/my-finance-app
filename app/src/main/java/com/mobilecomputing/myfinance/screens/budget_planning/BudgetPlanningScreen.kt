@@ -116,7 +116,7 @@ fun BudgetPlanningScreen(
                         title = title,
                         budgetLimit = limit,
                         iconKey = "default",
-                        colorHex = "#FF00FF"
+                        colorHex = AppConstants.DEFAULT_CATEGORY_COLOR
                     )
                 )
             }
@@ -178,11 +178,7 @@ fun BudgetContent(
     ) {
         item { TotalBudgetCard(overview) }
 
-        items(overview.categoryStatuses) { status ->
-            CategoryBudgetCard(
-                status = status
-            )
-        }
+        items(overview.categoryStatuses) { status -> CategoryBudgetCard(status = status) }
 
         item {
             Row(
@@ -247,9 +243,7 @@ fun TotalBudgetCard(overview: BudgetOverview) {
 }
 
 @Composable
-fun CategoryBudgetCard(
-    status: CategoryBudgetStatus
-) {
+fun CategoryBudgetCard(status: CategoryBudgetStatus) {
     val isOverBudget = status.spentAmount > status.category.budgetLimit
     val progressColor =
         when {
@@ -274,27 +268,27 @@ fun CategoryBudgetCard(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(status.category.title, fontWeight = FontWeight.Medium, fontSize = 16.sp)
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(AppConstants.PADDING_XSMALL))
                     if (isOverBudget) {
                         Icon(
                             Icons.Default.Warning,
                             contentDescription = "Over Budget",
                             tint = BudgetRed,
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(AppConstants.ICON_SIZE_SMALL)
                         )
                     } else if (status.percentUsed >= 80) {
                         Icon(
                             Icons.Default.Warning,
                             contentDescription = "Near Limit",
                             tint = BudgetOrange,
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(AppConstants.ICON_SIZE_SMALL)
                         )
                     } else {
                         Icon(
                             Icons.Default.CheckCircle,
                             contentDescription = "On Track",
                             tint = BudgetGreen,
-                            modifier = Modifier.size(16.dp)
+                            modifier = Modifier.size(AppConstants.ICON_SIZE_SMALL)
                         )
                     }
                 }
@@ -315,14 +309,14 @@ fun CategoryBudgetCard(
                 }
             }
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(AppConstants.PADDING_XSMALL))
             Text(
                 "$${status.spentAmount.toInt()} / $${status.category.budgetLimit.toInt()}",
                 color = Color.Gray,
                 fontSize = 12.sp
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(AppConstants.PADDING_SMALL))
             LinearProgressIndicator(
                 progress = { (status.percentUsed / 100f).coerceIn(0f, 1f) },
                 modifier = Modifier
@@ -340,7 +334,7 @@ fun CategoryBudgetCard(
                         Icons.Default.Warning,
                         contentDescription = null,
                         tint = BudgetRed,
-                        modifier = Modifier.size(14.dp)
+                        modifier = Modifier.size(AppConstants.ICON_SIZE_SMALL)
                     )
                     Spacer(modifier = Modifier.width(AppConstants.PADDING_XSMALL))
                     Text(
@@ -417,7 +411,7 @@ fun EditBudgetDialog(
 @Composable
 fun BudgetPlanningScreenPreview() {
     val dummyCategory =
-        com.mobilecomputing.myfinance.data.category.Category(
+        Category(
             id = "1",
             title = "Groceries",
             budgetLimit = 500.0,
@@ -459,10 +453,6 @@ fun BudgetPlanningScreenPreview() {
         )
 
     MaterialTheme {
-        BudgetContent(
-            overview = dummyOverview,
-            onEditClick = {},
-            onAddCategoryClick = {}
-        )
+        BudgetContent(overview = dummyOverview, onEditClick = {}, onAddCategoryClick = {})
     }
 }

@@ -22,10 +22,13 @@ object AppConstants {
     val CORNER_RADIUS_MEDIUM = 16.dp
     val CORNER_RADIUS_BUTTON = 28.dp
 
+    val ICON_SIZE_SMALL = 16.dp
     val ICON_SIZE_MEDIUM = 20.dp
     val ICON_SIZE_LARGE = 24.dp
 
     val BORDER_WIDTH = 1.dp
     val CARD_HEIGHT = 100.dp
     val BUTTON_HEIGHT = 56.dp
+
+    const val DEFAULT_CATEGORY_COLOR = "#5E35B1"
 }
