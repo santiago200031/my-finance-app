@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mobilecomputing.myfinance.data.reminder.Reminder
 import com.mobilecomputing.myfinance.data.repository.ReminderRepository
+import com.mobilecomputing.myfinance.data.repository.UserRepository
 import com.mobilecomputing.myfinance.data.service.ContractService
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -18,20 +19,22 @@ data class ReminderUiItem(
     val reminder: Reminder,
     val contractTitle: String,
     val contractAmount: Double,
-    val daysUntil: Long
+    val daysUntil: Long,
+    val currency: String = "EUR (€)"
 )
 
 class RemindersViewModel(
     private val reminderRepository: ReminderRepository,
-    contractService: ContractService
+    contractService: ContractService,
+    userRepository: UserRepository
 ) : ViewModel() {
 
     val uiState: StateFlow<RemindersUiState> =
         combine(
             reminderRepository.getAllReminders(),
-            contractService.getAllContracts()
-        ) { reminders,
-            contracts ->
+            contractService.getAllContracts(),
+            userRepository.getCurrentUser()
+        ) { reminders, contracts, user ->
             val activeReminders =
                 reminders
                     .mapNotNull { reminder ->
@@ -43,7 +46,11 @@ class RemindersViewModel(
                             val daysUntil =
                                 ChronoUnit.DAYS.between(
                                     LocalDate.now(),
-                                    reminder.reminderDate.toInstant().atZone(ZoneId.systemDefault())
+                                    reminder.reminderDate
+                                        .toInstant()
+                                        .atZone(
+                                            ZoneId.systemDefault()
+                                        )
                                         .toLocalDate()
                                 )
                             ReminderUiItem(
@@ -52,7 +59,11 @@ class RemindersViewModel(
                                     contract.title,
                                 contractAmount =
                                     contract.amount,
-                                daysUntil = daysUntil
+                                daysUntil = daysUntil,
+                                currency =
+                                    user?.settings
+                                        ?.currency
+                                        ?: "EUR (€)"
                             )
                         } else {
                             null

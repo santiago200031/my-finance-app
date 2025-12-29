@@ -42,28 +42,30 @@ fun DashboardScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(AppConstants.PADDING_MEDIUM)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(AppConstants.PADDING_MEDIUM)
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_MEDIUM)
         ) {
             BalanceSummaryCard(
                 title = "Income",
-                amount = "$${FormatUtils.formatUSAmount(uiState.totalIncome)}",
+                amount = FormatUtils.formatCurrency(uiState.totalIncome, uiState.currency),
                 modifier = Modifier.weight(1f),
                 amountColor = GreenIncome
             )
             BalanceSummaryCard(
                 title = "Expenses",
-                amount = "$${FormatUtils.formatUSAmount(uiState.totalExpenses)}",
+                amount = FormatUtils.formatCurrency(uiState.totalExpenses, uiState.currency),
                 modifier = Modifier.weight(1f),
                 amountColor = RedExpense
             )
             BalanceSummaryCard(
                 title = "Net Growth",
-                amount = "$${FormatUtils.formatUSAmount(uiState.netGrowth)}",
+                amount = FormatUtils.formatCurrency(uiState.netGrowth, uiState.currency),
                 modifier = Modifier.weight(1f),
                 containerColor = PrimaryPurple,
                 contentColor = Color.White

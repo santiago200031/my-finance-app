@@ -44,6 +44,16 @@ class SettingsViewModel(private val userRepository: UserRepository) : ViewModel(
         viewModelScope.launch { userRepository.addTrustedEmail(email) }
     }
 
+    fun updateCurrency(currency: String) {
+        viewModelScope.launch {
+            val currentUser = uiState.value.user
+            if (currentUser != null) {
+                val newSettings = currentUser.settings.copy(currency = currency)
+                userRepository.updateUser(currentUser.copy(settings = newSettings))
+            }
+        }
+    }
+
     fun removeTrustedEmail(email: String) {
         viewModelScope.launch { userRepository.removeTrustedEmail(email) }
     }

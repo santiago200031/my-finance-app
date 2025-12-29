@@ -41,7 +41,11 @@ import java.time.temporal.ChronoUnit
 import java.util.Date
 
 @Composable
-fun ContractItem(contract: Contract, onContractClick: () -> Unit = {}) {
+fun ContractItem(
+    contract: Contract,
+    currency: String = "EUR (€)",
+    onContractClick: () -> Unit = {}
+) {
     val isExpiring =
         contract.status == ContractStatus.ACTIVE &&
                 contract.endDate != null &&
@@ -116,7 +120,12 @@ fun ContractItem(contract: Contract, onContractClick: () -> Unit = {}) {
             // Monthly . Cost
             Text(
                 text =
-                    "${contract.paymentCycle.name} • ${FormatUtils.formatUSAmount(contract.amount)}",
+                    "${contract.paymentCycle.name} • ${
+                        FormatUtils.formatCurrency(
+                            contract.amount,
+                            currency
+                        )
+                    }",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

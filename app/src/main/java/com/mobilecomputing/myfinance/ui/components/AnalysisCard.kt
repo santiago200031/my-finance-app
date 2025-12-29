@@ -16,11 +16,16 @@ import com.mobilecomputing.myfinance.utils.AppConstants
 import com.mobilecomputing.myfinance.utils.FormatUtils
 
 @Composable
-fun AnalysisCard(title: String, amount: Double, color: Color, description: String) {
+fun AnalysisCard(
+    title: String,
+    amount: Double,
+    currency: String = "EUR (€)",
+    color: Color,
+    description: String
+) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors =
-            CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(AppConstants.PADDING_MEDIUM)) {
@@ -30,7 +35,7 @@ fun AnalysisCard(title: String, amount: Double, color: Color, description: Strin
                 color = MaterialTheme.colorScheme.onSurface
             )
             Text(
-                text = FormatUtils.formatCurrency(amount),
+                text = FormatUtils.formatCurrency(amount, currency),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
                 color = color,

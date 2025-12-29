@@ -73,7 +73,12 @@ fun ReminderItem(item: ReminderUiItem, onDeleteClick: () -> Unit, onTestClick: (
 
             Text(
                 text =
-                    "${FormatUtils.formatUSAmount(item.contractAmount)} due in ${item.daysUntil} days",
+                    "${
+                        FormatUtils.formatCurrency(
+                            item.contractAmount,
+                            item.currency
+                        )
+                    } due in ${item.daysUntil} days",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )

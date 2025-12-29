@@ -104,7 +104,11 @@ fun ContractsScreenContent(
                 contentPadding = PaddingValues(bottom = 80.dp)
             ) {
                 items(uiState.contracts) { contract ->
-                    ContractItem(contract, onContractClick = { onContractClick(contract.id) })
+                    ContractItem(
+                        contract,
+                        currency = uiState.currency,
+                        onContractClick = { onContractClick(contract.id) }
+                    )
                 }
             }
         }

@@ -16,6 +16,7 @@ import com.mobilecomputing.myfinance.utils.AppConstants
 fun SettingsScreenContent(
     uiState: SettingsUiState,
     onThemeChange: (Boolean) -> Unit,
+    onCurrencyChange: (String) -> Unit,
     onSwitchUserClick: () -> Unit,
     onSharingSettingsClick: () -> Unit,
     onExportDataClick: () -> Unit
@@ -42,7 +43,8 @@ fun SettingsScreenContent(
             LocalizationSection(
                 language = uiState.user?.settings?.language ?: "en",
                 currency = uiState.user?.settings?.currency ?: "USD ($)",
-                dateFormat = uiState.user?.settings?.dateFormat ?: "MM/DD/YYYY"
+                dateFormat = uiState.user?.settings?.dateFormat ?: "MM/DD/YYYY",
+                onCurrencyChange = onCurrencyChange
             )
 
             DataManagementSection(

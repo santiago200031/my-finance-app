@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.mobilecomputing.myfinance.data.entry.EntryFilter
 import com.mobilecomputing.myfinance.data.entry.EntryType
 import com.mobilecomputing.myfinance.data.repository.CategoryRepository
+import com.mobilecomputing.myfinance.data.repository.UserRepository
 import com.mobilecomputing.myfinance.data.service.EntryService
 import com.mobilecomputing.myfinance.ui.models.EntryUiModel
 import com.mobilecomputing.myfinance.utils.DateUtils
@@ -22,8 +23,11 @@ data class EntriesUiState(
     val selectedDate: Date = Date()
 )
 
-class EntriesViewModel(entryService: EntryService, categoryRepository: CategoryRepository) :
-    ViewModel() {
+class EntriesViewModel(
+    entryService: EntryService,
+    categoryRepository: CategoryRepository,
+    userRepository: UserRepository
+) : ViewModel() {
 
     // UI state holders
     private val _filter = MutableStateFlow(EntryFilter.ALL)
@@ -33,9 +37,10 @@ class EntriesViewModel(entryService: EntryService, categoryRepository: CategoryR
         combine(
             entryService.getAllEntries(),
             categoryRepository.getAllCategories(),
+            userRepository.getCurrentUser(),
             _filter,
             _selectedDate
-        ) { entries, categories, filter, selectedDate ->
+        ) { entries, categories, user, filter, selectedDate ->
             // Filter and map
             val filteredEntries =
                 entries.filter { entry ->
@@ -64,7 +69,8 @@ class EntriesViewModel(entryService: EntryService, categoryRepository: CategoryR
                         categoryName = category?.title ?: "Uncategorized",
                         type = entry.type,
                         categoryId = entry.categoryId,
-                        formattedDate = DateUtils.formatDate(entry.date)
+                        formattedDate = DateUtils.formatDate(entry.date),
+                        currency = user?.settings?.currency ?: "EUR (€)"
                     )
                 }
 

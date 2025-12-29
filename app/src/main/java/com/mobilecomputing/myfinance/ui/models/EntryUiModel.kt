@@ -13,5 +13,6 @@ data class EntryUiModel(
     val categoryName: String = "",
     val categoryIcon: String = "",
     val categoryColor: String = "",
-    val formattedDate: String = ""
+    val formattedDate: String = "",
+    val currency: String = "EUR (€)"
 )

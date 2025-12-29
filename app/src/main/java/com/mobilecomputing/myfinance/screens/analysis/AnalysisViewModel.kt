@@ -3,6 +3,7 @@ package com.mobilecomputing.myfinance.screens.analysis
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mobilecomputing.myfinance.data.entry.EntryType
+import com.mobilecomputing.myfinance.data.repository.UserRepository
 import com.mobilecomputing.myfinance.data.service.ContractService
 import com.mobilecomputing.myfinance.data.service.EntryService
 import com.mobilecomputing.myfinance.utils.DateUtils
@@ -18,11 +19,15 @@ data class AnalysisUiState(
     val currentMonthSpending: Double = 0.0,
     val fixedContractExpenses: Double = 0.0,
     val totalMonthlyEarnings: Double = 0.0,
-    val selectedDate: Date = Date()
+    val selectedDate: Date = Date(),
+    val currency: String = "EUR (€)"
 )
 
-class AnalysisViewModel(entryService: EntryService, private val contractService: ContractService) :
-    ViewModel() {
+class AnalysisViewModel(
+    entryService: EntryService,
+    private val contractService: ContractService,
+    userRepository: UserRepository
+) : ViewModel() {
 
     private val _selectedDate = MutableStateFlow(Date())
 
@@ -30,14 +35,16 @@ class AnalysisViewModel(entryService: EntryService, private val contractService:
         combine(
             entryService.getAllEntries(),
             contractService.getAllContracts(),
+            userRepository.getCurrentUser(),
             _selectedDate
-        ) { entries, contracts, selectedDate ->
+        ) { entries, contracts, user, selectedDate ->
             val currentMonthEntries =
                 entries.filter { entry ->
                     DateUtils.isSameMonth(entry.date, selectedDate)
                 }
 
-            val spendingEntries = currentMonthEntries.filter { it.type == EntryType.EXPENSE }
+            val spendingEntries =
+                currentMonthEntries.filter { it.type == EntryType.EXPENSE }
             val currentMonthSpending = spendingEntries.sumOf { it.amount }
 
             // Filter contracts active in the selected month
@@ -56,11 +63,12 @@ class AnalysisViewModel(entryService: EntryService, private val contractService:
 
             // Total Monthly Earnings
             // Contract Income (Monthly) + Entry Income
-            val contractIncome = contractService.getTotalMonthlyIncome(activeContracts)
+            val contractIncome =
+                contractService.getTotalMonthlyIncome(activeContracts)
             val entryIncome =
-                currentMonthEntries.filter { it.type == EntryType.INCOME }.sumOf {
-                    it.amount
-                }
+                currentMonthEntries
+                    .filter { it.type == EntryType.INCOME }
+                    .sumOf { it.amount }
 
             val totalEarnings = contractIncome + entryIncome
 
@@ -68,7 +76,8 @@ class AnalysisViewModel(entryService: EntryService, private val contractService:
                 currentMonthSpending = currentMonthSpending,
                 fixedContractExpenses = fixedContractExpenses,
                 totalMonthlyEarnings = totalEarnings,
-                selectedDate = selectedDate
+                selectedDate = selectedDate,
+                currency = user?.settings?.currency ?: "EUR (€)"
             )
         }
             .stateIn(

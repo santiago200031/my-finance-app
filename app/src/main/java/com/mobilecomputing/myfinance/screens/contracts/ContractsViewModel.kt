@@ -35,7 +35,8 @@ data class ContractsUiState(
     val selectedDate: Date = Date(),
     val activeCount: Int = 0,
     val expiringCount: Int = 0,
-    val monthlyNetValue: Double = 0.0
+    val monthlyNetValue: Double = 0.0,
+    val currency: String = "EUR (€)"
 )
 
 class ContractsViewModel(
@@ -107,7 +108,8 @@ class ContractsViewModel(
                         selectedDate = selectedDate,
                         activeCount = contractService.getActiveCount(contracts),
                         expiringCount = contractService.getExpiringCount(contracts),
-                        monthlyNetValue = contractService.getNetMonthlyValue(contracts)
+                        monthlyNetValue = contractService.getNetMonthlyValue(contracts),
+                        currency = currentUser?.settings?.currency ?: "EUR (€)"
                     )
                 }
             }

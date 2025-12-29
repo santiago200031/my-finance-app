@@ -21,6 +21,7 @@ fun SettingsScreen(
     SettingsScreenContent(
         uiState = uiState,
         onThemeChange = viewModel::updateTheme,
+        onCurrencyChange = viewModel::updateCurrency,
         onSwitchUserClick = viewModel::switchUser,
         onSharingSettingsClick = onSharingSettingsClick,
         onExportDataClick = onExportDataClick
@@ -48,6 +49,7 @@ fun SettingsScreenPreview() {
                 isLoading = false
             ),
         onThemeChange = {},
+        onCurrencyChange = {},
         onSwitchUserClick = {},
         onSharingSettingsClick = {},
         onExportDataClick = {}

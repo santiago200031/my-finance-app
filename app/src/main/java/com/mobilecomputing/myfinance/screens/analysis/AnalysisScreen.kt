@@ -36,9 +36,11 @@ fun AnalysisScreenContent(
     onNextMonth: () -> Unit = {}
 ) {
     Scaffold { padding ->
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
             MonthYearSelector(
                 currentDate = uiState.selectedDate,
                 onPreviousMonth = onPreviousMonth,
@@ -48,6 +50,7 @@ fun AnalysisScreenContent(
             AnalysisCard(
                 title = "Spending",
                 amount = uiState.currentMonthSpending,
+                currency = uiState.currency,
                 color = RedExpense,
                 description = "Total expenses from entries"
             )
@@ -55,6 +58,7 @@ fun AnalysisScreenContent(
             AnalysisCard(
                 title = "Fixed Contracts",
                 amount = uiState.fixedContractExpenses,
+                currency = uiState.currency,
                 color = RedExpense,
                 description = "Recurring expenses contribution"
             )
@@ -62,6 +66,7 @@ fun AnalysisScreenContent(
             AnalysisCard(
                 title = "Total Earnings",
                 amount = uiState.totalMonthlyEarnings,
+                currency = uiState.currency,
                 color = GreenIncome,
                 description = "Contracts + Income entries"
             )
@@ -75,9 +80,9 @@ fun AnalysisScreenPreview() {
     AnalysisScreenContent(
         uiState =
             AnalysisUiState(
-                currentMonthSpending = 450.0,
-                fixedContractExpenses = 1200.0,
-                totalMonthlyEarnings = 2500.0
+                currentMonthSpending = 450.00,
+                fixedContractExpenses = 1200.00,
+                totalMonthlyEarnings = 2500.00
             )
     )
 }

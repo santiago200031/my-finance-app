@@ -39,15 +39,13 @@ fun EntryItem(
             }
             Text(
                 text =
-                    if (transaction.type == EntryType.EXPENSE
-                    ) {
-                        "-$${FormatUtils.formatUSAmount(transaction.amount)}"
+                    if (transaction.type == EntryType.EXPENSE) {
+                        "-${FormatUtils.formatCurrency(transaction.amount, transaction.currency)}"
                     } else {
-                        "+$${FormatUtils.formatUSAmount(transaction.amount)}"
+                        "+${FormatUtils.formatCurrency(transaction.amount, transaction.currency)}"
                     },
                 color =
-                    if (transaction.type == EntryType.EXPENSE
-                    ) {
+                    if (transaction.type == EntryType.EXPENSE) {
                         RedExpense
                     } else {
                         GreenIncome
