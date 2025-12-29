@@ -6,6 +6,10 @@ import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.contract.PaymentCycle
 import com.mobilecomputing.myfinance.data.entry.Entry
 import com.mobilecomputing.myfinance.data.entry.EntryType
+import com.mobilecomputing.myfinance.data.models.User
+import com.mobilecomputing.myfinance.data.models.user.UserSettings
+import com.mobilecomputing.myfinance.data.repository.CategoryRepository
+import com.mobilecomputing.myfinance.data.repository.UserRepository
 import com.mobilecomputing.myfinance.data.service.ContractService
 import com.mobilecomputing.myfinance.data.service.EntryService
 import io.mockk.every
@@ -26,6 +30,8 @@ class AnalysisViewModelTest {
 
     private lateinit var entryService: EntryService
     private lateinit var contractService: ContractService
+    private lateinit var categoryRepository: CategoryRepository
+    private lateinit var userRepository: UserRepository
     private lateinit var viewModel: AnalysisViewModel
 
     private val entriesFlow = MutableStateFlow<List<Entry>>(emptyList())
@@ -35,9 +41,12 @@ class AnalysisViewModelTest {
     fun setUp() {
         entryService = mockk()
         contractService = mockk()
-
+        categoryRepository = mockk()
+        userRepository = mockk()
         every { entryService.getAllEntries() } returns entriesFlow
         every { contractService.getAllContracts() } returns contractsFlow
+        every { categoryRepository.getAllCategories() } returns
+                kotlinx.coroutines.flow.flowOf(emptyList())
 
         every { contractService.getTotalMonthlyCost(any()) } answers
                 {
@@ -46,9 +55,7 @@ class AnalysisViewModelTest {
                         .filter {
                             it.type == ContractType.EXPENSE || it.type == ContractType.DEBT
                         }
-                        .sumOf {
-                            it.amount
-                        }
+                        .sumOf { it.amount }
                 }
         every { contractService.getTotalMonthlyIncome(any()) } answers
                 {
@@ -56,7 +63,21 @@ class AnalysisViewModelTest {
                     list.filter { it.type == ContractType.INCOME }.sumOf { it.amount }
                 }
 
-        viewModel = AnalysisViewModel(entryService, contractService)
+        val userSettings = UserSettings("EUR (€)", "dd.MM.yyyy")
+        val testUser =
+            User(
+                "s-svilla",
+                "s-svilla@haw-landshut.de",
+                "Santiago",
+                "Villavicencio",
+                null,
+                emptyList(),
+                userSettings
+            )
+        every { userRepository.getCurrentUser() } returns kotlinx.coroutines.flow.flowOf(testUser)
+
+        viewModel =
+            AnalysisViewModel(entryService, contractService, categoryRepository, userRepository)
     }
 
     @Test

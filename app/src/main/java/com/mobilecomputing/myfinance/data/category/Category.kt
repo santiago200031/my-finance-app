@@ -7,7 +7,7 @@ data class Category(
     @DocumentId val id: String = "",
     val title: String = "",
     val type: ContractType = ContractType.EXPENSE,
-    val iconKey: String = "help", // Default icon
+    val iconKey: String = "help",
     val colorHex: String = "#000000",
     val isSystemDefault: Boolean = false,
     val budgetLimit: Double = 0.0

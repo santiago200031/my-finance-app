@@ -71,6 +71,7 @@ object AppViewModelProvider {
             AnalysisViewModel(
                 myFinanceApplication().container.entryService,
                 myFinanceApplication().container.contractService,
+                myFinanceApplication().container.categoryRepository,
                 myFinanceApplication().container.userRepository
             )
         }

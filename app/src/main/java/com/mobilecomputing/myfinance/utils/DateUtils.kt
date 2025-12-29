@@ -3,6 +3,7 @@ package com.mobilecomputing.myfinance.utils
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.Date
 import java.util.Locale
 
@@ -47,6 +48,30 @@ object DateUtils {
         return Date.from(newDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
     }
 
+    fun addWeeks(date: Date, weeksToAdd: Long): Date {
+        val localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        val newDate = localDate.plusWeeks(weeksToAdd)
+        return Date.from(newDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
+    }
+
+    fun addDays(date: Date, daysToAdd: Long): Date {
+        val localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        val newDate = localDate.plusDays(daysToAdd)
+        return Date.from(newDate.atStartOfDay(ZoneId.systemDefault()).toInstant())
+    }
+
+    fun getDifferenceInMonths(startDate: Date, endDate: Date): Long {
+        val start = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        val end = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        return ChronoUnit.MONTHS.between(start, end)
+    }
+
+    fun getDifferenceInWeeks(startDate: Date, endDate: Date): Long {
+        val start = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        val end = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        return ChronoUnit.WEEKS.between(start, end)
+    }
+
     fun formatMonthYear(date: Date): String {
         val localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
         // Display format example: "January 2024"
@@ -63,7 +88,18 @@ object DateUtils {
     fun getEndOfMonth(date: Date): Date {
         val localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
         val endOfMonth = localDate.withDayOfMonth(localDate.lengthOfMonth())
-        // End of the day
         return Date.from(endOfMonth.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant())
+    }
+
+    fun getStartOfYear(date: Date): Date {
+        val localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        val startOfYear = localDate.withDayOfYear(1)
+        return Date.from(startOfYear.atStartOfDay(ZoneId.systemDefault()).toInstant())
+    }
+
+    fun getEndOfYear(date: Date): Date {
+        val localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+        val endOfYear = localDate.withDayOfYear(localDate.lengthOfYear())
+        return Date.from(endOfYear.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant())
     }
 }

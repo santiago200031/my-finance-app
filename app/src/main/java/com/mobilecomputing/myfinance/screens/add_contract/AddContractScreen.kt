@@ -92,17 +92,18 @@ fun AddContractScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
+        OutlinedTextField(
+            value = uiState.provider,
+            onValueChange = viewModel::onProviderChange,
+            label = { Text("Provider (Optional)") },
+            modifier = Modifier.fillMaxWidth()
+        )
+
         // Installment / Monthly Payment
         OutlinedTextField(
             value = uiState.amount,
             onValueChange = viewModel::onAmountChange,
-            label = {
-                Text(
-                    if (uiState.selectedType == ContractType.DEBT)
-                        "Monthly/Period Payment"
-                    else "Amount"
-                )
-            },
+            label = { Text("Payment Amount") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth()
         )
@@ -113,8 +114,7 @@ fun AddContractScreen(
                 value = uiState.totalAmount.orEmpty(),
                 onValueChange = viewModel::onTotalAmountChange,
                 label = { Text("Total Debt Amount") },
-                keyboardOptions =
-                    KeyboardOptions(keyboardType = KeyboardType.Number),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -184,22 +184,12 @@ fun AddContractScreen(
                     Button(
                         onClick = { viewModel.onStatusChange(status) },
                         modifier = Modifier.weight(1f)
-                    ) {
-                        Text(
-                            status.name,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
+                    ) { Text(status.name, style = MaterialTheme.typography.bodySmall) }
                 } else {
                     OutlinedButton(
                         onClick = { viewModel.onStatusChange(status) },
                         modifier = Modifier.weight(1f)
-                    ) {
-                        Text(
-                            status.name,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
+                    ) { Text(status.name, style = MaterialTheme.typography.bodySmall) }
                 }
             }
         }

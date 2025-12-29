@@ -5,7 +5,10 @@ import com.mobilecomputing.myfinance.data.category.Category
 import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.entry.Entry
 import com.mobilecomputing.myfinance.data.entry.EntryType
+import com.mobilecomputing.myfinance.data.models.User
+import com.mobilecomputing.myfinance.data.models.user.UserSettings
 import com.mobilecomputing.myfinance.data.repository.CategoryRepository
+import com.mobilecomputing.myfinance.data.repository.UserRepository
 import com.mobilecomputing.myfinance.data.service.EntryService
 import io.mockk.coEvery
 import io.mockk.every
@@ -17,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import java.time.Instant
@@ -30,6 +34,23 @@ class DashboardViewModelTest {
 
     private val entryService: EntryService = mockk()
     private val categoryRepository: CategoryRepository = mockk()
+    private val userRepository: UserRepository = mockk()
+
+    @Before
+    fun setUp() {
+        val userSettings = UserSettings("EUR (€)", "dd.MM.yyyy")
+        val testUser =
+            User(
+                "s-svilla",
+                "s-svilla@haw-landshut.de",
+                "Santiago",
+                "Villavicencio",
+                null,
+                emptyList(),
+                userSettings
+            )
+        every { userRepository.getCurrentUser() } returns kotlinx.coroutines.flow.flowOf(testUser)
+    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
@@ -108,6 +129,7 @@ class DashboardViewModelTest {
             DashboardViewModel(
                 entryService,
                 categoryRepository,
+                userRepository,
                 SharingStarted.WhileSubscribed(0)
             )
 
@@ -166,6 +188,7 @@ class DashboardViewModelTest {
             DashboardViewModel(
                 entryService,
                 categoryRepository,
+                userRepository,
                 SharingStarted.WhileSubscribed(0)
             )
 
@@ -247,6 +270,7 @@ class DashboardViewModelTest {
             DashboardViewModel(
                 entryService,
                 categoryRepository,
+                userRepository,
                 SharingStarted.WhileSubscribed(0)
             )
 
@@ -276,6 +300,7 @@ class DashboardViewModelTest {
             DashboardViewModel(
                 entryService,
                 categoryRepository,
+                userRepository,
                 SharingStarted.WhileSubscribed(0)
             )
 

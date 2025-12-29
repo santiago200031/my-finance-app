@@ -96,6 +96,12 @@ class ContractService(private val contractRepository: ContractRepository) {
         if (contract.endDate != null) {
             val endDate = contract.endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
             if (endDate.isBefore(LocalDate.now())) {
+                // For DEBT contracts, we don't auto-renew by shifting the end date,
+                // as the duration is fixed based on a total amount.
+                if (contract.type == ContractType.DEBT) {
+                    return contract.copy(status = ContractStatus.OUTDATED)
+                }
+
                 return if (contract.autoRenewEnabled) {
                     val monthsToAdd =
                         when (contract.paymentCycle) {

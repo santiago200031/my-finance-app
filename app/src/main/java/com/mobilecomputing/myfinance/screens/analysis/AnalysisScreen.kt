@@ -1,20 +1,25 @@
 package com.mobilecomputing.myfinance.screens.analysis
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.mobilecomputing.myfinance.screens.analysis.components.CategoryAnalysisCard
+import com.mobilecomputing.myfinance.screens.analysis.components.MonthlyOverviewSection
+import com.mobilecomputing.myfinance.screens.analysis.components.YearlyOverviewCard
 import com.mobilecomputing.myfinance.ui.AppViewModelProvider
-import com.mobilecomputing.myfinance.ui.components.AnalysisCard
 import com.mobilecomputing.myfinance.ui.components.MonthYearSelector
-import com.mobilecomputing.myfinance.ui.theme.GreenIncome
-import com.mobilecomputing.myfinance.ui.theme.RedExpense
 
 @Composable
 fun AnalysisScreen(
@@ -37,9 +42,11 @@ fun AnalysisScreenContent(
 ) {
     Scaffold { padding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .verticalScroll(rememberScrollState())
         ) {
             MonthYearSelector(
                 currentDate = uiState.selectedDate,
@@ -47,29 +54,32 @@ fun AnalysisScreenContent(
                 onNextMonth = onNextMonth
             )
 
-            AnalysisCard(
-                title = "Spending",
-                amount = uiState.currentMonthSpending,
-                currency = uiState.currency,
-                color = RedExpense,
-                description = "Total expenses from entries"
+            YearlyOverviewCard(
+                yearlySpending = uiState.yearlySpending,
+                yearlyEarnings = uiState.yearlyEarnings,
+                currency = uiState.currency
             )
 
-            AnalysisCard(
-                title = "Fixed Contracts",
-                amount = uiState.fixedContractExpenses,
-                currency = uiState.currency,
-                color = RedExpense,
-                description = "Recurring expenses contribution"
+            MonthlyOverviewSection(
+                currentMonthSpending = uiState.currentMonthSpending,
+                fixedContractExpenses = uiState.fixedContractExpenses,
+                totalMonthlyEarnings = uiState.totalMonthlyEarnings,
+                currency = uiState.currency
             )
 
-            AnalysisCard(
-                title = "Total Earnings",
-                amount = uiState.totalMonthlyEarnings,
-                currency = uiState.currency,
-                color = GreenIncome,
-                description = "Contracts + Income entries"
+            CategoryAnalysisCard(
+                title = "Expenses by Category",
+                categories = uiState.expenseCategories,
+                currency = uiState.currency
             )
+
+            CategoryAnalysisCard(
+                title = "Income by Category",
+                categories = uiState.incomeCategories,
+                currency = uiState.currency
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
@@ -82,7 +92,9 @@ fun AnalysisScreenPreview() {
             AnalysisUiState(
                 currentMonthSpending = 450.00,
                 fixedContractExpenses = 1200.00,
-                totalMonthlyEarnings = 2500.00
+                totalMonthlyEarnings = 2500.00,
+                yearlySpending = 18000.0,
+                yearlyEarnings = 30000.0
             )
     )
 }
