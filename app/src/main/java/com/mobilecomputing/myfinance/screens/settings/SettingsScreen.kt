@@ -41,7 +41,7 @@ fun SettingsScreenPreview() {
                         settings =
                             UserSettings(
                                 isDarkTheme = true,
-                                currency = "EUR",
+                                currency = "EUR (€)",
                                 dateFormat = "dd/MM/yyyy"
                             )
                     ),
