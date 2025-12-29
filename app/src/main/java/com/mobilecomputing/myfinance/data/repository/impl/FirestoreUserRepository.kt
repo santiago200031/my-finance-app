@@ -51,9 +51,15 @@ class FirestoreUserRepository(
                     val userToCreate = initialUsers.find { it.id == userId }
 
                     if (userToCreate != null) {
-                        usersCollection.document(userId).set(userToCreate)
+                        usersCollection
+                            .document(userId)
+                            .set(userToCreate)
                             .addOnFailureListener { e ->
-                                Log.e("FirestoreUserRepository", "Error creating user $userId", e)
+                                Log.e(
+                                    "FirestoreUserRepository",
+                                    "Error creating user $userId",
+                                    e
+                                )
                             }
                     }
                 }
@@ -117,6 +123,17 @@ class FirestoreUserRepository(
                 .await()
         } catch (e: Exception) {
             Log.e("FirestoreUserRepository", "Error adding trusted email", e)
+        }
+    }
+
+    override suspend fun removeTrustedEmail(email: String) {
+        try {
+            usersCollection
+                .document(currentUserIdFlow.value)
+                .update("trustedEmails", FieldValue.arrayRemove(email))
+                .await()
+        } catch (e: Exception) {
+            Log.e("FirestoreUserRepository", "Error removing trusted email", e)
         }
     }
 

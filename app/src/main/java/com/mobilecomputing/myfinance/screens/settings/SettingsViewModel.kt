@@ -43,4 +43,8 @@ class SettingsViewModel(private val userRepository: UserRepository) : ViewModel(
     fun addTrustedEmail(email: String) {
         viewModelScope.launch { userRepository.addTrustedEmail(email) }
     }
+
+    fun removeTrustedEmail(email: String) {
+        viewModelScope.launch { userRepository.removeTrustedEmail(email) }
+    }
 }

@@ -81,6 +81,12 @@ class FakeUserRepository(private val userPreferencesRepository: UserPreferencesR
         _user.value = currentUser.copy(trustedEmails = newTrustedEmails)
     }
 
+    override suspend fun removeTrustedEmail(email: String) {
+        val currentUser = _user.value
+        val newTrustedEmails = currentUser.trustedEmails.filter { it != email }
+        _user.value = currentUser.copy(trustedEmails = newTrustedEmails)
+    }
+
     override suspend fun getUserById(userId: String): User? {
         if (userId == "villavicencioandrs") {
             return User(

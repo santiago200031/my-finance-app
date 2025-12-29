@@ -41,7 +41,7 @@ fun LocalizationSection(language: String, currency: String, dateFormat: String) 
                 SettingsItem(
                     icon = Icons.Default.AttachMoney,
                     label = "Currency",
-                    value = "$currency ($)"
+                    value = "$currency"
                 )
                 CustomDivider()
                 SettingsItem(

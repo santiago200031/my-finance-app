@@ -1,13 +1,19 @@
 package com.mobilecomputing.myfinance.screens.sharing_settings.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -15,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.mobilecomputing.myfinance.data.models.User
 import com.mobilecomputing.myfinance.utils.AppConstants
 
@@ -23,6 +30,7 @@ fun SharingSettingsContent(
     emailInput: String,
     onEmailInputChange: (String) -> Unit,
     onAddTrustedEmail: () -> Unit,
+    onRemoveTrustedEmail: (String) -> Unit,
     currentUser: User?,
     onViewContracts: (String) -> Unit
 ) {
@@ -60,6 +68,26 @@ fun SharingSettingsContent(
         HorizontalDivider()
         Spacer(modifier = Modifier.height(AppConstants.PADDING_LARGE))
 
+        Text("Trusted Contacts:", style = MaterialTheme.typography.titleMedium)
+        currentUser?.trustedEmails?.forEach { trustedEmail ->
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(trustedEmail)
+                IconButton(onClick = { onRemoveTrustedEmail(trustedEmail) }) {
+                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Remove")
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(AppConstants.PADDING_LARGE))
+        HorizontalDivider()
+        Spacer(modifier = Modifier.height(AppConstants.PADDING_LARGE))
+
         if (targetInfo != null) {
             Button(
                 onClick = { onViewContracts(targetInfo.first) },
@@ -77,6 +105,7 @@ fun SharingSettingsScreenPreview() {
             emailInput = "s-svilla@haw-landshut.de",
             onEmailInputChange = {},
             onAddTrustedEmail = {},
+            onRemoveTrustedEmail = {},
             currentUser =
                 User(
                     id = "s-svilla",

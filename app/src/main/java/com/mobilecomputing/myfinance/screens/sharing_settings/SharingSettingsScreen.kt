@@ -34,6 +34,7 @@ fun SharingSettingsScreen(
                 emailInput = ""
             }
         },
+        onRemoveTrustedEmail = { email -> viewModel.removeTrustedEmail(email) },
         currentUser = currentUser,
         onViewContracts = { email ->
             scope.launch {

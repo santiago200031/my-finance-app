@@ -41,7 +41,7 @@ fun SettingsScreenContent(
 
             LocalizationSection(
                 language = uiState.user?.settings?.language ?: "en",
-                currency = uiState.user?.settings?.currency ?: "USD",
+                currency = uiState.user?.settings?.currency ?: "USD ($)",
                 dateFormat = uiState.user?.settings?.dateFormat ?: "MM/DD/YYYY"
             )
 
