@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -29,6 +30,7 @@ import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.contract.PaymentCycle
 import com.mobilecomputing.myfinance.screens.contracts.components.ContractFilterButtons
 import com.mobilecomputing.myfinance.screens.contracts.components.ContractItem
+import com.mobilecomputing.myfinance.screens.contracts.data.ContractsUiState
 import com.mobilecomputing.myfinance.ui.AppViewModelProvider
 import com.mobilecomputing.myfinance.ui.components.MonthYearSelector
 import com.mobilecomputing.myfinance.ui.components.SummaryCardsRow
