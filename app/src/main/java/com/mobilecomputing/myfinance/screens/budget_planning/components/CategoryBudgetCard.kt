@@ -1,6 +1,5 @@
 package com.mobilecomputing.myfinance.screens.budget_planning.components
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -56,7 +55,6 @@ fun CategoryBudgetCard(status: CategoryBudgetStatus, onDeleteClick: () -> Unit) 
         Column(modifier = Modifier.padding(AppConstants.PADDING_MEDIUM)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
@@ -85,6 +83,7 @@ fun CategoryBudgetCard(status: CategoryBudgetStatus, onDeleteClick: () -> Unit) 
                         )
                     }
                 }
+                Spacer(modifier = Modifier.weight(1f))
                 Column(horizontalAlignment = Alignment.End) {
                     Text(
                         "${status.percentUsed}%",
