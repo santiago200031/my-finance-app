@@ -7,27 +7,32 @@ import java.util.Date
 import java.util.Locale
 
 object DateUtils {
-    private const val DISPLAY_PATTERN = AppConstants.DATE_FORMAT_DISPLAY
-    private val displayFormatter = DateTimeFormatter.ofPattern(DISPLAY_PATTERN)
 
-    private const val INPUT_PATTERN = AppConstants.DATE_FORMAT_INPUT
-    private val inputFormatter = DateTimeFormatter.ofPattern(INPUT_PATTERN)
+    private const val DEFAULT_PATTERN = "dd.MM.yyyy"
 
-    fun formatDate(date: LocalDate): String {
-        return date.format(displayFormatter)
+    fun formatDate(date: LocalDate, pattern: String = DEFAULT_PATTERN): String {
+        return try {
+            date.format(DateTimeFormatter.ofPattern(pattern))
+        } catch (_: Exception) {
+            date.format(DateTimeFormatter.ofPattern(DEFAULT_PATTERN))
+        }
     }
 
-    fun formatInputDate(date: LocalDate): String {
-        return date.format(inputFormatter)
+    fun formatInputDate(date: LocalDate, pattern: String = DEFAULT_PATTERN): String {
+        return formatDate(date, pattern)
     }
 
-    fun parseInputDate(dateString: String): LocalDate {
-        return LocalDate.parse(dateString, inputFormatter)
+    fun parseInputDate(dateString: String, pattern: String = DEFAULT_PATTERN): LocalDate {
+        return try {
+            LocalDate.parse(dateString, DateTimeFormatter.ofPattern(pattern))
+        } catch (_: Exception) {
+            LocalDate.parse(dateString, DateTimeFormatter.ofPattern(DEFAULT_PATTERN))
+        }
     }
 
-    fun formatDate(date: Date): String {
+    fun formatDate(date: Date, pattern: String = DEFAULT_PATTERN): String {
         val localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-        return formatDate(localDate)
+        return formatDate(localDate, pattern)
     }
 
     fun isSameMonth(date1: Date, date2: Date): Boolean {

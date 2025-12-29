@@ -44,6 +44,7 @@ import java.util.Date
 fun ContractItem(
     contract: Contract,
     currency: String = "EUR (€)",
+    dateFormat: String = "dd.MM.yyyy",
     onContractClick: () -> Unit = {}
 ) {
     val isExpiring =
@@ -148,7 +149,8 @@ fun ContractItem(
                         "Next payment: ${
                             DateUtils.formatDate(
                                 contract.nextPaymentDate.toInstant().atZone(ZoneId.systemDefault())
-                                    .toLocalDate()
+                                    .toLocalDate(),
+                                dateFormat
                             )
                         }",
                     style = MaterialTheme.typography.bodySmall,

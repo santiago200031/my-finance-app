@@ -42,9 +42,7 @@ class DashboardViewModel(
                     .sortedByDescending { it.date }
                     .map { entry ->
                         val category =
-                            categories.find {
-                                it.id == entry.categoryId
-                            }
+                            categories.find { it.id == entry.categoryId }
                         EntryUiModel(
                             id = entry.id,
                             amount = entry.amount,
@@ -57,10 +55,11 @@ class DashboardViewModel(
                             categoryId = entry.categoryId,
                             formattedDate =
                                 DateUtils.formatDate(
-                                    entry.date
+                                    entry.date,
+                                    user?.settings?.dateFormat
+                                        ?: "dd.MM.yyyy"
                                 ),
-                            currency = user?.settings?.currency
-                                ?: "EUR (€)"
+                            currency = user?.settings?.currency ?: "EUR (€)"
                         )
                     }
                     .take(3)

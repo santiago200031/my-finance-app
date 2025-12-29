@@ -67,4 +67,26 @@ class DateUtilsTest {
 
         assertEquals("January 2024", formatted)
     }
+
+    @Test
+    fun `formatDate uses provided pattern`() {
+        val date = java.time.LocalDate.of(2024, 1, 15)
+        val formatted = DateUtils.formatDate(date, "MM/dd/yyyy")
+        assertEquals("01/15/2024", formatted)
+    }
+
+    @Test
+    fun `parseInputDate parses correctly with provided pattern`() {
+        val dateStr = "01/15/2024"
+        val date = DateUtils.parseInputDate(dateStr, "MM/dd/yyyy")
+        assertEquals(java.time.LocalDate.of(2024, 1, 15), date)
+    }
+
+    @Test
+    fun `formatDate uses default pattern when exception occurs`() {
+        val date = java.time.LocalDate.of(2024, 1, 15)
+        // Invalid pattern should fallback to default dd.MM.yyyy
+        val formatted = DateUtils.formatDate(date, "invalid-pattern")
+        assertEquals("15.01.2024", formatted)
+    }
 }

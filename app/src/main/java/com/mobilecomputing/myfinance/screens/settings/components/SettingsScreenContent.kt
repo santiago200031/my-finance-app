@@ -17,6 +17,7 @@ fun SettingsScreenContent(
     uiState: SettingsUiState,
     onThemeChange: (Boolean) -> Unit,
     onCurrencyChange: (String) -> Unit,
+    onDateFormatChange: (String) -> Unit,
     onSwitchUserClick: () -> Unit,
     onSharingSettingsClick: () -> Unit,
     onExportDataClick: () -> Unit
@@ -44,7 +45,8 @@ fun SettingsScreenContent(
                 language = uiState.user?.settings?.language ?: "en",
                 currency = uiState.user?.settings?.currency ?: "USD ($)",
                 dateFormat = uiState.user?.settings?.dateFormat ?: "MM/DD/YYYY",
-                onCurrencyChange = onCurrencyChange
+                onCurrencyChange = onCurrencyChange,
+                onDateFormatChange = onDateFormatChange
             )
 
             DataManagementSection(

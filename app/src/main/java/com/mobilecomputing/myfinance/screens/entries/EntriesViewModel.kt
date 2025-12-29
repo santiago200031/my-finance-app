@@ -69,7 +69,12 @@ class EntriesViewModel(
                         categoryName = category?.title ?: "Uncategorized",
                         type = entry.type,
                         categoryId = entry.categoryId,
-                        formattedDate = DateUtils.formatDate(entry.date),
+                        formattedDate =
+                            DateUtils.formatDate(
+                                entry.date,
+                                user?.settings?.dateFormat
+                                    ?: "dd.MM.yyyy"
+                            ),
                         currency = user?.settings?.currency ?: "EUR (€)"
                     )
                 }

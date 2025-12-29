@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -72,9 +71,11 @@ fun ContractsScreenContent(
             }
         }
     ) { padding ->
-        Column(modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
 
             // Summary Dashboard
             MonthYearSelector(
@@ -107,6 +108,7 @@ fun ContractsScreenContent(
                     ContractItem(
                         contract,
                         currency = uiState.currency,
+                        dateFormat = uiState.dateFormat,
                         onContractClick = { onContractClick(contract.id) }
                     )
                 }

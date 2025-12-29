@@ -54,6 +54,16 @@ class SettingsViewModel(private val userRepository: UserRepository) : ViewModel(
         }
     }
 
+    fun updateDateFormat(dateFormat: String) {
+        viewModelScope.launch {
+            val currentUser = uiState.value.user
+            if (currentUser != null) {
+                val newSettings = currentUser.settings.copy(dateFormat = dateFormat)
+                userRepository.updateUser(currentUser.copy(settings = newSettings))
+            }
+        }
+    }
+
     fun removeTrustedEmail(email: String) {
         viewModelScope.launch { userRepository.removeTrustedEmail(email) }
     }

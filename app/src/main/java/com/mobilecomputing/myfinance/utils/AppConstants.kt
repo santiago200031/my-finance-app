@@ -3,8 +3,14 @@ package com.mobilecomputing.myfinance.utils
 import androidx.compose.ui.unit.dp
 
 object AppConstants {
-    const val DATE_FORMAT_DISPLAY = "MMM d, yyyy"
-    const val DATE_FORMAT_INPUT = "dd.MM.yyyy"
+    object DateFormatOption {
+        const val GERMAN = "dd.MM.yyyy"
+        const val US = "MM/dd/yyyy"
+        const val ISO = "yyyy-MM-dd"
+        const val TEXTUAL = "d MMM yyyy"
+
+        val all = listOf(GERMAN, US, ISO, TEXTUAL)
+    }
 
     val PADDING_XSMALL = 4.dp
     val PADDING_SMALL = 8.dp

@@ -32,9 +32,11 @@ fun LocalizationSection(
     language: String,
     currency: String,
     dateFormat: String,
-    onCurrencyChange: (String) -> Unit
+    onCurrencyChange: (String) -> Unit,
+    onDateFormatChange: (String) -> Unit
 ) {
     var showCurrencyDialog by remember { mutableStateOf(false) }
+    var showDateFormatDialog by remember { mutableStateOf(false) }
 
     if (showCurrencyDialog) {
         AlertDialog(
@@ -78,6 +80,47 @@ fun LocalizationSection(
         )
     }
 
+    if (showDateFormatDialog) {
+        AlertDialog(
+            onDismissRequest = { showDateFormatDialog = false },
+            title = { Text(text = "Select Date Format") },
+            text = {
+                Column {
+                    AppConstants.DateFormatOption.all.forEach { format ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        onDateFormatChange(format)
+                                        showDateFormatDialog = false
+                                    }
+                                    .padding(vertical = 8.dp)
+                        ) {
+                            RadioButton(
+                                selected = (format == dateFormat),
+                                onClick = {
+                                    onDateFormatChange(format)
+                                    showDateFormatDialog = false
+                                }
+                            )
+                            Text(
+                                text = format,
+                                modifier = Modifier.padding(start = 8.dp),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
+                }
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(onClick = { showDateFormatDialog = false }) { Text("Cancel") }
+            }
+        )
+    }
+
     Column {
         Text(
             text = "Localization",
@@ -108,7 +151,8 @@ fun LocalizationSection(
                 SettingsItem(
                     icon = Icons.Default.CalendarToday,
                     label = "Date Format",
-                    value = dateFormat
+                    value = dateFormat,
+                    onClick = { showDateFormatDialog = true }
                 )
             }
         }

@@ -2,12 +2,12 @@ package com.mobilecomputing.myfinance.screens.contracts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mobilecomputing.myfinance.data.contract.Contract
 import com.mobilecomputing.myfinance.data.contract.ContractFilter
 import com.mobilecomputing.myfinance.data.contract.ContractType
-import com.mobilecomputing.myfinance.data.models.User
 import com.mobilecomputing.myfinance.data.repository.UserRepository
 import com.mobilecomputing.myfinance.data.service.ContractService
+import com.mobilecomputing.myfinance.screens.contracts.data.ContractsData
+import com.mobilecomputing.myfinance.screens.contracts.data.ContractsUiState
 import com.mobilecomputing.myfinance.utils.DateUtils
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,23 +21,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Date
-
-private data class ContractsData(
-    val userId: String?,
-    val filter: ContractFilter,
-    val selectedDate: Date,
-    val currentUser: User?
-)
-
-data class ContractsUiState(
-    val contracts: List<Contract> = emptyList(),
-    val filter: ContractFilter = ContractFilter.ALL,
-    val selectedDate: Date = Date(),
-    val activeCount: Int = 0,
-    val expiringCount: Int = 0,
-    val monthlyNetValue: Double = 0.0,
-    val currency: String = "EUR (€)"
-)
 
 class ContractsViewModel(
     private val contractService: ContractService,
@@ -56,7 +39,11 @@ class ContractsViewModel(
                                                                                            currentUser ->
             ContractsData(userId, filter, selectedDate, currentUser)
         }
-            .flatMapLatest { (userId, filter, selectedDate, currentUser) ->
+            .flatMapLatest { data: ContractsData ->
+                val userId = data.userId
+                val filter = data.filter
+                val selectedDate = data.selectedDate
+                val currentUser = data.currentUser
                 val contractsFlow =
                     if (userId == null) {
                         contractService.getAllContracts()
@@ -109,7 +96,8 @@ class ContractsViewModel(
                         activeCount = contractService.getActiveCount(contracts),
                         expiringCount = contractService.getExpiringCount(contracts),
                         monthlyNetValue = contractService.getNetMonthlyValue(contracts),
-                        currency = currentUser?.settings?.currency ?: "EUR (€)"
+                        currency = currentUser?.settings?.currency ?: "EUR (€)",
+                        dateFormat = currentUser?.settings?.dateFormat ?: "dd.MM.yyyy"
                     )
                 }
             }
