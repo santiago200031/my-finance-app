@@ -23,7 +23,8 @@ object AppViewModelProvider {
             DashboardViewModel(
                 myFinanceApplication().container.entryService,
                 myFinanceApplication().container.categoryRepository,
-                myFinanceApplication().container.userRepository
+                myFinanceApplication().container.userRepository,
+                myFinanceApplication().container.contractService
             )
         }
         initializer {

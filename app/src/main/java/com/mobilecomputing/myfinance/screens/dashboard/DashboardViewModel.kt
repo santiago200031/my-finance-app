@@ -4,13 +4,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mobilecomputing.myfinance.data.repository.CategoryRepository
 import com.mobilecomputing.myfinance.data.repository.UserRepository
+import com.mobilecomputing.myfinance.data.service.ContractService
 import com.mobilecomputing.myfinance.data.service.EntryService
 import com.mobilecomputing.myfinance.ui.models.EntryUiModel
 import com.mobilecomputing.myfinance.utils.DateUtils
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.ZoneId
 
 data class DashboardUiState(
     val transactions: List<EntryUiModel> = emptyList(),
@@ -24,8 +33,41 @@ class DashboardViewModel(
     entryService: EntryService,
     categoryRepository: CategoryRepository,
     userRepository: UserRepository,
+    contractService: ContractService,
     sharingStarted: SharingStarted = SharingStarted.WhileSubscribed(5000)
 ) : ViewModel() {
+
+    private val _notifications = Channel<String>()
+    val notifications = _notifications.receiveAsFlow()
+
+    private val notifiedContractIds = mutableSetOf<String>()
+
+    init {
+        contractService
+            .getAllContracts()
+            .distinctUntilChanged()
+            .onEach { contracts ->
+                val today = LocalDate.now()
+                contracts.forEach { contract ->
+                    val nextPayment =
+                        contract.nextPaymentDate
+                            .toInstant()
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
+
+                    if (nextPayment.isEqual(today) && !notifiedContractIds.contains(contract.id)
+                    ) {
+                        notifiedContractIds.add(contract.id)
+                        viewModelScope.launch {
+                            _notifications.send(
+                                "Today is the next payment for your contract ${contract.title}"
+                            )
+                        }
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
 
     val uiState: StateFlow<DashboardUiState> =
         combine(

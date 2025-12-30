@@ -2,6 +2,7 @@ package com.mobilecomputing.myfinance.screens.dashboard
 
 import com.mobilecomputing.myfinance.MainDispatcherRule
 import com.mobilecomputing.myfinance.data.category.Category
+import com.mobilecomputing.myfinance.data.contract.Contract
 import com.mobilecomputing.myfinance.data.contract.ContractType
 import com.mobilecomputing.myfinance.data.entry.Entry
 import com.mobilecomputing.myfinance.data.entry.EntryType
@@ -9,6 +10,7 @@ import com.mobilecomputing.myfinance.data.models.User
 import com.mobilecomputing.myfinance.data.models.user.UserSettings
 import com.mobilecomputing.myfinance.data.repository.CategoryRepository
 import com.mobilecomputing.myfinance.data.repository.UserRepository
+import com.mobilecomputing.myfinance.data.service.ContractService
 import com.mobilecomputing.myfinance.data.service.EntryService
 import io.mockk.coEvery
 import io.mockk.every
@@ -35,6 +37,7 @@ class DashboardViewModelTest {
     private val entryService: EntryService = mockk()
     private val categoryRepository: CategoryRepository = mockk()
     private val userRepository: UserRepository = mockk()
+    private val contractService: ContractService = mockk()
 
     @Before
     fun setUp() {
@@ -50,6 +53,7 @@ class DashboardViewModelTest {
                 userSettings
             )
         every { userRepository.getCurrentUser() } returns kotlinx.coroutines.flow.flowOf(testUser)
+        every { contractService.getAllContracts() } returns flowOf(emptyList())
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -130,6 +134,7 @@ class DashboardViewModelTest {
                 entryService,
                 categoryRepository,
                 userRepository,
+                contractService,
                 SharingStarted.WhileSubscribed(0)
             )
 
@@ -189,6 +194,7 @@ class DashboardViewModelTest {
                 entryService,
                 categoryRepository,
                 userRepository,
+                contractService,
                 SharingStarted.WhileSubscribed(0)
             )
 
@@ -271,6 +277,7 @@ class DashboardViewModelTest {
                 entryService,
                 categoryRepository,
                 userRepository,
+                contractService,
                 SharingStarted.WhileSubscribed(0)
             )
 
@@ -301,6 +308,7 @@ class DashboardViewModelTest {
                 entryService,
                 categoryRepository,
                 userRepository,
+                contractService,
                 SharingStarted.WhileSubscribed(0)
             )
 
@@ -313,5 +321,41 @@ class DashboardViewModelTest {
         assertEquals(0, state.transactions.size)
 
         job.cancel()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Test
+    fun `notifications emitted when contract is due today`() = runTest {
+        // Arrange
+        val today = Date()
+        val contract = Contract(id = "c1", title = "Gym", nextPaymentDate = today)
+        every { contractService.getAllContracts() } returns flowOf(listOf(contract))
+        coEvery { entryService.getAllEntries() } returns flowOf(emptyList())
+        coEvery { categoryRepository.getAllCategories() } returns flowOf(emptyList())
+        every { entryService.calculateTotalIncome(any()) } returns 0.0
+        every { entryService.calculateTotalExpenses(any()) } returns 0.0
+        every { entryService.calculateNetGrowth(any()) } returns 0.0
+
+        val viewModel =
+            DashboardViewModel(
+                entryService,
+                categoryRepository,
+                userRepository,
+                contractService,
+                SharingStarted.WhileSubscribed(0)
+            )
+
+        val notifications = mutableListOf<String>()
+        val job = launch { viewModel.notifications.collect { notifications.add(it) } }
+        val uiJob = launch { viewModel.uiState.collect {} }
+
+        advanceUntilIdle()
+
+        // Assert
+        assertEquals(1, notifications.size)
+        assertEquals("Today is the next payment for your contract Gym", notifications[0])
+
+        job.cancel()
+        uiJob.cancel()
     }
 }

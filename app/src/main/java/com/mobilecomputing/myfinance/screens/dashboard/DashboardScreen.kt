@@ -20,10 +20,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.mobilecomputing.myfinance.screens.dashboard.components.BalanceSummaryCard
 import com.mobilecomputing.myfinance.screens.entries.components.EntryItem
@@ -33,6 +35,8 @@ import com.mobilecomputing.myfinance.ui.theme.PrimaryPurple
 import com.mobilecomputing.myfinance.ui.theme.RedExpense
 import com.mobilecomputing.myfinance.utils.AppConstants
 import com.mobilecomputing.myfinance.utils.FormatUtils
+import com.mobilecomputing.myfinance.utils.NotificationHandler
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun DashboardScreen(
@@ -41,12 +45,21 @@ fun DashboardScreen(
     viewModel: DashboardViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val context = LocalContext.current
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(AppConstants.PADDING_MEDIUM)
-    ) {
+    LaunchedEffect(viewModel.notifications) {
+        viewModel.notifications.collectLatest { message ->
+            NotificationHandler.showNotification(
+                context = context,
+                title = "Contract Payment",
+                message = message
+            )
+        }
+    }
+
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(AppConstants.PADDING_MEDIUM)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(AppConstants.PADDING_MEDIUM)
