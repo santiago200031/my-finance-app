@@ -26,8 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mobilecomputing.myfinance.data.category.Category
 import com.mobilecomputing.myfinance.data.service.CategoryBudgetStatus
 import com.mobilecomputing.myfinance.ui.theme.BudgetGreen
 import com.mobilecomputing.myfinance.ui.theme.BudgetOrange
@@ -144,5 +146,32 @@ fun CategoryBudgetCard(status: CategoryBudgetStatus, onDeleteClick: () -> Unit) 
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CategoryBudgetCardPreview() {
+    val dummyCategory =
+        Category(
+            id = "1",
+            title = "Groceries",
+            budgetLimit = 500.0,
+            iconKey = "shopping_cart",
+            colorHex = "#FF0000"
+        )
+    val dummyStatus =
+        CategoryBudgetStatus(
+            category = dummyCategory,
+            spentAmount = 150.0,
+            remainingAmount = 350.0,
+            percentUsed = 30
+        )
+
+    MaterialTheme {
+        CategoryBudgetCard(
+            status = dummyStatus,
+            onDeleteClick = {}
+        )
     }
 }
