@@ -4,6 +4,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.time.LocalDate
 import java.util.Calendar
 
 class DateUtilsTest {
@@ -70,7 +71,7 @@ class DateUtilsTest {
 
     @Test
     fun `formatDate uses provided pattern`() {
-        val date = java.time.LocalDate.of(2024, 1, 15)
+        val date = LocalDate.of(2024, 1, 15)
         val formatted = DateUtils.formatDate(date, "MM/dd/yyyy")
         assertEquals("01/15/2024", formatted)
     }
@@ -79,12 +80,12 @@ class DateUtilsTest {
     fun `parseInputDate parses correctly with provided pattern`() {
         val dateStr = "01/15/2024"
         val date = DateUtils.parseInputDate(dateStr, "MM/dd/yyyy")
-        assertEquals(java.time.LocalDate.of(2024, 1, 15), date)
+        assertEquals(LocalDate.of(2024, 1, 15), date)
     }
 
     @Test
     fun `formatDate uses default pattern when exception occurs`() {
-        val date = java.time.LocalDate.of(2024, 1, 15)
+        val date = LocalDate.of(2024, 1, 15)
         // Invalid pattern should fallback to default dd.MM.yyyy
         val formatted = DateUtils.formatDate(date, "invalid-pattern")
         assertEquals("15.01.2024", formatted)
